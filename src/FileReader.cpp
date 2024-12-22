@@ -9,11 +9,12 @@
 
 #include "FileReader.h"
 
-#include "nlohmann/json.hpp"
-#include "Constants.h"
-
 #include <fstream>
 #include <iostream>
+
+#include "nlohmann/json.hpp"
+
+#include "Constants.h"
 
 using json = nlohmann::json;
 
@@ -59,21 +60,25 @@ void bot::FileReader::getParams(bot::Parameters& params) {
     json jsonData = json::parse(text);
     if (jsonData.contains(consts::kMaxTimeSteps)) {
       std::uint64_t maxTimeSteps = jsonData[consts::kMaxTimeSteps];
+      params.setValue(consts::kMaxTimeSteps, maxTimeSteps);
     } else {
       throw std::runtime_error("JSON key not found.");
     }
     if (jsonData.contains(consts::kSamplingRate)) {
       std::uint64_t samplingRate = jsonData[consts::kSamplingRate];
+      params.setValue(consts::kSamplingRate, samplingRate);
     } else {
       throw std::runtime_error("JSON key not found.");
     }
     if (jsonData.contains(consts::kYMin)) {
       double yMin = jsonData[consts::kYMin];
+      params.setValue(consts::kYMin, yMin);
     } else {
       throw std::runtime_error("JSON key not found.");
     }
     if (jsonData.contains(consts::kYMax)) {
       double yMax = jsonData[consts::kYMax];
+      params.setValue(consts::kYMax, yMax);
     } else {
       throw std::runtime_error("JSON key not found.");
     }

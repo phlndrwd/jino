@@ -10,6 +10,7 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#include <array>
 #include <cstdint>
 #include <string>
 
@@ -21,29 +22,31 @@ namespace consts {
     eInt16,
     eInt32,
     eInt64,
+    eUInt8,
+    eUInt16,
+    eUInt32,
+    eUInt64,
     eFloat,
     eDouble,
     eString,
     eNumberOfDataTypes
   };
 
-  constexpr std::string kColourMapOpts[6] = {
-    "blackbody",
-    "coolwarm",
-    "greyscale",
-    "plasma",
-    "turbo",
-    "viridis"
+  enum eParams : std::int8_t {
+    eMaxTimeSteps,
+    eSamplingRate,
+    eYMin,
+    eYMax,
+    eNumberOfParams
   };
 
-  const char kSeparator = ',';
-
-  const unsigned kColourDepth = 255;
-  const unsigned kColourMapSize = 256;
-
-  const unsigned kMaxColourSize = 3;
-
   const std::size_t kMaxFileSizeInBytes = 1048576;  // 1MB
+
+  // Other strings
+  constexpr std::string kSpace = " ";
+  constexpr std::string kBigSpace = "  ";
+  constexpr std::string kInputPath = "./input/";
+  constexpr std::string kParamFile = "params.json";
 
   // Parameter names
   constexpr std::string kMaxTimeSteps = "maxTimeSteps";
@@ -51,11 +54,12 @@ namespace consts {
   constexpr std::string kYMin = "yMin";
   constexpr std::string kYMax = "yMax";
 
-  // Other strings
-  constexpr std::string kSpace = " ";
-  constexpr std::string kBigSpace = "  ";
-  constexpr std::string kInputPath = "./input/";
-  constexpr std::string kParamFile = "params.json";
+  const std::array<std::string, eNumberOfParams> kParamNames = {
+    kMaxTimeSteps,
+    kSamplingRate,
+    kYMin,
+    kYMax
+  };
 
 }  // namespace consts
 }  // namespace enums

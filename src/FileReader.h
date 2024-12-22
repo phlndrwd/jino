@@ -11,7 +11,6 @@
 #define FILEREADER_H
 
 #include <string>
-#include <vector>
 
 #include "Parameters.h"
 

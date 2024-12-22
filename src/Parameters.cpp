@@ -7,8 +7,9 @@
 * which can be obtained from https://opensource.org/license/bsd-3-clause/.    *
 ******************************************************************************/
 
-#include "Datum.h"
 #include "Parameters.h"
+
+#include "Datum.h"
 
 bot::Parameters::Parameters() {}
 
@@ -28,6 +29,22 @@ void bot::Parameters::setValue(const std::string& name, const std::int64_t value
   values_.insert({name, std::make_unique<Datum<std::int64_t>>(value)});
 }
 
+void bot::Parameters::setValue(const std::string& name, const std::uint8_t value) {
+  values_.insert({name, std::make_unique<Datum<std::uint8_t>>(value)});
+}
+
+void bot::Parameters::setValue(const std::string& name, const std::uint16_t value) {
+  values_.insert({name, std::make_unique<Datum<std::uint16_t>>(value)});
+}
+
+void bot::Parameters::setValue(const std::string& name, const std::uint32_t value) {
+  values_.insert({name, std::make_unique<Datum<std::uint32_t>>(value)});
+}
+
+void bot::Parameters::setValue(const std::string& name, const std::uint64_t value) {
+  values_.insert({name, std::make_unique<Datum<std::uint64_t>>(value)});
+}
+
 void bot::Parameters::setValue(const std::string& name, const float value) {
   values_.insert({name, std::make_unique<Datum<float>>(value)});
 }
@@ -38,4 +55,8 @@ void bot::Parameters::setValue(const std::string& name, const double value) {
 
 void bot::Parameters::setValue(const std::string& name, const std::string value) {
   values_.insert({name, std::make_unique<Datum<std::string>>(value)});
+}
+
+std::uint64_t bot::Parameters::size() {
+  return values_.size();
 }

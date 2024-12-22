@@ -14,9 +14,14 @@
 
 int main() {
   std::cout << "Reading parameters..." << std::endl;
-  bot::Parameters parameters;
+  bot::Parameters params;
   bot::FileReader fileReader;
-  fileReader.getParams(parameters);
+  fileReader.getParams(params);
 
+  for (std::uint64_t i = 0; i < params.size(); i++) {
+    std::cout << params[i].getValueStr() << std::endl;
+  }
+
+  std::cout << "Done." << std::endl;
   return 0;
 }
