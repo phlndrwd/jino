@@ -21,6 +21,7 @@ template<> bot::Datum<std::uint32_t>::Datum(const std::uint32_t value): value_(v
 template<> bot::Datum<std::uint64_t>::Datum(const std::uint64_t value): value_(value) {}
 template<> bot::Datum<float>::Datum(const float value): value_(value) {}
 template<> bot::Datum<double>::Datum(const double value): value_(value) {}
+template<> bot::Datum<long double>::Datum(const long double value): value_(value) {}
 template<> bot::Datum<std::string>::Datum(const std::string value): value_(value) {}
 
 template<class T>
@@ -38,6 +39,7 @@ template const std::string bot::Datum<std::uint32_t>::getValueStr() const;
 template const std::string bot::Datum<std::uint64_t>::getValueStr() const;
 template const std::string bot::Datum<float>::getValueStr() const;
 template const std::string bot::Datum<double>::getValueStr() const;
+template const std::string bot::Datum<long double>::getValueStr() const;
 
 template<>
 const std::string bot::Datum<std::string>::getValueStr() const {

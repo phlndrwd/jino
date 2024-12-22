@@ -33,6 +33,7 @@ template void bot::Parameters::setValue<std::uint32_t>(const std::string& name, 
 template void bot::Parameters::setValue<std::uint64_t>(const std::string& name, const std::uint64_t value);
 template void bot::Parameters::setValue<float>(const std::string& name, const float value);
 template void bot::Parameters::setValue<double>(const std::string& name, const double value);
+template void bot::Parameters::setValue<long double>(const std::string& name, const long double value);
 template void bot::Parameters::setValue<std::string>(const std::string& name, const std::string value);
 
 template <typename T>
@@ -60,6 +61,7 @@ template std::uint32_t bot::Parameters::getValue<std::uint32_t>(const std::strin
 template std::uint64_t bot::Parameters::getValue<std::uint64_t>(const std::string& key) const;
 template float bot::Parameters::getValue<float>(const std::string& key) const;
 template double bot::Parameters::getValue<double>(const std::string& key) const;
+template long double bot::Parameters::getValue<long double>(const std::string& key) const;
 template std::string bot::Parameters::getValue<std::string>(const std::string& key) const;
 
 std::uint64_t bot::Parameters::size() {
