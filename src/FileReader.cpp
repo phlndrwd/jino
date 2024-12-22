@@ -21,11 +21,11 @@ using json = nlohmann::json;
 namespace {
 
 std::streamsize getFileSize(const std::string& filePath) {
-    std::ifstream file(filePath, std::ios::binary | std::ios::ate); // Open in binary mode and set the position to the end
+    std::ifstream file(filePath, std::ios::binary | std::ios::ate);
     if (!file) {
         throw std::ios_base::failure("Could not open file");
     }
-    return file.tellg(); // Get the current position (which is the size of the file)
+    return file.tellg();
 }
 
 }  // Anonymous namespace
@@ -71,13 +71,13 @@ void bot::FileReader::getParams(bot::Parameters& params) {
       throw std::runtime_error("JSON key not found.");
     }
     if (jsonData.contains(consts::kYMin)) {
-      double yMin = jsonData[consts::kYMin];
+      float yMin = jsonData[consts::kYMin];
       params.setValue(consts::kYMin, yMin);
     } else {
       throw std::runtime_error("JSON key not found.");
     }
     if (jsonData.contains(consts::kYMax)) {
-      double yMax = jsonData[consts::kYMax];
+      float yMax = jsonData[consts::kYMax];
       params.setValue(consts::kYMax, yMax);
     } else {
       throw std::runtime_error("JSON key not found.");

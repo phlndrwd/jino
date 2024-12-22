@@ -1,6 +1,6 @@
 {
-  "maxTimeSteps": 1000000,
-  "samplingRate": 1000,
-  "yMin": -1,
-  "yMax": 1
+  "MaxTimeSteps": 1000000,
+  "SamplingRate": 1000,
+  "YMin": -1.0,
+  "YMax": 1.0
 }

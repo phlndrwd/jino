@@ -17,23 +17,15 @@ namespace bot {
 
 class DatumBase {
  public:
-  explicit DatumBase(const std::int8_t type) : type_(type) {}
+  DatumBase() {}
   virtual ~DatumBase() = default;
 
-  DatumBase()                            = delete;
   DatumBase(DatumBase&&)                 = delete;
   DatumBase(const DatumBase&)            = delete;
   DatumBase& operator=(DatumBase&&)      = delete;
   DatumBase& operator=(const DatumBase&) = delete;
 
   virtual const std::string getValueStr() const = 0;
-
-  std::int8_t getType() const {
-    return type_;
-  }
-
- protected:
-  std::int8_t type_;
 };
 
 }  // namespace bot

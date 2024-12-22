@@ -59,6 +59,9 @@ class Parameters {
   void setValue(const std::string&, const double);
   void setValue(const std::string&, const std::string);
 
+  template <typename T>
+  T getValue(const std::string& key) const;
+
   std::uint64_t size();
 
  private:

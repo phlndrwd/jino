@@ -17,21 +17,6 @@
 namespace bot {
 namespace consts {
 
-  enum eDataTypes : std::int8_t {
-    eInt8,
-    eInt16,
-    eInt32,
-    eInt64,
-    eUInt8,
-    eUInt16,
-    eUInt32,
-    eUInt64,
-    eFloat,
-    eDouble,
-    eString,
-    eNumberOfDataTypes
-  };
-
   enum eParams : std::int8_t {
     eMaxTimeSteps,
     eSamplingRate,
@@ -43,16 +28,15 @@ namespace consts {
   const std::size_t kMaxFileSizeInBytes = 1048576;  // 1MB
 
   // Other strings
-  constexpr std::string kSpace = " ";
-  constexpr std::string kBigSpace = "  ";
+  constexpr std::string kSeparator = ", ";
   constexpr std::string kInputPath = "./input/";
   constexpr std::string kParamFile = "params.json";
 
   // Parameter names
-  constexpr std::string kMaxTimeSteps = "maxTimeSteps";
-  constexpr std::string kSamplingRate = "samplingRate";
-  constexpr std::string kYMin = "yMin";
-  constexpr std::string kYMax = "yMax";
+  constexpr std::string kMaxTimeSteps = "MaxTimeSteps";
+  constexpr std::string kSamplingRate = "SamplingRate";
+  constexpr std::string kYMin = "YMin";
+  constexpr std::string kYMax = "YMax";
 
   const std::array<std::string, eNumberOfParams> kParamNames = {
     kMaxTimeSteps,
