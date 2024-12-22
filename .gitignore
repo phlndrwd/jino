@@ -1,0 +1,8 @@
+build/
+Debug/
+Release/
+CMakeLists.txt.user
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+*.o

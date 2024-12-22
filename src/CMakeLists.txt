@@ -1,0 +1,17 @@
+###############################################################################
+# Buffered Output Thread (BOT)                                                #
+#                                                                             #
+# (C) Copyright 2024, Phil Underwood. All rights reserved.                    #
+#                                                                             #
+# This software is licensed under the terms of the 3-Clause BSD License       #
+# which can be obtained from https://opensource.org/license/bsd-3-clause/.    #
+###############################################################################
+
+list(APPEND BOT_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/Constants.h
+  ${CMAKE_CURRENT_LIST_DIR}/Datum.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/Datum.h
+  ${CMAKE_CURRENT_LIST_DIR}/FileReader.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/FileReader.h
+  ${CMAKE_CURRENT_LIST_DIR}/Main.cpp
+)
