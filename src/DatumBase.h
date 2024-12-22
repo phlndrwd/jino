@@ -10,7 +10,6 @@
 #ifndef DATUMBASE_H_
 #define DATUMBASE_H_
 
-#include <cstdint>
 #include <string>
 
 namespace bot {

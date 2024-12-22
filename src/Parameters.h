@@ -24,11 +24,19 @@ class Parameters {
   Parameters();
 
   bot::DatumBase& operator[](std::uint64_t index) {
+    if (index >= consts::kParamNames.size()) {
+      throw std::out_of_range("Index out of range.");
+    }
     return *values_[consts::kParamNames[index]].get();
   }
 
   bot::DatumBase& operator[](std::string& name) {
-    return *values_[name].get();
+    auto it = values_.find(name);
+    if (it != values_.end()) {
+      return *it->second.get();
+    } else {
+      throw std::out_of_range("Key not found in map.");
+    }
   }
 
   const bot::DatumBase& operator[](const std::uint64_t index) const {
@@ -47,17 +55,8 @@ class Parameters {
     }
   }
 
-  void setValue(const std::string&, const std::int8_t);
-  void setValue(const std::string&, const std::int16_t);
-  void setValue(const std::string&, const std::int32_t);
-  void setValue(const std::string&, const std::int64_t);
-  void setValue(const std::string&, const std::uint8_t);
-  void setValue(const std::string&, const std::uint16_t);
-  void setValue(const std::string&, const std::uint32_t);
-  void setValue(const std::string&, const std::uint64_t);
-  void setValue(const std::string&, const float);
-  void setValue(const std::string&, const double);
-  void setValue(const std::string&, const std::string);
+  template <typename T>
+  void setValue(const std::string&, const T);
 
   template <typename T>
   T getValue(const std::string& key) const;
@@ -68,6 +67,6 @@ class Parameters {
   std::map<std::string, std::unique_ptr<bot::DatumBase>> values_;
 };
 
-}
+}  // namespace bot
 
-#endif // PARAMETERS_H
+#endif  // PARAMETERS_H

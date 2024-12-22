@@ -49,4 +49,4 @@ class Datum : public DatumBase {
 
 }  // namespace bot
 
-#endif  // DATUM_H_
+#endif   // DATUM_H_

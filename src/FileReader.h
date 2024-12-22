@@ -28,4 +28,4 @@ private:
 
 }  // namespace bot
 
-#endif // FILEREADER_H
+#endif  // FILEREADER_H

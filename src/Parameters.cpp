@@ -13,53 +13,31 @@
 
 bot::Parameters::Parameters() {}
 
-void bot::Parameters::setValue(const std::string& name, const std::int8_t value) {
-  values_.insert({name, std::make_unique<Datum<std::int8_t>>(value)});
+template <typename T>
+void bot::Parameters::setValue(const std::string& name, const T value) {
+  auto it = values_.find(name);
+  if (it == values_.end()) {
+    values_.insert({name, std::make_unique<Datum<T>>(value)});
+  } else {
+    throw std::out_of_range("Parameter \"" + name + "\" not found in map.");
+  }
 }
 
-void bot::Parameters::setValue(const std::string& name, const std::int16_t value) {
-  values_.insert({name, std::make_unique<Datum<std::int16_t>>(value)});
-}
-
-void bot::Parameters::setValue(const std::string& name, const std::int32_t value) {
-  values_.insert({name, std::make_unique<Datum<std::int32_t>>(value)});
-}
-
-void bot::Parameters::setValue(const std::string& name, const std::int64_t value) {
-  values_.insert({name, std::make_unique<Datum<std::int64_t>>(value)});
-}
-
-void bot::Parameters::setValue(const std::string& name, const std::uint8_t value) {
-  values_.insert({name, std::make_unique<Datum<std::uint8_t>>(value)});
-}
-
-void bot::Parameters::setValue(const std::string& name, const std::uint16_t value) {
-  values_.insert({name, std::make_unique<Datum<std::uint16_t>>(value)});
-}
-
-void bot::Parameters::setValue(const std::string& name, const std::uint32_t value) {
-  values_.insert({name, std::make_unique<Datum<std::uint32_t>>(value)});
-}
-
-void bot::Parameters::setValue(const std::string& name, const std::uint64_t value) {
-  values_.insert({name, std::make_unique<Datum<std::uint64_t>>(value)});
-}
-
-void bot::Parameters::setValue(const std::string& name, const float value) {
-  values_.insert({name, std::make_unique<Datum<float>>(value)});
-}
-
-void bot::Parameters::setValue(const std::string& name, const double value) {
-  values_.insert({name, std::make_unique<Datum<double>>(value)});
-}
-
-void bot::Parameters::setValue(const std::string& name, const std::string value) {
-  values_.insert({name, std::make_unique<Datum<std::string>>(value)});
-}
+template void bot::Parameters::setValue<std::int8_t>(const std::string& name, const std::int8_t value);
+template void bot::Parameters::setValue<std::int16_t>(const std::string& name, const std::int16_t value);
+template void bot::Parameters::setValue<std::int32_t>(const std::string& name, const std::int32_t value);
+template void bot::Parameters::setValue<std::int64_t>(const std::string& name, const std::int64_t value);
+template void bot::Parameters::setValue<std::uint8_t>(const std::string& name, const std::uint8_t value);
+template void bot::Parameters::setValue<std::uint16_t>(const std::string& name, const std::uint16_t value);
+template void bot::Parameters::setValue<std::uint32_t>(const std::string& name, const std::uint32_t value);
+template void bot::Parameters::setValue<std::uint64_t>(const std::string& name, const std::uint64_t value);
+template void bot::Parameters::setValue<float>(const std::string& name, const float value);
+template void bot::Parameters::setValue<double>(const std::string& name, const double value);
+template void bot::Parameters::setValue<std::string>(const std::string& name, const std::string value);
 
 template <typename T>
-T bot::Parameters::getValue(const std::string& key) const {
-  auto it = values_.find(key);
+T bot::Parameters::getValue(const std::string& name) const {
+  auto it = values_.find(name);
   if (it != values_.end()) {
     bot::Datum<T>* datum = dynamic_cast<bot::Datum<T>*>(it->second.get());
     if (datum) {
@@ -68,7 +46,7 @@ T bot::Parameters::getValue(const std::string& key) const {
       throw std::runtime_error("Type mismatch or invalid cast.");
     }
   } else {
-    throw std::out_of_range("Key not found in map.");
+    throw std::out_of_range("Parameter \"" + name + "\" not found in map.");
   }
 }
 

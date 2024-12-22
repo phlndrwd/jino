@@ -48,4 +48,4 @@ namespace consts {
 }  // namespace consts
 }  // namespace enums
 
-#endif // CONSTANTS_H
+#endif  // CONSTANTS_H
