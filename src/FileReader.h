@@ -12,18 +12,25 @@
 
 #include <string>
 
+#include "nlohmann/json.hpp"
+
 #include "Parameters.h"
+
+using json = nlohmann::json;
 
 namespace bot {
 
 class FileReader {
-public:
+ public:
   FileReader();
 
   void read(std::string&, std::string&);
   void getParams(bot::Parameters&);
 
-private:
+ private:
+  template <typename T>
+  void setParam(bot::Parameters&, const std::string&, const T&);
+  void setParam(bot::Parameters&, const std::string&, const std::uint8_t, const nlohmann::json&);
 };
 
 }  // namespace bot

@@ -12,11 +12,8 @@
 #include <fstream>
 #include <iostream>
 
-#include "nlohmann/json.hpp"
 
 #include "Constants.h"
-
-using json = nlohmann::json;
 
 namespace {
 
@@ -62,63 +59,7 @@ void bot::FileReader::getParams(bot::Parameters& params) {
       const std::string& paramName = consts::kParamNames[i];
       const std::uint8_t paramType = consts::kParamTypes[i];
       if (jsonData.contains(paramName)) {
-        switch(paramType) {
-          case consts::eInt8: {
-            std::int8_t param = jsonData[paramName];
-            params.setValue(paramName, param);
-            break;
-          }
-          case consts::eInt16: {
-            std::int16_t param = jsonData[paramName];
-            params.setValue(paramName, param);
-            break;
-          }
-          case consts::eInt32: {
-            std::int32_t param = jsonData[paramName];
-            params.setValue(paramName, param);
-            break;
-          }
-          case consts::eInt64: {
-            std::int64_t param = jsonData[paramName];
-            params.setValue(paramName, param);
-            break;
-          }
-          case consts::eUInt8: {
-            std::uint8_t param = jsonData[paramName];
-            params.setValue(paramName, param);
-            break;
-          }
-          case consts::eUInt16: {
-            std::uint16_t param = jsonData[paramName];
-            params.setValue(paramName, param);
-            break;
-          }
-          case consts::eUInt32: {
-            std::uint32_t param = jsonData[paramName];
-            params.setValue(paramName, param);
-            break;
-          }
-          case consts::eUInt64: {
-            std::uint64_t param = jsonData[paramName];
-            params.setValue(paramName, param);
-            break;
-          }
-          case consts::eFloat: {
-            float param = jsonData[paramName];
-            params.setValue(paramName, param);
-            break;
-          }
-          case consts::eDouble: {
-            double param = jsonData[paramName];
-            params.setValue(paramName, param);
-            break;
-          }
-          case consts::eString: {
-            std::string param = jsonData[paramName];
-            params.setValue(paramName, param);
-            break;
-          }
-        }
+        setParam(params, paramName, paramType, jsonData[paramName]);
       } else {
         throw std::out_of_range("JSON key \"" + paramName + "\" not found.");
       }
@@ -127,4 +68,58 @@ void bot::FileReader::getParams(bot::Parameters& params) {
     std::cout << "ERROR: Input file not formatted correctly..." << std::endl;
     std::cerr << error.what() << std::endl;
   }
+}
+
+void bot::FileReader::setParam(Parameters& params, const std::string& paramName, const std::uint8_t paramType, const nlohmann::json& jsonValue) {
+  switch(paramType) {
+    case consts::eInt8: {
+      setParam(params, paramName, static_cast<std::int8_t>(jsonValue));
+      break;
+    }
+    case consts::eInt16: {
+      setParam(params, paramName, static_cast<std::int16_t>(jsonValue));
+      break;
+    }
+    case consts::eInt32: {
+      setParam(params, paramName, static_cast<std::int32_t>(jsonValue));
+      break;
+    }
+    case consts::eInt64: {
+      setParam(params, paramName, static_cast<std::int64_t>(jsonValue));
+      break;
+    }
+    case consts::eUInt8: {
+      setParam(params, paramName, static_cast<std::uint8_t>(jsonValue));
+      break;
+    }
+    case consts::eUInt16: {
+      setParam(params, paramName, static_cast<std::uint16_t>(jsonValue));
+      break;
+    }
+    case consts::eUInt32: {
+      setParam(params, paramName, static_cast<std::uint32_t>(jsonValue));
+      break;
+    }
+    case consts::eUInt64: {
+      setParam(params, paramName, static_cast<std::uint64_t>(jsonValue));
+      break;
+    }
+    case consts::eFloat: {
+      setParam(params, paramName, static_cast<float>(jsonValue));
+      break;
+    }
+    case consts::eDouble: {
+      setParam(params, paramName, static_cast<double>(jsonValue));
+      break;
+    }
+    case consts::eString: {
+      setParam(params, paramName, static_cast<std::string>(jsonValue));
+      break;
+    }
+  }
+}
+
+template <typename T>
+void bot::FileReader::setParam(Parameters& params, const std::string& paramName, const T& value) {
+  params.setValue(paramName, value);
 }
