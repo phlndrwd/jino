@@ -11,7 +11,7 @@
 
 #include <fstream>
 #include <iostream>
-
+#include <string>
 
 #include "Constants.h"
 
@@ -70,8 +70,9 @@ void bot::FileReader::getParams(bot::Parameters& params) {
   }
 }
 
-void bot::FileReader::setParam(Parameters& params, const std::string& paramName, const std::uint8_t paramType, const nlohmann::json& jsonValue) {
-  switch(paramType) {
+void bot::FileReader::setParam(Parameters& params, const std::string& paramName,
+                               const std::uint8_t paramType, const nlohmann::json& jsonValue) {
+  switch (paramType) {
     case consts::eInt8: {
       setParam(params, paramName, static_cast<std::int8_t>(jsonValue));
       break;

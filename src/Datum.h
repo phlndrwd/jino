@@ -7,15 +7,14 @@
 * which can be obtained from https://opensource.org/license/bsd-3-clause/.    *
 ******************************************************************************/
 
-#ifndef DATUM_H_
-#define DATUM_H_
+#ifndef SRC_DATUM_H_
+#define SRC_DATUM_H_
 
 #include <string>
 
 #include "DatumBase.h"
 
 namespace bot {
-
 template<class T>
 class Datum : public DatumBase {
  public:
@@ -46,7 +45,6 @@ class Datum : public DatumBase {
  private:
   T value_;
 };
-
 }  // namespace bot
 
-#endif   // DATUM_H_
+#endif   // SRC_DATUM_H_

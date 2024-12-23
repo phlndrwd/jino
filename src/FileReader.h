@@ -7,8 +7,8 @@
 * which can be obtained from https://opensource.org/license/bsd-3-clause/.    *
 ******************************************************************************/
 
-#ifndef FILEREADER_H
-#define FILEREADER_H
+#ifndef SRC_FILEREADER_H_
+#define SRC_FILEREADER_H_
 
 #include <string>
 
@@ -19,7 +19,6 @@
 using json = nlohmann::json;
 
 namespace bot {
-
 class FileReader {
  public:
   FileReader();
@@ -32,7 +31,6 @@ class FileReader {
   void setParam(bot::Parameters&, const std::string&, const T&);
   void setParam(bot::Parameters&, const std::string&, const std::uint8_t, const nlohmann::json&);
 };
-
 }  // namespace bot
 
-#endif  // FILEREADER_H
+#endif  // SRC_FILEREADER_H_

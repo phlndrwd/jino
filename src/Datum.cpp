@@ -10,6 +10,7 @@
 #include "Datum.h"
 
 #include <cstdint>
+#include <string>
 
 template<> bot::Datum<std::int8_t>::Datum(const std::int8_t value): value_(value) {}
 template<> bot::Datum<std::int16_t>::Datum(const std::int16_t value): value_(value) {}

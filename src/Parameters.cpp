@@ -9,6 +9,9 @@
 
 #include "Parameters.h"
 
+#include <memory>
+#include <string>
+
 #include "Datum.h"
 
 bot::Parameters::Parameters() {}
@@ -23,18 +26,18 @@ void bot::Parameters::setValue(const std::string& name, const T value) {
   }
 }
 
-template void bot::Parameters::setValue<std::int8_t>(const std::string& name, const std::int8_t value);
-template void bot::Parameters::setValue<std::int16_t>(const std::string& name, const std::int16_t value);
-template void bot::Parameters::setValue<std::int32_t>(const std::string& name, const std::int32_t value);
-template void bot::Parameters::setValue<std::int64_t>(const std::string& name, const std::int64_t value);
-template void bot::Parameters::setValue<std::uint8_t>(const std::string& name, const std::uint8_t value);
-template void bot::Parameters::setValue<std::uint16_t>(const std::string& name, const std::uint16_t value);
-template void bot::Parameters::setValue<std::uint32_t>(const std::string& name, const std::uint32_t value);
-template void bot::Parameters::setValue<std::uint64_t>(const std::string& name, const std::uint64_t value);
-template void bot::Parameters::setValue<float>(const std::string& name, const float value);
-template void bot::Parameters::setValue<double>(const std::string& name, const double value);
-template void bot::Parameters::setValue<long double>(const std::string& name, const long double value);
-template void bot::Parameters::setValue<std::string>(const std::string& name, const std::string value);
+template void bot::Parameters::setValue<std::int8_t>(const std::string&, const std::int8_t);
+template void bot::Parameters::setValue<std::int16_t>(const std::string&, const std::int16_t);
+template void bot::Parameters::setValue<std::int32_t>(const std::string&, const std::int32_t);
+template void bot::Parameters::setValue<std::int64_t>(const std::string&, const std::int64_t);
+template void bot::Parameters::setValue<std::uint8_t>(const std::string&, const std::uint8_t);
+template void bot::Parameters::setValue<std::uint16_t>(const std::string&, const std::uint16_t);
+template void bot::Parameters::setValue<std::uint32_t>(const std::string&, const std::uint32_t);
+template void bot::Parameters::setValue<std::uint64_t>(const std::string&, const std::uint64_t);
+template void bot::Parameters::setValue<float>(const std::string&, const float);
+template void bot::Parameters::setValue<double>(const std::string&, const double);
+template void bot::Parameters::setValue<long double>(const std::string&, const long double);
+template void bot::Parameters::setValue<std::string>(const std::string&, const std::string);
 
 template <typename T>
 T bot::Parameters::getValue(const std::string& name) const {
@@ -51,18 +54,18 @@ T bot::Parameters::getValue(const std::string& name) const {
   }
 }
 
-template std::int8_t bot::Parameters::getValue<std::int8_t>(const std::string& key) const;
-template std::int16_t bot::Parameters::getValue<std::int16_t>(const std::string& key) const;
-template std::int32_t bot::Parameters::getValue<std::int32_t>(const std::string& key) const;
-template std::int64_t bot::Parameters::getValue<std::int64_t>(const std::string& key) const;
-template std::uint8_t bot::Parameters::getValue<std::uint8_t>(const std::string& key) const;
-template std::uint16_t bot::Parameters::getValue<std::uint16_t>(const std::string& key) const;
-template std::uint32_t bot::Parameters::getValue<std::uint32_t>(const std::string& key) const;
-template std::uint64_t bot::Parameters::getValue<std::uint64_t>(const std::string& key) const;
-template float bot::Parameters::getValue<float>(const std::string& key) const;
-template double bot::Parameters::getValue<double>(const std::string& key) const;
-template long double bot::Parameters::getValue<long double>(const std::string& key) const;
-template std::string bot::Parameters::getValue<std::string>(const std::string& key) const;
+template std::int8_t bot::Parameters::getValue<std::int8_t>(const std::string&) const;
+template std::int16_t bot::Parameters::getValue<std::int16_t>(const std::string&) const;
+template std::int32_t bot::Parameters::getValue<std::int32_t>(const std::string&) const;
+template std::int64_t bot::Parameters::getValue<std::int64_t>(const std::string&) const;
+template std::uint8_t bot::Parameters::getValue<std::uint8_t>(const std::string&) const;
+template std::uint16_t bot::Parameters::getValue<std::uint16_t>(const std::string&) const;
+template std::uint32_t bot::Parameters::getValue<std::uint32_t>(const std::string&) const;
+template std::uint64_t bot::Parameters::getValue<std::uint64_t>(const std::string&) const;
+template float bot::Parameters::getValue<float>(const std::string&) const;
+template double bot::Parameters::getValue<double>(const std::string&) const;
+template long double bot::Parameters::getValue<long double>(const std::string&) const;
+template std::string bot::Parameters::getValue<std::string>(const std::string&) const;
 
 std::uint64_t bot::Parameters::size() {
   return values_.size();

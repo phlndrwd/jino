@@ -7,8 +7,8 @@
 * which can be obtained from https://opensource.org/license/bsd-3-clause/.    *
 ******************************************************************************/
 
-#ifndef PARAMETERS_H
-#define PARAMETERS_H
+#ifndef SRC_PARAMETERS_H_
+#define SRC_PARAMETERS_H_
 
 #include <map>
 #include <memory>
@@ -18,19 +18,18 @@
 #include "DatumBase.h"
 
 namespace bot {
-
 class Parameters {
  public:
   Parameters();
 
-  bot::DatumBase& operator[](std::uint64_t index) {
+  bot::DatumBase& operator[](const std::uint64_t index) {
     if (index >= consts::kParamNames.size()) {
       throw std::out_of_range("Index out of range.");
     }
     return *values_[consts::kParamNames[index]].get();
   }
 
-  bot::DatumBase& operator[](std::string& name) {
+  bot::DatumBase& operator[](const std::string& name) {
     auto it = values_.find(name);
     if (it != values_.end()) {
       return *it->second.get();
@@ -66,7 +65,6 @@ class Parameters {
  private:
   std::map<std::string, std::unique_ptr<bot::DatumBase>> values_;
 };
-
 }  // namespace bot
 
-#endif  // PARAMETERS_H
+#endif  // SRC_PARAMETERS_H_

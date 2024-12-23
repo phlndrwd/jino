@@ -7,13 +7,12 @@
 * which can be obtained from https://opensource.org/license/bsd-3-clause/.    *
 ******************************************************************************/
 
-#ifndef DATUMBASE_H_
-#define DATUMBASE_H_
+#ifndef SRC_DATUMBASE_H_
+#define SRC_DATUMBASE_H_
 
 #include <string>
 
 namespace bot {
-
 class DatumBase {
  public:
   DatumBase() {}
@@ -26,7 +25,6 @@ class DatumBase {
 
   virtual const std::string getValueStr() const = 0;
 };
-
 }  // namespace bot
 
-#endif  // DATUMBASE_H_
+#endif  // SRC_DATUMBASE_H_
