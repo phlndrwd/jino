@@ -21,11 +21,11 @@ using json = nlohmann::json;
 namespace {
 
 std::streamsize getFileSize(const std::string& filePath) {
-    std::ifstream file(filePath, std::ios::binary | std::ios::ate);
-    if (!file) {
-        throw std::ios_base::failure("Could not open file");
-    }
-    return file.tellg();
+  std::ifstream file(filePath, std::ios::binary | std::ios::ate);
+  if (!file) {
+    throw std::ios_base::failure("Could not open file.");
+  }
+  return file.tellg();
 }
 
 }  // Anonymous namespace
@@ -58,29 +58,70 @@ void bot::FileReader::getParams(bot::Parameters& params) {
   read(paramsPath, text);
   try {
     json jsonData = json::parse(text);
-    if (jsonData.contains(consts::kMaxTimeSteps)) {
-      std::uint64_t maxTimeSteps = jsonData[consts::kMaxTimeSteps];
-      params.setValue(consts::kMaxTimeSteps, maxTimeSteps);
-    } else {
-      throw std::runtime_error("JSON key not found.");
-    }
-    if (jsonData.contains(consts::kSamplingRate)) {
-      std::uint64_t samplingRate = jsonData[consts::kSamplingRate];
-      params.setValue(consts::kSamplingRate, samplingRate);
-    } else {
-      throw std::runtime_error("JSON key not found.");
-    }
-    if (jsonData.contains(consts::kYMin)) {
-      float yMin = jsonData[consts::kYMin];
-      params.setValue(consts::kYMin, yMin);
-    } else {
-      throw std::runtime_error("JSON key not found.");
-    }
-    if (jsonData.contains(consts::kYMax)) {
-      float yMax = jsonData[consts::kYMax];
-      params.setValue(consts::kYMax, yMax);
-    } else {
-      throw std::runtime_error("JSON key not found.");
+    for (std::uint64_t i = 0; i < consts::kParamNames.size(); ++i) {
+      const std::string& paramName = consts::kParamNames[i];
+      const std::uint8_t paramType = consts::kParamTypes[i];
+      if (jsonData.contains(paramName)) {
+        switch(paramType) {
+          case consts::eInt8: {
+            std::int8_t param = jsonData[paramName];
+            params.setValue(paramName, param);
+            break;
+          }
+          case consts::eInt16: {
+            std::int16_t param = jsonData[paramName];
+            params.setValue(paramName, param);
+            break;
+          }
+          case consts::eInt32: {
+            std::int32_t param = jsonData[paramName];
+            params.setValue(paramName, param);
+            break;
+          }
+          case consts::eInt64: {
+            std::int64_t param = jsonData[paramName];
+            params.setValue(paramName, param);
+            break;
+          }
+          case consts::eUInt8: {
+            std::uint8_t param = jsonData[paramName];
+            params.setValue(paramName, param);
+            break;
+          }
+          case consts::eUInt16: {
+            std::uint16_t param = jsonData[paramName];
+            params.setValue(paramName, param);
+            break;
+          }
+          case consts::eUInt32: {
+            std::uint32_t param = jsonData[paramName];
+            params.setValue(paramName, param);
+            break;
+          }
+          case consts::eUInt64: {
+            std::uint64_t param = jsonData[paramName];
+            params.setValue(paramName, param);
+            break;
+          }
+          case consts::eFloat: {
+            float param = jsonData[paramName];
+            params.setValue(paramName, param);
+            break;
+          }
+          case consts::eDouble: {
+            double param = jsonData[paramName];
+            params.setValue(paramName, param);
+            break;
+          }
+          case consts::eString: {
+            std::string param = jsonData[paramName];
+            params.setValue(paramName, param);
+            break;
+          }
+        }
+      } else {
+        throw std::out_of_range("JSON key \"" + paramName + "\" not found.");
+      }
     }
   } catch (const std::exception& error) {
     std::cout << "ERROR: Input file not formatted correctly..." << std::endl;

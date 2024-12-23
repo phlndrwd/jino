@@ -17,12 +17,27 @@
 namespace bot {
 namespace consts {
 
-  enum eParams : std::int8_t {
+  enum eParams : std::uint8_t {
     eMaxTimeSteps,
     eSamplingRate,
     eYMin,
     eYMax,
     eNumberOfParams
+  };
+
+  enum eDataTypes : std::uint8_t {
+    eInt8,
+    eInt16,
+    eInt32,
+    eInt64,
+    eUInt8,
+    eUInt16,
+    eUInt32,
+    eUInt64,
+    eFloat,
+    eDouble,
+    eString,
+    eNumberOfDataTypes
   };
 
   const std::size_t kMaxFileSizeInBytes = 1048576;  // 1MB
@@ -43,6 +58,13 @@ namespace consts {
     kSamplingRate,
     kYMin,
     kYMax
+  };
+
+  const std::array<std::uint8_t, eNumberOfParams> kParamTypes = {
+    eUInt64,
+    eUInt64,
+    eFloat,
+    eFloat
   };
 
 }  // namespace consts

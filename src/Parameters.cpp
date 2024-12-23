@@ -19,7 +19,7 @@ void bot::Parameters::setValue(const std::string& name, const T value) {
   if (it == values_.end()) {
     values_.insert({name, std::make_unique<Datum<T>>(value)});
   } else {
-    throw std::out_of_range("Parameter \"" + name + "\" not found in map.");
+    throw std::out_of_range("Parameter \"" + name + "\" alredy exists.");
   }
 }
 
@@ -47,7 +47,7 @@ T bot::Parameters::getValue(const std::string& name) const {
       throw std::runtime_error("Type mismatch or invalid cast.");
     }
   } else {
-    throw std::out_of_range("Parameter \"" + name + "\" not found in map.");
+    throw std::out_of_range("Parameter \"" + name + "\" not found.");
   }
 }
 

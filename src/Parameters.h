@@ -35,7 +35,7 @@ class Parameters {
     if (it != values_.end()) {
       return *it->second.get();
     } else {
-      throw std::out_of_range("Key not found in map.");
+      throw std::out_of_range("Parameter \"" + name + "\" not found.");
     }
   }
 
@@ -51,7 +51,7 @@ class Parameters {
     if (it != values_.end()) {
       return *it->second.get();
     } else {
-      throw std::out_of_range("Key not found in map.");
+      throw std::out_of_range("Parameter \"" + name + "\" not found.");
     }
   }
 
