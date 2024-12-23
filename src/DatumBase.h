@@ -1,5 +1,5 @@
 /******************************************************************************
-* Buffered Output Thread (BOT)                                                *
+* Buffered Output Thread                                                      *
 *                                                                             *
 * (C) Copyright 2024, Phil Underwood. All rights reserved.                    *
 *                                                                             *

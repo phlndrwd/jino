@@ -1,5 +1,5 @@
 ###############################################################################
-# Buffered Output Thread (BOT)                                                #
+# Buffered Output Thread                                                      #
 #                                                                             #
 # (C) Copyright 2024, Phil Underwood. All rights reserved.                    #
 #                                                                             #
@@ -11,7 +11,9 @@ list(APPEND BOT_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/Constants.h
   ${CMAKE_CURRENT_LIST_DIR}/Datum.cpp
   ${CMAKE_CURRENT_LIST_DIR}/Datum.h
+  ${CMAKE_CURRENT_LIST_DIR}/DatumBase.h
   ${CMAKE_CURRENT_LIST_DIR}/FileReader.cpp
   ${CMAKE_CURRENT_LIST_DIR}/FileReader.h
-  ${CMAKE_CURRENT_LIST_DIR}/Main.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/Parameters.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/Parameters.h
 )
