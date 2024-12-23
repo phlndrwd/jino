@@ -113,6 +113,10 @@ void bot::FileReader::setParam(Parameters& params, const std::string& paramName,
       setParam(params, paramName, static_cast<double>(jsonValue));
       break;
     }
+    case consts::eLongDouble: {
+      setParam(params, paramName, static_cast<long double>(jsonValue));
+      break;
+    }
     case consts::eString: {
       setParam(params, paramName, static_cast<std::string>(jsonValue));
       break;
