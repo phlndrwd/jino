@@ -9,18 +9,14 @@
 
 enable_testing()
 
-include(FetchContent)
 FetchContent_Declare(cpplint
   GIT_REPOSITORY "git@github.com:cpplint/cpplint.git"
   GIT_TAG "2.0.0"
-  SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/cpplint"
 )
 FetchContent_MakeAvailable(cpplint)
 
 add_test(NAME coding_norms
-         COMMAND "${CMAKE_CURRENT_LIST_DIR}/cpplint/cpplint.py"
-                 --exclude=${PROJECT_SOURCE_DIR}/test/cpplint
-                 --quiet --recursive
+         COMMAND "${FETCHCONTENT_BASE_DIR}/cpplint-src/cpplint.py" --quiet --recursive
                  ${PROJECT_SOURCE_DIR}/src
                  ${PROJECT_SOURCE_DIR}/test)
 

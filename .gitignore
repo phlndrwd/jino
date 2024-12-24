@@ -1,5 +1,6 @@
 build/
 Debug/
+external/
 Release/
 CMakeLists.txt.user
 CMakeCache.txt
