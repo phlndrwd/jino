@@ -1,5 +1,5 @@
 /******************************************************************************
-* Buffered Output Thread                                                      *
+* JSON In, NetCDF Out                                                         *
 *                                                                             *
 * (C) Copyright 2024, Phil Underwood. All rights reserved.                    *
 *                                                                             *
@@ -17,19 +17,19 @@
 #include "Constants.h"
 #include "DatumBase.h"
 
-namespace bot {
+namespace jino {
 class Parameters {
  public:
   Parameters();
 
-  bot::DatumBase& operator[](const std::uint64_t index) {
+  jino::DatumBase& operator[](const std::uint64_t index) {
     if (index >= consts::kParamNames.size()) {
       throw std::out_of_range("Index out of range.");
     }
     return *values_[consts::kParamNames[index]].get();
   }
 
-  bot::DatumBase& operator[](const std::string& name) {
+  jino::DatumBase& operator[](const std::string& name) {
     auto it = values_.find(name);
     if (it != values_.end()) {
       return *it->second.get();
@@ -38,14 +38,14 @@ class Parameters {
     }
   }
 
-  const bot::DatumBase& operator[](const std::uint64_t index) const {
+  const jino::DatumBase& operator[](const std::uint64_t index) const {
     if (index >= consts::kParamNames.size()) {
       throw std::out_of_range("Index out of range.");
     }
     return this->operator[](consts::kParamNames[index]);
   }
 
-  const bot::DatumBase& operator[](const std::string& name) const {
+  const jino::DatumBase& operator[](const std::string& name) const {
     auto it = values_.find(name);
     if (it != values_.end()) {
       return *it->second.get();
@@ -63,8 +63,8 @@ class Parameters {
   std::uint64_t size();
 
  private:
-  std::map<std::string, std::unique_ptr<bot::DatumBase>> values_;
+  std::map<std::string, std::unique_ptr<jino::DatumBase>> values_;
 };
-}  // namespace bot
+}  // namespace jino
 
 #endif  // SRC_PARAMETERS_H_

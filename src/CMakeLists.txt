@@ -1,5 +1,5 @@
 ###############################################################################
-# Buffered Output Thread                                                      #
+# JSON In, NetCDF Out                                                         #
 #                                                                             #
 # (C) Copyright 2024, Phil Underwood. All rights reserved.                    #
 #                                                                             #
@@ -7,7 +7,7 @@
 # which can be obtained from https://opensource.org/license/bsd-3-clause/.    #
 ###############################################################################
 
-list(APPEND BOT_SOURCES
+list(APPEND JINO_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/Constants.h
   ${CMAKE_CURRENT_LIST_DIR}/Datum.cpp
   ${CMAKE_CURRENT_LIST_DIR}/Datum.h

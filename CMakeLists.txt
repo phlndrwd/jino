@@ -1,5 +1,5 @@
 ###############################################################################
-# Buffered Output Thread                                                      #
+# JSON In, NetCDF Out                                                         #
 #                                                                             #
 # (C) Copyright 2024, Phil Underwood. All rights reserved.                    #
 #                                                                             #
@@ -9,7 +9,7 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-project(bot LANGUAGES CXX)
+project(jino LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
@@ -21,4 +21,4 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 
 include(${CMAKE_SOURCE_DIR}/src/CMakeLists.txt)
 include(${CMAKE_SOURCE_DIR}/test/CMakeLists.txt)
-message(STATUS "Sources: ${BOT_SOURCES}")
+message(STATUS "Sources: ${JINO_SOURCES}")

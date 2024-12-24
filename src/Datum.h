@@ -1,5 +1,5 @@
 /******************************************************************************
-* Buffered Output Thread                                                      *
+* JSON In, NetCDF Out                                                         *
 *                                                                             *
 * (C) Copyright 2024, Phil Underwood. All rights reserved.                    *
 *                                                                             *
@@ -14,7 +14,7 @@
 
 #include "DatumBase.h"
 
-namespace bot {
+namespace jino {
 template<class T>
 class Datum : public DatumBase {
  public:
@@ -45,6 +45,6 @@ class Datum : public DatumBase {
  private:
   T value_;
 };
-}  // namespace bot
+}  // namespace jino
 
 #endif   // SRC_DATUM_H_

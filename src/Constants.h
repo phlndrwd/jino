@@ -1,5 +1,5 @@
 /******************************************************************************
-* Buffered Output Thread                                                      *
+* JSON In, NetCDF Out                                                         *
 *                                                                             *
 * (C) Copyright 2024, Phil Underwood. All rights reserved.                    *
 *                                                                             *
@@ -14,7 +14,7 @@
 #include <cstdint>
 #include <string>
 
-namespace bot {
+namespace jino {
 namespace consts {
 enum eParams : std::uint8_t {
   eMaxTimeSteps,
@@ -67,6 +67,6 @@ const std::array<std::uint8_t, eNumberOfParams> kParamTypes = {
   eFloat
 };
 }  // namespace consts
-}  // namespace bot
+}  // namespace jino
 
 #endif  // SRC_CONSTANTS_H_

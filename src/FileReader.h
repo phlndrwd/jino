@@ -1,5 +1,5 @@
 /******************************************************************************
-* Buffered Output Thread                                                      *
+* JSON In, NetCDF Out                                                         *
 *                                                                             *
 * (C) Copyright 2024, Phil Underwood. All rights reserved.                    *
 *                                                                             *
@@ -18,19 +18,19 @@
 
 using json = nlohmann::json;
 
-namespace bot {
+namespace jino {
 class FileReader {
  public:
   FileReader();
 
   void read(std::string&, std::string&);
-  void getParams(bot::Parameters&);
+  void getParams(jino::Parameters&);
 
  private:
   template <typename T>
-  void setParam(bot::Parameters&, const std::string&, const T&);
-  void setParam(bot::Parameters&, const std::string&, const std::uint8_t, const nlohmann::json&);
+  void setParam(jino::Parameters&, const std::string&, const T&);
+  void setParam(jino::Parameters&, const std::string&, const std::uint8_t, const nlohmann::json&);
 };
-}  // namespace bot
+}  // namespace jino
 
 #endif  // SRC_FILEREADER_H_

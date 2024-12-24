@@ -1,5 +1,5 @@
 /******************************************************************************
-* Buffered Output Thread                                                      *
+* JSON In, NetCDF Out                                                         *
 *                                                                             *
 * (C) Copyright 2024, Phil Underwood. All rights reserved.                    *
 *                                                                             *
@@ -12,7 +12,7 @@
 
 #include <string>
 
-namespace bot {
+namespace jino {
 class DatumBase {
  public:
   DatumBase() {}
@@ -25,6 +25,6 @@ class DatumBase {
 
   virtual const std::string getValueStr() const = 0;
 };
-}  // namespace bot
+}  // namespace jino
 
 #endif  // SRC_DATUMBASE_H_

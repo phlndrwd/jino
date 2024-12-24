@@ -1,5 +1,5 @@
 /******************************************************************************
-* Buffered Output Thread                                                      *
+* JSON In, NetCDF Out                                                         *
 *                                                                             *
 * (C) Copyright 2024, Phil Underwood. All rights reserved.                    *
 *                                                                             *
@@ -27,9 +27,9 @@ std::streamsize getFileSize(const std::string& filePath) {
 
 }  // Anonymous namespace
 
-bot::FileReader::FileReader() {}
+jino::FileReader::FileReader() {}
 
-void bot::FileReader::read(std::string& path, std::string& text) {
+void jino::FileReader::read(std::string& path, std::string& text) {
   try {
     std::ifstream fileIn(path);
     fileIn.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -49,7 +49,7 @@ void bot::FileReader::read(std::string& path, std::string& text) {
   }
 }
 
-void bot::FileReader::getParams(bot::Parameters& params) {
+void jino::FileReader::getParams(jino::Parameters& params) {
   std::string text;
   std::string paramsPath = consts::kInputPath + consts::kParamFile;
   read(paramsPath, text);
@@ -70,7 +70,7 @@ void bot::FileReader::getParams(bot::Parameters& params) {
   }
 }
 
-void bot::FileReader::setParam(Parameters& params, const std::string& paramName,
+void jino::FileReader::setParam(Parameters& params, const std::string& paramName,
                                const std::uint8_t paramType, const nlohmann::json& jsonValue) {
   switch (paramType) {
     case consts::eInt8: {
@@ -125,6 +125,6 @@ void bot::FileReader::setParam(Parameters& params, const std::string& paramName,
 }
 
 template <typename T>
-void bot::FileReader::setParam(Parameters& params, const std::string& paramName, const T& value) {
+void jino::FileReader::setParam(Parameters& params, const std::string& paramName, const T& value) {
   params.setValue(paramName, value);
 }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Buffered Output Thread                                                      #
+# JSON In, NetCDF Out                                                         #
 #                                                                             #
 # (C) Copyright 2024, Phil Underwood. All rights reserved.                    #
 #                                                                             #
@@ -32,12 +32,10 @@ set(TEST_SOURCES
 
 foreach(TEST_SOURCE ${TEST_SOURCES})
   get_filename_component(EXECUTABLE_NAME ${TEST_SOURCE} NAME_WE)
-  add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE} ${BOT_SOURCES})
+  add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE} ${JINO_SOURCES})
   target_link_libraries(${EXECUTABLE_NAME} PRIVATE Threads::Threads)
 
   add_test(NAME ${EXECUTABLE_NAME} COMMAND ${EXECUTABLE_NAME})
 endforeach()
 
 add_compile_options(-Wall -Wextra -Wpedantic)
-
-
