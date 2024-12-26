@@ -1,5 +1,5 @@
 /******************************************************************************
-* JSON In, NetCDF Out                                                         *
+* JSON In NetCDF Out                                                          *
 *                                                                             *
 * (C) Copyright 2024, Phil Underwood. All rights reserved.                    *
 *                                                                             *

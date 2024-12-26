@@ -1,5 +1,5 @@
 ###############################################################################
-# JSON In, NetCDF Out                                                         #
+# JSON In NetCDF Out                                                          #
 #                                                                             #
 # (C) Copyright 2024, Phil Underwood. All rights reserved.                    #
 #                                                                             #
@@ -33,7 +33,7 @@ FetchContent_Declare(cpplint
 FetchContent_MakeAvailable(cpplint)
 
 include_directories(${CMAKE_SOURCE_DIR}/external/nlohmann-src/include/)
-include_directories(${CMAKE_SOURCE_DIR}/include/jino)
+include_directories(${CMAKE_SOURCE_DIR}/include/)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
 list(APPEND JINO_SOURCES
@@ -43,32 +43,32 @@ list(APPEND JINO_SOURCES
 )
 
 list(APPEND JINO_HEADERS
-  include/jino/Constants.h
-  include/jino/Datum.h
-  include/jino/DatumBase.h
-  include/jino/FileReader.h
-  include/jino/Parameters.h
+  include/Constants.h
+  include/Datum.h
+  include/DatumBase.h
+  include/FileReader.h
+  include/Parameters.h
 )
 
 set(TEST_SOURCES
   test/first.cpp
 )
 
-enable_testing()
+find_package(Threads REQUIRED)
+add_library(jino STATIC ${JINO_SOURCES})
+target_include_directories(jino PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(jino PUBLIC Threads::Threads)
 
+enable_testing()
 add_test(NAME coding_norms
          COMMAND "${FETCHCONTENT_BASE_DIR}/cpplint-src/cpplint.py" --quiet --recursive
                  ${PROJECT_SOURCE_DIR}/src
                  ${PROJECT_SOURCE_DIR}/test)
 
-find_package(Threads REQUIRED)
-
 foreach(TEST_SOURCE ${TEST_SOURCES})
   get_filename_component(EXECUTABLE_NAME ${TEST_SOURCE} NAME_WE)
-  add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE} ${JINO_HEADERS} ${JINO_SOURCES})
-  target_link_libraries(${EXECUTABLE_NAME} PRIVATE Threads::Threads)
-
+  add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE})
+  target_link_libraries(${EXECUTABLE_NAME} PRIVATE jino)
   add_test(NAME ${EXECUTABLE_NAME} COMMAND ${EXECUTABLE_NAME})
 endforeach()
-
 add_compile_options(-Wall -Wextra -Wpedantic)
