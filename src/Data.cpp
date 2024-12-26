@@ -67,6 +67,14 @@ template double jino::Data::getValue<double>(const std::string&) const;
 template long double jino::Data::getValue<long double>(const std::string&) const;
 template std::string jino::Data::getValue<std::string>(const std::string&) const;
 
+std::vector<std::string> jino::Data::keys() {
+  std::vector<std::string> keys;
+  for (auto const& [key, val] : values_) {
+    keys.push_back(key);
+  }
+  return keys;
+}
+
 std::uint64_t jino::Data::size() {
   return values_.size();
 }

@@ -51,7 +51,7 @@ list(APPEND JINO_HEADERS
 )
 
 set(TEST_SOURCES
-  test/first.cpp
+  test/basic_read.cpp
 )
 
 find_package(Threads REQUIRED)

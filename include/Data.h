@@ -13,6 +13,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "Constants.h"
 #include "DatumBase.h"
@@ -60,6 +61,7 @@ class Data {
   template <typename T>
   T getValue(const std::string& key) const;
 
+  std::vector<std::string> keys();
   std::uint64_t size();
 
  private:
