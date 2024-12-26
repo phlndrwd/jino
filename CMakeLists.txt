@@ -26,10 +26,46 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(nlohmann)
 
+FetchContent_Declare(cpplint
+  GIT_REPOSITORY "https://github.com/cpplint/cpplint.git"
+  GIT_TAG "2.0.0"
+)
+FetchContent_MakeAvailable(cpplint)
+
 include_directories(${CMAKE_SOURCE_DIR}/external/nlohmann-src/include/)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
-include(${CMAKE_SOURCE_DIR}/src/CMakeLists.txt)
-include(${CMAKE_SOURCE_DIR}/test/CMakeLists.txt)
-message(STATUS "Sources: ${JINO_SOURCES}")
+list(APPEND JINO_SOURCES
+  src/Constants.h
+  src/Datum.cpp
+  src/Datum.h
+  src/DatumBase.h
+  src/FileReader.cpp
+  src/FileReader.h
+  src/Parameters.cpp
+  src/Parameters.h
+)
+
+set(TEST_SOURCES
+  test/first.cpp
+)
+
+enable_testing()
+
+add_test(NAME coding_norms
+         COMMAND "${FETCHCONTENT_BASE_DIR}/cpplint-src/cpplint.py" --quiet --recursive
+                 ${PROJECT_SOURCE_DIR}/src
+                 ${PROJECT_SOURCE_DIR}/test)
+
+find_package(Threads REQUIRED)
+
+foreach(TEST_SOURCE ${TEST_SOURCES})
+  get_filename_component(EXECUTABLE_NAME ${TEST_SOURCE} NAME_WE)
+  add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE} ${JINO_SOURCES})
+  target_link_libraries(${EXECUTABLE_NAME} PRIVATE Threads::Threads)
+
+  add_test(NAME ${EXECUTABLE_NAME} COMMAND ${EXECUTABLE_NAME})
+endforeach()
+
+add_compile_options(-Wall -Wextra -Wpedantic)
