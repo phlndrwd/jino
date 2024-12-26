@@ -17,13 +17,16 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 file(COPY ${CMAKE_SOURCE_DIR}/input DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 include(FetchContent)
-FetchContent_Declare(nlohmann
-  GIT_REPOSITORY "git@github.com:nlohmann/json.git"
+
+set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/external/")
+FetchContent_Declare(
+  nlohmann
+  GIT_REPOSITORY "https://github.com/nlohmann/json.git"
   GIT_TAG "v3.11.3"
 )
-set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/external")
 FetchContent_MakeAvailable(nlohmann)
 
+include_directories(${CMAKE_SOURCE_DIR}/external/nlohmann-src/include/)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 

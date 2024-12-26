@@ -10,7 +10,7 @@
 enable_testing()
 
 FetchContent_Declare(cpplint
-  GIT_REPOSITORY "git@github.com:cpplint/cpplint.git"
+  GIT_REPOSITORY "https://github.com/cpplint/cpplint.git"
   GIT_TAG "2.0.0"
 )
 FetchContent_MakeAvailable(cpplint)
