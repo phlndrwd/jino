@@ -33,18 +33,21 @@ FetchContent_Declare(cpplint
 FetchContent_MakeAvailable(cpplint)
 
 include_directories(${CMAKE_SOURCE_DIR}/external/nlohmann-src/include/)
-include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_SOURCE_DIR}/include/jino)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
 list(APPEND JINO_SOURCES
-  src/Constants.h
   src/Datum.cpp
-  src/Datum.h
-  src/DatumBase.h
   src/FileReader.cpp
-  src/FileReader.h
   src/Parameters.cpp
-  src/Parameters.h
+)
+
+list(APPEND JINO_HEADERS
+  include/jino/Constants.h
+  include/jino/Datum.h
+  include/jino/DatumBase.h
+  include/jino/FileReader.h
+  include/jino/Parameters.h
 )
 
 set(TEST_SOURCES
@@ -62,7 +65,7 @@ find_package(Threads REQUIRED)
 
 foreach(TEST_SOURCE ${TEST_SOURCES})
   get_filename_component(EXECUTABLE_NAME ${TEST_SOURCE} NAME_WE)
-  add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE} ${JINO_SOURCES})
+  add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE} ${JINO_HEADERS} ${JINO_SOURCES})
   target_link_libraries(${EXECUTABLE_NAME} PRIVATE Threads::Threads)
 
   add_test(NAME ${EXECUTABLE_NAME} COMMAND ${EXECUTABLE_NAME})
