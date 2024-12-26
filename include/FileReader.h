@@ -14,7 +14,7 @@
 
 #include "nlohmann/json.hpp"
 
-#include "Parameters.h"
+#include "Data.h"
 
 using json = nlohmann::json;
 
@@ -24,12 +24,12 @@ class FileReader {
   FileReader();
 
   void read(std::string&, std::string&);
-  void getParams(jino::Parameters&);
+  void getParams(jino::Data&);
 
  private:
   template <typename T>
-  void setParam(jino::Parameters&, const std::string&, const T&);
-  void setParam(jino::Parameters&, const std::string&, const std::uint8_t, const nlohmann::json&);
+  void setParam(jino::Data&, const std::string&, const T&);
+  void setParam(jino::Data&, const std::string&, const std::uint8_t, const nlohmann::json&);
 };
 }  // namespace jino
 

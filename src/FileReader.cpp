@@ -49,7 +49,7 @@ void jino::FileReader::read(std::string& path, std::string& text) {
   }
 }
 
-void jino::FileReader::getParams(jino::Parameters& params) {
+void jino::FileReader::getParams(jino::Data& params) {
   std::string text;
   std::string paramsPath = consts::kInputPath + consts::kParamFile;
   read(paramsPath, text);
@@ -70,7 +70,7 @@ void jino::FileReader::getParams(jino::Parameters& params) {
   }
 }
 
-void jino::FileReader::setParam(Parameters& params, const std::string& paramName,
+void jino::FileReader::setParam(Data& params, const std::string& paramName,
                                const std::uint8_t paramType, const nlohmann::json& jsonValue) {
   switch (paramType) {
     case consts::eInt8: {
@@ -125,6 +125,6 @@ void jino::FileReader::setParam(Parameters& params, const std::string& paramName
 }
 
 template <typename T>
-void jino::FileReader::setParam(Parameters& params, const std::string& paramName, const T& value) {
+void jino::FileReader::setParam(Data& params, const std::string& paramName, const T& value) {
   params.setValue(paramName, value);
 }

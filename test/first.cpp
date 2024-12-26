@@ -10,12 +10,12 @@
 #include <iostream>
 
 #include "Constants.h"
+#include "Data.h"
 #include "FileReader.h"
-#include "Parameters.h"
 
 int main() {
   std::cout << "Reading parameters..." << std::endl;
-  jino::Parameters params;
+  jino::Data params;
   jino::FileReader fileReader;
   fileReader.getParams(params);
 

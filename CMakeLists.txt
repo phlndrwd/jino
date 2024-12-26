@@ -37,17 +37,17 @@ include_directories(${CMAKE_SOURCE_DIR}/include/)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
 list(APPEND JINO_SOURCES
+  src/Data.cpp
   src/Datum.cpp
   src/FileReader.cpp
-  src/Parameters.cpp
 )
 
 list(APPEND JINO_HEADERS
   include/Constants.h
+  include/Data.h
   include/Datum.h
   include/DatumBase.h
   include/FileReader.h
-  include/Parameters.h
 )
 
 set(TEST_SOURCES

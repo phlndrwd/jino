@@ -7,8 +7,8 @@
 * which can be obtained from https://opensource.org/license/bsd-3-clause/.    *
 ******************************************************************************/
 
-#ifndef SRC_PARAMETERS_H_
-#define SRC_PARAMETERS_H_
+#ifndef SRC_DATA_H_
+#define SRC_DATA_H_
 
 #include <map>
 #include <memory>
@@ -18,9 +18,9 @@
 #include "DatumBase.h"
 
 namespace jino {
-class Parameters {
+class Data {
  public:
-  Parameters();
+  Data();
 
   jino::DatumBase& operator[](const std::uint64_t index) {
     if (index >= consts::kParamNames.size()) {
@@ -67,4 +67,4 @@ class Parameters {
 };
 }  // namespace jino
 
-#endif  // SRC_PARAMETERS_H_
+#endif  // SRC_DATA_H_
