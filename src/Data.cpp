@@ -16,13 +16,46 @@
 
 jino::Data::Data() {}
 
-template <typename T>
-void jino::Data::setValue(const std::string& name, const T value) {
-  auto it = values_.find(name);
-  if (it == values_.end()) {
-    values_.insert({name, std::make_unique<Datum<T>>(value)});
+jino::DatumBase& jino::Data::operator[](const std::uint64_t index) {
+  if (index >= keys_.size()) {
+    throw std::out_of_range("Index out of range.");
+  }
+  return *values_[keys_.at(index)].get();
+}
+
+jino::DatumBase& jino::Data::operator[](const std::string& key) {
+  auto it = values_.find(key);
+  if (it != values_.end()) {
+    return *it->second.get();
   } else {
-    throw std::out_of_range("Parameter \"" + name + "\" alredy exists.");
+    throw std::out_of_range("Datum \"" + key + "\" not found.");
+  }
+}
+
+const jino::DatumBase& jino::Data::operator[](const std::uint64_t index) const {
+  if (index >= keys_.size()) {
+    throw std::out_of_range("Index out of range.");
+  }
+  return this->operator[](keys_.at(index));
+}
+
+const jino::DatumBase& jino::Data::operator[](const std::string& key) const {
+  auto it = values_.find(key);
+  if (it != values_.end()) {
+    return *it->second.get();
+  } else {
+    throw std::out_of_range("Datum \"" + key + "\" not found.");
+  }
+}
+
+template <typename T>
+void jino::Data::setValue(const std::string& key, const T value) {
+  auto it = values_.find(key);
+  if (it == values_.end()) {
+    keys_.push_back(key);
+    values_.insert({key, std::make_unique<Datum<T>>(value)});
+  } else {
+    throw std::out_of_range("Datum \"" + key + "\" alredy exists.");
   }
 }
 
@@ -67,14 +100,18 @@ template double jino::Data::getValue<double>(const std::string&) const;
 template long double jino::Data::getValue<long double>(const std::string&) const;
 template std::string jino::Data::getValue<std::string>(const std::string&) const;
 
-std::vector<std::string> jino::Data::keys() {
-  std::vector<std::string> keys;
-  for (auto const& [key, val] : values_) {
-    keys.push_back(key);
-  }
-  return keys;
+const std::vector<std::string>& jino::Data::keys() const {
+  return keys_;
 }
 
-std::uint64_t jino::Data::size() {
+std::uint64_t jino::Data::size() const {
   return values_.size();
+}
+
+void jino::Data::clear() {
+  for (auto& [key, valPtr] : values_) {
+    valPtr.reset();
+  }
+  values_.clear();
+  keys_.clear();
 }

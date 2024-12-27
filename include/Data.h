@@ -15,7 +15,6 @@
 #include <string>
 #include <vector>
 
-#include "Constants.h"
 #include "DatumBase.h"
 
 namespace jino {
@@ -23,37 +22,11 @@ class Data {
  public:
   Data();
 
-  jino::DatumBase& operator[](const std::uint64_t index) {
-    if (index >= consts::kParamNames.size()) {
-      throw std::out_of_range("Index out of range.");
-    }
-    return *values_[consts::kParamNames[index]].get();
-  }
+  jino::DatumBase& operator[](const std::uint64_t);
+  jino::DatumBase& operator[](const std::string&);
 
-  jino::DatumBase& operator[](const std::string& name) {
-    auto it = values_.find(name);
-    if (it != values_.end()) {
-      return *it->second.get();
-    } else {
-      throw std::out_of_range("Parameter \"" + name + "\" not found.");
-    }
-  }
-
-  const jino::DatumBase& operator[](const std::uint64_t index) const {
-    if (index >= consts::kParamNames.size()) {
-      throw std::out_of_range("Index out of range.");
-    }
-    return this->operator[](consts::kParamNames[index]);
-  }
-
-  const jino::DatumBase& operator[](const std::string& name) const {
-    auto it = values_.find(name);
-    if (it != values_.end()) {
-      return *it->second.get();
-    } else {
-      throw std::out_of_range("Parameter \"" + name + "\" not found.");
-    }
-  }
+  const jino::DatumBase& operator[](const std::uint64_t) const;
+  const jino::DatumBase& operator[](const std::string&) const;
 
   template <typename T>
   void setValue(const std::string&, const T);
@@ -61,10 +34,13 @@ class Data {
   template <typename T>
   T getValue(const std::string& key) const;
 
-  std::vector<std::string> keys();
-  std::uint64_t size();
+  const std::vector<std::string>& keys() const;
+  std::uint64_t size() const;
+
+  void clear();
 
  private:
+  std::vector<std::string> keys_;
   std::map<std::string, std::unique_ptr<jino::DatumBase>> values_;
 };
 }  // namespace jino

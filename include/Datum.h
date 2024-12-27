@@ -22,12 +22,6 @@ class Datum : public DatumBase {
 
   virtual ~Datum() = default;
 
-  Datum()                        = delete;
-  Datum(Datum&&)                 = delete;
-  Datum(const Datum&)            = delete;
-  Datum& operator=(Datum&&)      = delete;
-  Datum& operator=(const Datum&) = delete;
-
   const T getValue() const {
     return value_;
   }

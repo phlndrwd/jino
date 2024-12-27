@@ -18,11 +18,6 @@ class DatumBase {
   DatumBase() {}
   virtual ~DatumBase() = default;
 
-  DatumBase(DatumBase&&)                 = delete;
-  DatumBase(const DatumBase&)            = delete;
-  DatumBase& operator=(DatumBase&&)      = delete;
-  DatumBase& operator=(const DatumBase&) = delete;
-
   virtual const std::string getValueStr() const = 0;
 };
 }  // namespace jino
