@@ -7,6 +7,7 @@
 * which can be obtained from https://opensource.org/license/bsd-3-clause/.    *
 ******************************************************************************/
 
+#include <algorithm>
 #include <cassert>
 #include <iostream>
 #include <string>
@@ -26,30 +27,29 @@ std::uint8_t findValueInVector(std::vector<T> vec, T value) {
 }
 
 int main() {
-  std::cout << "Reading parameters..." << std::endl;
+  std::cout << "1. Testing file reading..." << std::endl;
   jino::Data params;
   jino::FileReader fileReader;
   fileReader.getParams(params);
 
-  const std::vector<std::string>& keys = params.keys();
-  assert(keys.size() == params.size());
+  std::cout << "2. Validating read data..." << std::endl;
+  assert(params.keys().size() == params.size());
   for (std::uint64_t i = 0; i < params.size(); i++) {
-    std::cout << keys.at(i) << jino::consts::kSeparator <<
-                               jino::consts::kParamNames.at(i) << std::endl;
-    assert(findValueInVector(keys, jino::consts::kParamNames.at(i)) == true);
-    std::cout << keys.at(i) << jino::consts::kSeparator << params[i].getValueStr() << std::endl;
+    assert(params.keyAt(i) == jino::consts::kParamNames.at(i));
+    static_cast<void>(params[i].getValueStr());
   }
 
-  std::uint64_t timeSteps = params.getValue<std::uint64_t>(jino::consts::kMaxTimeSteps);
-  std::uint64_t samplingRate = params.getValue<std::uint64_t>(jino::consts::kSamplingRate);
-  float yMin = params.getValue<float>(jino::consts::kYMin);
-  float yMax = params.getValue<float>(jino::consts::kYMax);
+  std::cout << "3. Testing data retrieval..." << std::endl;
+  static_cast<void>(params.getValue<std::uint64_t>(jino::consts::kMaxTimeSteps));
+  static_cast<void>(params.getValue<std::uint64_t>(jino::consts::kSamplingRate));
+  static_cast<void>(params.getValue<float>(jino::consts::kYMin));
+  static_cast<void>(params.getValue<float>(jino::consts::kYMax));
 
-  std::cout << jino::consts::kMaxTimeSteps << jino::consts::kSeparator << timeSteps << std::endl;
-  std::cout << jino::consts::kSamplingRate << jino::consts::kSeparator << samplingRate << std::endl;
-  std::cout << jino::consts::kYMin << jino::consts::kSeparator << yMin << std::endl;
-  std::cout << jino::consts::kYMax << jino::consts::kSeparator << yMax << std::endl;
+  std::cout << "4. Testing element erasure..." << std::endl;
+  params.erase(jino::consts::kSamplingRate);
+  const std::vector<std::string>& keys = params.keys();
+  assert(findValueInVector(keys, jino::consts::kSamplingRate) == false);
 
-  std::cout << "Done." << std::endl;
+  std::cout << "All Passed." << std::endl;
   return 0;
 }

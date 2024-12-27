@@ -32,11 +32,14 @@ class Data {
   void setValue(const std::string&, const T);
 
   template <typename T>
-  T getValue(const std::string& key) const;
+  T getValue(const std::string&) const;
 
+  const std::string& keyAt(const std::uint64_t) const;
   const std::vector<std::string>& keys() const;
+
   std::uint64_t size() const;
 
+  void erase(const std::string&);
   void clear();
 
  private:
