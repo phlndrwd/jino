@@ -9,6 +9,8 @@
 
 #include <cassert>
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include "Constants.h"
 #include "Data.h"
@@ -29,10 +31,11 @@ int main() {
   jino::FileReader fileReader;
   fileReader.getParams(params);
 
-  std::vector<std::string> keys = params.keys();
+  const std::vector<std::string>& keys = params.keys();
   assert(keys.size() == params.size());
   for (std::uint64_t i = 0; i < params.size(); i++) {
-    std::cout << keys.at(i) << jino::consts::kSeparator << jino::consts::kParamNames.at(i) << std::endl;
+    std::cout << keys.at(i) << jino::consts::kSeparator <<
+                               jino::consts::kParamNames.at(i) << std::endl;
     assert(findValueInVector(keys, jino::consts::kParamNames.at(i)) == true);
     std::cout << keys.at(i) << jino::consts::kSeparator << params[i].getValueStr() << std::endl;
   }
