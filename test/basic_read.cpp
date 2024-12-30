@@ -39,7 +39,7 @@ int main() {
   std::cout << "4. Testing element erasure..." << std::endl;
   params.erase(jino::consts::kSamplingRate);
   assert(params.contains(jino::consts::kSamplingRate) == false);
-
+  assert(params.keys().size() == params.size());
   std::cout << "All Passed." << std::endl;
   return 0;
 }
