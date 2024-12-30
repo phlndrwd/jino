@@ -17,15 +17,6 @@
 #include "Data.h"
 #include "FileReader.h"
 
-template<typename T>
-std::uint8_t findValueInVector(std::vector<T> vec, T value) {
-  if (std::find(vec.begin(), vec.end(), value) != vec.end()) {
-     return true;
-  } else {
-     return false;
-  }
-}
-
 int main() {
   std::cout << "1. Testing file reading..." << std::endl;
   jino::Data params;
@@ -47,8 +38,7 @@ int main() {
 
   std::cout << "4. Testing element erasure..." << std::endl;
   params.erase(jino::consts::kSamplingRate);
-  const std::vector<std::string>& keys = params.keys();
-  assert(findValueInVector(keys, jino::consts::kSamplingRate) == false);
+  assert(params.contains(jino::consts::kSamplingRate) == false);
 
   std::cout << "All Passed." << std::endl;
   return 0;

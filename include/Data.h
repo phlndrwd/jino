@@ -39,6 +39,8 @@ class Data {
 
   std::uint64_t size() const;
 
+  std::uint8_t contains(const std::string&);
+
   void erase(const std::string&);
   void clear();
 

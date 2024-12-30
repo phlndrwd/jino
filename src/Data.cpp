@@ -117,6 +117,15 @@ std::uint64_t jino::Data::size() const {
   return values_.size();
 }
 
+std::uint8_t jino::Data::contains(const std::string& key) {
+  auto it = values_.find(key);
+  if (it != values_.end()) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 void jino::Data::erase(const std::string& key) {
   auto it = values_.find(key);
   if (it != values_.end()) {
