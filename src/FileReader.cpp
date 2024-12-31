@@ -27,7 +27,8 @@ std::streamsize getFileSize(const std::string& filePath) {
 
 }  // Anonymous namespace
 
-jino::FileReader::FileReader() : file_("/home/philju/Downloads/madis-hydro.nc", netCDF::NcFile::read) {}
+jino::FileReader::FileReader() :
+        file_("/home/philju/Downloads/madis-hydro.nc", netCDF::NcFile::read) {}
 
 void jino::FileReader::read(std::string& path, std::string& text) {
   try {

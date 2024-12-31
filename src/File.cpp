@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 * JSON In NetCDF Out                                                          *
 *                                                                             *
 * (C) Copyright 2024, Phil Underwood. All rights reserved.                    *
@@ -9,9 +9,12 @@
 
 #include "File.h"
 
-#include <memory>
 #include <netcdf>
+
+#include <iostream>
+#include <memory>
 #include <stdexcept>
+#include <string>
 
 jino::File::File(const std::string& path, const netCDF::NcFile::FileMode mode) :
                  path_(path), mode_(mode) {
