@@ -16,6 +16,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 
 file(COPY ${CMAKE_SOURCE_DIR}/input DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
+## Download required files
 include(FetchContent)
 
 set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/external/")
@@ -36,9 +37,26 @@ include_directories(${CMAKE_SOURCE_DIR}/external/nlohmann-src/include/)
 include_directories(${CMAKE_SOURCE_DIR}/include/)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
-set(NetCDF_CXX_INCLUDE_DIR "/usr/include")
-set(NetCDF_CXX_LIBRARIES "/usr/lib/x86_64-linux-gnu/libnetcdf_c++4.so")
+## Setup and configure NetCDF-C++ library
+set(INCLUDE_PATH "/usr/include")
+if(IS_DIRECTORY ${INCLUDE_PATH})
+  if(EXISTS ${INCLUDE_PATH}/netcdf)
+    set(NetCDF_CXX_INCLUDE_DIR ${INCLUDE_PATH})
+  else()
+    message(FATAL_ERROR "File not found: ${INCLUDE_PATH}/netcdf")
+  endif()
+else()
+  message(FATAL_ERROR "Path not found: ${INCLUDE_PATH}")
+endif()
 
+set(NetCDF_CXX_LIB_FILE "/usr/lib/x86_64-linux-gnu/libnetcdf_c++4.so")
+if(EXISTS ${NetCDF_CXX_LIB_FILE})
+  set(NetCDF_CXX_LIBRARIES ${NetCDF_CXX_LIB_FILE})
+else()
+  message(FATAL_ERROR "File not found: ${NetCDF_CXX_LIB_FILE}")
+endif()
+
+## Add local source and header files
 list(APPEND JINO_SOURCES
   src/Data.cpp
   src/Datum.cpp
@@ -59,11 +77,13 @@ set(TEST_SOURCES
   test/basic_read.cpp
 )
 
+## Create library
 find_package(Threads REQUIRED)
 add_library(jino STATIC ${JINO_SOURCES})
 target_include_directories(jino PUBLIC ${NetCDF_INCLUDE_DIRS} ${NetCDF_CXX_INCLUDE_DIR})
 target_link_libraries(jino PUBLIC Threads::Threads ${NetCDF_CXX_LIBRARIES})
 
+## Create tests
 enable_testing()
 add_test(NAME coding_norms
          COMMAND "${FETCHCONTENT_BASE_DIR}/cpplint-src/cpplint.py" --quiet --recursive
