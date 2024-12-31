@@ -36,9 +36,13 @@ include_directories(${CMAKE_SOURCE_DIR}/external/nlohmann-src/include/)
 include_directories(${CMAKE_SOURCE_DIR}/include/)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
+set(NetCDF_CXX_INCLUDE_DIR "/usr/include")
+set(NetCDF_CXX_LIBRARIES "/usr/lib/x86_64-linux-gnu/libnetcdf_c++4.so")
+
 list(APPEND JINO_SOURCES
   src/Data.cpp
   src/Datum.cpp
+  src/File.cpp
   src/FileReader.cpp
 )
 
@@ -47,6 +51,7 @@ list(APPEND JINO_HEADERS
   include/Data.h
   include/Datum.h
   include/DatumBase.h
+  include/File.h
   include/FileReader.h
 )
 
@@ -56,8 +61,8 @@ set(TEST_SOURCES
 
 find_package(Threads REQUIRED)
 add_library(jino STATIC ${JINO_SOURCES})
-target_include_directories(jino PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(jino PUBLIC Threads::Threads)
+target_include_directories(jino PUBLIC ${NetCDF_INCLUDE_DIRS} ${NetCDF_CXX_INCLUDE_DIR})
+target_link_libraries(jino PUBLIC Threads::Threads ${NetCDF_CXX_LIBRARIES})
 
 enable_testing()
 add_test(NAME coding_norms

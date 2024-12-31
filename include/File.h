@@ -7,33 +7,37 @@
 * which can be obtained from https://opensource.org/license/bsd-3-clause/.    *
 ******************************************************************************/
 
-#ifndef SRC_FILEREADER_H_
-#define SRC_FILEREADER_H_
+#ifndef SRC_FILE_H_
+#define SRC_FILE_H_
 
+#include <netcdf>
+
+#include <memory>
 #include <string>
 
-#include "nlohmann/json.hpp"
-
-#include "Data.h"
-#include "File.h"
-
-using json = nlohmann::json;
-
 namespace jino {
-class FileReader {
+class File {
  public:
-  FileReader();
+  File(const std::string&, const netCDF::NcFile::FileMode);
+  ~File();
 
-  void read(std::string&, std::string&);
-  void getParams(jino::Data&);
+  File()                       = delete;
+  File(File&&)                 = delete;
+  File(const File&)            = delete;
+  File& operator=(File&&)      = delete;
+  File& operator=(const File&) = delete;
+
+  void close();
 
  private:
-  template <typename T>
-  void setParam(jino::Data&, const std::string&, const T&);
-  void setParam(jino::Data&, const std::string&, const std::uint8_t, const nlohmann::json&);
+  netCDF::NcFile& getFile();
 
-  File file_;
+  std::unique_ptr<netCDF::NcFile> file_;
+
+  std::string path_;
+  netCDF::NcFile::FileMode mode_;
 };
-}  // namespace jino
+}  // namespace monio
 
-#endif  // SRC_FILEREADER_H_
+#endif  // SRC_FILE_H_
+
