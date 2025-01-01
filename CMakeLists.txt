@@ -77,6 +77,7 @@ list(APPEND JINO_HEADERS
 
 set(TEST_SOURCES
   test/basic_read.cpp
+  test/buffer_test.cpp
 )
 
 ## Create library

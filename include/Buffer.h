@@ -24,10 +24,16 @@ class Buffer {
   T& at(const std::uint64_t);
   const T& at(const std::uint64_t) const;
 
+  T& set();
+  const T& get();
+
   std::uint64_t size();
 
  private:
   std::vector<T> buffer_;
+
+  std::uint64_t readIndex_;
+  std::uint64_t writeIndex_;
 };
 }  // namespace jino
 

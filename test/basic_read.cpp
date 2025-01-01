@@ -31,7 +31,7 @@ int main() {
 
   std::cout << "3. Testing data retrieval..." << std::endl;
   static_cast<void>(params.getValue<std::uint64_t>(jino::consts::kMaxTimeSteps));
-  std::uint64_t samplingRate = params.getValue<std::uint64_t>(jino::consts::kSamplingRate);
+  const std::uint64_t samplingRate = params.getValue<std::uint64_t>(jino::consts::kSamplingRate);
 
   static_cast<void>(params.getValue<float>(jino::consts::kYMin));
   static_cast<void>(params.getValue<float>(jino::consts::kYMax));
