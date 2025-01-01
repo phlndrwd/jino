@@ -58,6 +58,7 @@ endif()
 
 ## Add local source and header files
 list(APPEND JINO_SOURCES
+  src/Buffer.cpp
   src/Data.cpp
   src/Datum.cpp
   src/File.cpp
@@ -65,6 +66,7 @@ list(APPEND JINO_SOURCES
 )
 
 list(APPEND JINO_HEADERS
+  include/Buffer.h
   include/Constants.h
   include/Data.h
   include/Datum.h

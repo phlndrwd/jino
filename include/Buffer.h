@@ -7,39 +7,28 @@
 * which can be obtained from https://opensource.org/license/bsd-3-clause/.    *
 ******************************************************************************/
 
-#ifndef SRC_DATUM_H_
-#define SRC_DATUM_H_
+#ifndef SRC_BUFFER_H_
+#define SRC_BUFFER_H_
 
-#include <string>
-
-#include "DatumBase.h"
+#include <cstdint>
+#include <vector>
 
 namespace jino {
 template<class T>
-class Datum : public DatumBase {
+class Buffer {
  public:
-  explicit Datum(const T);
-  virtual ~Datum() = default;
+  explicit Buffer(const std::uint64_t);
 
-  Datum() = delete;
+  Buffer() = delete;
 
-  const T getValue() const {
-    return value_;
-  }
+  T& at(const std::uint64_t);
+  const T& at(const std::uint64_t) const;
 
-  T getValue() {
-    return value_;
-  }
-
-  const std::string getValueStr() const;
-
-  void setValue(const T value) {
-    value_ = value;
-  }
+  std::uint64_t size();
 
  private:
-  T value_;
+  std::vector<T> buffer_;
 };
 }  // namespace jino
 
-#endif   // SRC_DATUM_H_
+#endif // SRC_BUFFER_H_

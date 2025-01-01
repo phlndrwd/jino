@@ -11,6 +11,7 @@
 #include <iostream>
 #include <vector>
 
+#include "Buffer.h"
 #include "Constants.h"
 #include "Data.h"
 #include "FileReader.h"
@@ -30,7 +31,8 @@ int main() {
 
   std::cout << "3. Testing data retrieval..." << std::endl;
   static_cast<void>(params.getValue<std::uint64_t>(jino::consts::kMaxTimeSteps));
-  static_cast<void>(params.getValue<std::uint64_t>(jino::consts::kSamplingRate));
+  std::uint64_t samplingRate = params.getValue<std::uint64_t>(jino::consts::kSamplingRate);
+
   static_cast<void>(params.getValue<float>(jino::consts::kYMin));
   static_cast<void>(params.getValue<float>(jino::consts::kYMax));
 
@@ -38,6 +40,14 @@ int main() {
   params.erase(jino::consts::kSamplingRate);
   assert(params.contains(jino::consts::kSamplingRate) == false);
   assert(params.keys().size() == params.size());
+
+  std::cout << "5. Testing buffer creation..." << std::endl;
+  jino::Buffer<std::int64_t> buffer(samplingRate);
+  assert(buffer.size() == samplingRate);
+  for (std::uint64_t i = 0; i < samplingRate; ++i) {
+    buffer.at(i) = i;
+  }
+  assert(buffer.at(samplingRate - 1) == samplingRate - 1);
   std::cout << "All Passed." << std::endl;
   return 0;
 }

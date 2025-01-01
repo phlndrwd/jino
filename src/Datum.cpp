@@ -12,18 +12,20 @@
 #include <cstdint>
 #include <string>
 
-template<> jino::Datum<std::int8_t>::Datum(const std::int8_t value): value_(value) {}
-template<> jino::Datum<std::int16_t>::Datum(const std::int16_t value): value_(value) {}
-template<> jino::Datum<std::int32_t>::Datum(const std::int32_t value): value_(value) {}
-template<> jino::Datum<std::int64_t>::Datum(const std::int64_t value): value_(value) {}
-template<> jino::Datum<std::uint8_t>::Datum(const std::uint8_t value): value_(value) {}
-template<> jino::Datum<std::uint16_t>::Datum(const std::uint16_t value): value_(value) {}
-template<> jino::Datum<std::uint32_t>::Datum(const std::uint32_t value): value_(value) {}
-template<> jino::Datum<std::uint64_t>::Datum(const std::uint64_t value): value_(value) {}
-template<> jino::Datum<float>::Datum(const float value): value_(value) {}
-template<> jino::Datum<double>::Datum(const double value): value_(value) {}
-template<> jino::Datum<long double>::Datum(const long double value): value_(value) {}
-template<> jino::Datum<std::string>::Datum(const std::string value): value_(value) {}
+template<class T> jino::Datum<T>::Datum(const T value): value_(value) {}
+
+template class jino::Datum<std::int8_t>;
+template class jino::Datum<std::int16_t>;
+template class jino::Datum<std::int32_t>;
+template class jino::Datum<std::int64_t>;
+template class jino::Datum<std::uint8_t>;
+template class jino::Datum<std::uint16_t>;
+template class jino::Datum<std::uint32_t>;
+template class jino::Datum<std::uint64_t>;
+template class jino::Datum<float>;
+template class jino::Datum<double>;
+template class jino::Datum<long double>;
+template class jino::Datum<std::string>;
 
 template<class T>
 const std::string jino::Datum<T>::getValueStr() const {
