@@ -7,36 +7,19 @@
 * which can be obtained from https://opensource.org/license/bsd-3-clause/.    *
 ******************************************************************************/
 
-#ifndef INCLUDE_BUFFER_H_
-#define INCLUDE_BUFFER_H_
-
-#include "BufferBase.h"
+#ifndef INCLUDE_BUFFERBASE_H_
+#define INCLUDE_BUFFERBASE_H_
 
 #include <cstdint>
-#include <vector>
 
 namespace jino {
-template<class T>
-class Buffer : public BufferBase {
+class BufferBase {
  public:
-  explicit Buffer(const std::uint64_t);
+  BufferBase() {}
+  virtual ~BufferBase() = default;
 
-  Buffer() = delete;
-
-  T& at(const std::uint64_t);
-  const T& at(const std::uint64_t) const;
-
-  T& setNext();
-  const T& getNext();
-
-  std::uint64_t size() const override;
-
- private:
-  std::vector<T> buffer_;
-
-  std::uint64_t readIndex_;
-  std::uint64_t writeIndex_;
+  virtual std::uint64_t size() const = 0;
 };
 }  // namespace jino
 
-#endif // INCLUDE_BUFFER_H_
+#endif  // INCLUDE_BUFFERBASE_H_

@@ -7,8 +7,8 @@
 * which can be obtained from https://opensource.org/license/bsd-3-clause/.    *
 ******************************************************************************/
 
-#ifndef SRC_FILEREADER_H_
-#define SRC_FILEREADER_H_
+#ifndef INCLUDE_FILEREADER_H_
+#define INCLUDE_FILEREADER_H_
 
 #include <string>
 
@@ -36,4 +36,4 @@ class FileReader {
 };
 }  // namespace jino
 
-#endif  // SRC_FILEREADER_H_
+#endif  // INCLUDE_FILEREADER_H_

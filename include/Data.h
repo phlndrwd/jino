@@ -7,8 +7,8 @@
 * which can be obtained from https://opensource.org/license/bsd-3-clause/.    *
 ******************************************************************************/
 
-#ifndef SRC_DATA_H_
-#define SRC_DATA_H_
+#ifndef INCLUDE_DATA_H_
+#define INCLUDE_DATA_H_
 
 #include <map>
 #include <memory>
@@ -50,4 +50,4 @@ class Data {
 };
 }  // namespace jino
 
-#endif  // SRC_DATA_H_
+#endif  // INCLUDE_DATA_H_

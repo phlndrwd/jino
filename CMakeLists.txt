@@ -59,6 +59,7 @@ endif()
 ## Add local source and header files
 list(APPEND JINO_SOURCES
   src/Buffer.cpp
+  src/Buffers.cpp
   src/Data.cpp
   src/Datum.cpp
   src/File.cpp
@@ -67,6 +68,8 @@ list(APPEND JINO_SOURCES
 
 list(APPEND JINO_HEADERS
   include/Buffer.h
+  include/BufferBase.h
+  include/Buffers.h
   include/Constants.h
   include/Data.h
   include/Datum.h
@@ -95,7 +98,8 @@ add_test(NAME coding_norms
 
 foreach(TEST_SOURCE ${TEST_SOURCES})
   get_filename_component(EXECUTABLE_NAME ${TEST_SOURCE} NAME_WE)
-  add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE})
+  add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE}
+    src/Buffers.cpp)
   target_link_libraries(${EXECUTABLE_NAME} PRIVATE jino)
   add_test(NAME ${EXECUTABLE_NAME} COMMAND ${EXECUTABLE_NAME})
 endforeach()

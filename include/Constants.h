@@ -7,8 +7,8 @@
 * which can be obtained from https://opensource.org/license/bsd-3-clause/.    *
 ******************************************************************************/
 
-#ifndef SRC_CONSTANTS_H_
-#define SRC_CONSTANTS_H_
+#ifndef INCLUDE_CONSTANTS_H_
+#define INCLUDE_CONSTANTS_H_
 
 #include <array>
 #include <cstdint>
@@ -69,4 +69,4 @@ const std::array<std::uint8_t, eNumberOfParams> kParamTypes = {
 }  // namespace consts
 }  // namespace jino
 
-#endif  // SRC_CONSTANTS_H_
+#endif  // INCLUDE_CONSTANTS_H_

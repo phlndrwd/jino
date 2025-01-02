@@ -55,12 +55,12 @@ int main() {
   for (std::uint64_t t = 0; t < maxTimeSteps; ++t) {
     y = yMin + t * yInc;
     if (t % samplingRate == 0) {
-      buffer.set() = y;
+      buffer.setNext() = y;
     }
   }
 
   for (std::uint64_t i = 0; i < buffer.size(); ++i) {
-    std::cout << buffer.get() << std::endl;
+    std::cout << buffer.getNext() << std::endl;
   }
 
   return 0;

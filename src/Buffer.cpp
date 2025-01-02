@@ -42,7 +42,7 @@ template<class T> const T& jino::Buffer<T>::at(const std::uint64_t index) const 
   return buffer_.at(index);
 }
 
-template<class T> T& jino::Buffer<T>::set() {
+template<class T> T& jino::Buffer<T>::setNext() {
   if (writeIndex_ >= buffer_.size()) {
     throw std::out_of_range("WriteIndex out of range.");
   }
@@ -51,7 +51,7 @@ template<class T> T& jino::Buffer<T>::set() {
   return buffer_.at(i);
 }
 
-template<class T> const T& jino::Buffer<T>::get() {
+template<class T> const T& jino::Buffer<T>::getNext() {
   if (readIndex_ >= buffer_.size() && readIndex_ <= writeIndex_) {
     throw std::out_of_range("ReadIndex out of range.");
   }
@@ -61,6 +61,6 @@ template<class T> const T& jino::Buffer<T>::get() {
 }
 
 template<class T>
-std::uint64_t jino::Buffer<T>::size() {
+std::uint64_t jino::Buffer<T>::size() const {
   return buffer_.size();
 }

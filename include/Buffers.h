@@ -7,36 +7,36 @@
 * which can be obtained from https://opensource.org/license/bsd-3-clause/.    *
 ******************************************************************************/
 
-#ifndef INCLUDE_BUFFER_H_
-#define INCLUDE_BUFFER_H_
+#ifndef INCLUDE_BUFFERS_H_
+#define INCLUDE_BUFFERS_H_
 
+#include "Buffer.h"
 #include "BufferBase.h"
 
-#include <cstdint>
-#include <vector>
+#include <map>
+#include <memory>
+#include <string>
 
 namespace jino {
-template<class T>
-class Buffer : public BufferBase {
+class Buffers {
  public:
-  explicit Buffer(const std::uint64_t);
+  Buffers(Buffers&&)                 = delete;
+  Buffers(const Buffers&)            = delete;
+  Buffers& operator=(Buffers&&)      = delete;
+  Buffers& operator=(const Buffers&) = delete;
 
-  Buffer() = delete;
+  static Buffers& get();
 
-  T& at(const std::uint64_t);
-  const T& at(const std::uint64_t) const;
-
-  T& setNext();
-  const T& getNext();
-
-  std::uint64_t size() const override;
+  template<class T>
+  Buffer<T> newBuffer(const std::string&, const std::uint64_t);
 
  private:
-  std::vector<T> buffer_;
+  Buffers() = default;
+  ~Buffers() = default;
 
-  std::uint64_t readIndex_;
-  std::uint64_t writeIndex_;
+  std::map<std::string, std::unique_ptr<jino::BufferBase>> buffers_;
 };
+
 }  // namespace jino
 
-#endif // INCLUDE_BUFFER_H_
+#endif // INCLUDE_BUFFERS_H_

@@ -7,8 +7,8 @@
 * which can be obtained from https://opensource.org/license/bsd-3-clause/.    *
 ******************************************************************************/
 
-#ifndef SRC_DATUMBASE_H_
-#define SRC_DATUMBASE_H_
+#ifndef INCLUDE_DATUMBASE_H_
+#define INCLUDE_DATUMBASE_H_
 
 #include <string>
 
@@ -22,4 +22,4 @@ class DatumBase {
 };
 }  // namespace jino
 
-#endif  // SRC_DATUMBASE_H_
+#endif  // INCLUDE_DATUMBASE_H_

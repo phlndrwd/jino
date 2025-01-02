@@ -7,8 +7,8 @@
 * which can be obtained from https://opensource.org/license/bsd-3-clause/.    *
 ******************************************************************************/
 
-#ifndef SRC_FILE_H_
-#define SRC_FILE_H_
+#ifndef INCLUDE_FILE_H_
+#define INCLUDE_FILE_H_
 
 #include <netcdf>
 
@@ -39,5 +39,5 @@ class File {
 };
 }  // namespace monio
 
-#endif  // SRC_FILE_H_
+#endif  // INCLUDE_FILE_H_
 
