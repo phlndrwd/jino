@@ -59,10 +59,8 @@ int main() {
   const std::uint64_t dataSize = divide(maxTimeSteps, samplingRate);
 
   jino::Buffer<double> buffer = jino::Buffers::get().newBuffer<double>(dataSize);
-
-  long double y;
   for (std::uint64_t t = 0; t < maxTimeSteps; ++t) {
-    y = yMin + t * yInc;
+    long double y = yMin + t * yInc;
     if (t % samplingRate == 0) {
       buffer.setNext() = y;
     }
