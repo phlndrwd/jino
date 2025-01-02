@@ -16,12 +16,16 @@
 **********************************************************************************************/
 
 #include "Buffer.h"
+#include "Buffers.h"
 
 #include <stdexcept>
 #include <string>
 
 template <class T>
-jino::Buffer<T>::Buffer(const std::uint64_t size) : buffer_(size), readIndex_(0), writeIndex_(0) {}
+jino::Buffer<T>::Buffer(const std::uint64_t size, Buffers* const parent) :
+                 parent_(parent), buffer_(size), readIndex_(0), writeIndex_(0) {
+  parent_->attach(this);
+}
 
 template class jino::Buffer<std::int8_t>;
 template class jino::Buffer<std::int16_t>;
@@ -35,6 +39,12 @@ template class jino::Buffer<float>;
 template class jino::Buffer<double>;
 template class jino::Buffer<long double>;
 template class jino::Buffer<std::string>;
+
+template <class T>
+jino::Buffer<T>::~Buffer() {
+  parent_->detach(this);
+  buffer_.clear();
+}
 
 template<class T> T& jino::Buffer<T>::at(const std::uint64_t index) {
   if (index >= buffer_.size()) {

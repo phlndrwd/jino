@@ -24,10 +24,13 @@
 #include <vector>
 
 namespace jino {
+class Buffers;
+
 template<class T>
 class Buffer : public BufferBase {
  public:
-  explicit Buffer(const std::uint64_t);
+  explicit Buffer(const std::uint64_t, Buffers* const);
+  ~Buffer();
 
   Buffer() = delete;
 
@@ -40,6 +43,7 @@ class Buffer : public BufferBase {
   std::uint64_t size() const override;
 
  private:
+  Buffers* const parent_;
   std::vector<T> buffer_;
 
   std::uint64_t readIndex_;

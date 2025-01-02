@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "Buffer.h"
+#include "Buffers.h"
 #include "Constants.h"
 #include "Data.h"
 #include "FileReader.h"
@@ -50,7 +51,9 @@ int main() {
   assert(params.keys().size() == params.size());
 
   std::cout << "5. Testing buffer creation..." << std::endl;
-  jino::Buffer<std::int64_t> buffer(samplingRate);
+
+  jino::Buffer<std::int64_t> buffer =
+                             jino::Buffers::get().newBuffer<std::int64_t>("test", samplingRate);
   assert(buffer.size() == samplingRate);
   for (std::uint64_t i = 0; i < samplingRate; ++i) {
     buffer.at(i) = i;

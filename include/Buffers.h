@@ -21,9 +21,8 @@
 #include "Buffer.h"
 #include "BufferBase.h"
 
-#include <map>
-#include <memory>
 #include <string>
+#include <vector>
 
 namespace jino {
 class Buffers {
@@ -35,6 +34,9 @@ class Buffers {
 
   static Buffers& get();
 
+  void attach(BufferBase*);
+  void detach(BufferBase*);
+
   template<class T>
   Buffer<T> newBuffer(const std::string&, const std::uint64_t);
 
@@ -42,7 +44,7 @@ class Buffers {
   Buffers() = default;
   ~Buffers() = default;
 
-  std::map<std::string, std::unique_ptr<jino::BufferBase>> buffers_;
+  std::vector<BufferBase*> buffers_;
 };
 
 }  // namespace jino

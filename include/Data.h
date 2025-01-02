@@ -54,7 +54,7 @@ class Data {
 
  private:
   std::vector<std::string> keys_;
-  std::map<std::string, std::unique_ptr<jino::DatumBase>> values_;
+  std::map<std::string, std::unique_ptr<DatumBase>> values_;
 };
 }  // namespace jino
 

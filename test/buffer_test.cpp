@@ -18,6 +18,7 @@
 #include <iostream>
 
 #include "Buffer.h"
+#include "Buffers.h"
 #include "Constants.h"
 #include "Data.h"
 #include "FileReader.h"
@@ -57,7 +58,7 @@ int main() {
   const long double yInc = calcIncrement(yMin, yMax, maxTimeSteps);
   const std::uint64_t dataSize = divide(maxTimeSteps, samplingRate);
 
-  jino::Buffer<double> buffer(dataSize);
+  jino::Buffer<double> buffer = jino::Buffers::get().newBuffer<double>("y", dataSize);
 
   long double y;
   for (std::uint64_t t = 0; t < maxTimeSteps; ++t) {
