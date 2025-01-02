@@ -71,7 +71,7 @@ list(APPEND JINO_SOURCES
   src/Data.cpp
   src/Datum.cpp
   src/File.cpp
-  src/FileReader.cpp
+  src/ParamsReader.cpp
 )
 
 list(APPEND JINO_HEADERS
@@ -83,7 +83,7 @@ list(APPEND JINO_HEADERS
   include/Datum.h
   include/DatumBase.h
   include/File.h
-  include/FileReader.h
+  include/ParamsReader.h
 )
 
 set(TEST_SOURCES

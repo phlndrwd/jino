@@ -28,19 +28,17 @@
 using json = nlohmann::json;
 
 namespace jino {
-class FileReader {
+class ParamsReader {
  public:
-  FileReader();
+  ParamsReader() = default;
 
-  void read(std::string&, std::string&);
-  void getParams(jino::Data&);
+  void readText(std::string&, std::string&);
+  void read(jino::Data&);
 
  private:
   template <typename T>
   void setParam(jino::Data&, const std::string&, const T&);
   void setParam(jino::Data&, const std::string&, const std::uint8_t, const nlohmann::json&);
-
-  File file_;
 };
 }  // namespace jino
 

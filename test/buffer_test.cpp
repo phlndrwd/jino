@@ -15,13 +15,11 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#include <iostream>
-
 #include "Buffer.h"
 #include "Buffers.h"
 #include "Constants.h"
 #include "Data.h"
-#include "FileReader.h"
+#include "ParamsReader.h"
 
 long double calcIncrement(const float min, const float max, const std::uint64_t timeSteps) {
   if (min > max) {
@@ -46,8 +44,8 @@ std::uint64_t divide(const std::uint64_t numerator, const std::uint64_t denomina
 
 int main() {
   jino::Data params;
-  jino::FileReader fileReader;
-  fileReader.getParams(params);
+  jino::ParamsReader paramsReader;
+  paramsReader.read(params);
 
   const std::uint64_t maxTimeSteps = params.getValue<std::uint64_t>(jino::consts::kMaxTimeSteps);
   const std::uint64_t samplingRate = params.getValue<std::uint64_t>(jino::consts::kSamplingRate);
@@ -56,13 +54,15 @@ int main() {
   const long double yMax = params.getValue<float>(jino::consts::kYMax);
 
   const long double yInc = calcIncrement(yMin, yMax, maxTimeSteps);
-  const std::uint64_t dataSize = divide(maxTimeSteps, samplingRate);
+  const std::uint64_t dataSize = divide(maxTimeSteps, samplingRate) + 1;
 
-  jino::Buffer<double> buffer = jino::Buffers::get().newBuffer<double>(dataSize);
-  for (std::uint64_t t = 0; t < maxTimeSteps; ++t) {
+  jino::Buffer<double> yBuffer = jino::Buffers::get().newBuffer<double>(dataSize);
+  jino::Buffer<std::uint64_t> tBuffer = jino::Buffers::get().newBuffer<std::uint64_t>(dataSize);
+  for (std::uint64_t t = 0; t <= maxTimeSteps; ++t) {
     long double y = yMin + t * yInc;
     if (t % samplingRate == 0) {
-      buffer.setNext() = y;
+      yBuffer.setNext() = y;
+      tBuffer.setNext() = t;
     }
   }
   jino::Buffers::get().print();

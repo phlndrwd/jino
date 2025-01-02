@@ -23,13 +23,13 @@
 #include "Buffers.h"
 #include "Constants.h"
 #include "Data.h"
-#include "FileReader.h"
+#include "ParamsReader.h"
 
 int main() {
   std::cout << "1. Testing file reading..." << std::endl;
   jino::Data params;
-  jino::FileReader fileReader;
-  fileReader.getParams(params);
+  jino::ParamsReader paramsReader;
+  paramsReader.read(params);
 
   std::cout << "2. Validating read data..." << std::endl;
   assert(params.keys().size() == params.size());

@@ -15,7 +15,7 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#include "FileReader.h"
+#include "ParamsReader.h"
 
 #include <fstream>
 #include <iostream>
@@ -24,7 +24,6 @@
 #include "Constants.h"
 
 namespace {
-
 std::streamsize getFileSize(const std::string& filePath) {
   std::ifstream file(filePath, std::ios::binary | std::ios::ate);
   if (!file) {
@@ -32,13 +31,9 @@ std::streamsize getFileSize(const std::string& filePath) {
   }
   return file.tellg();
 }
-
 }  // Anonymous namespace
 
-jino::FileReader::FileReader() :
-        file_("/home/philju/Downloads/madis-hydro.nc", netCDF::NcFile::read) {}
-
-void jino::FileReader::read(std::string& path, std::string& text) {
+void jino::ParamsReader::readText(std::string& path, std::string& text) {
   try {
     std::ifstream fileIn(path);
     fileIn.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -58,10 +53,10 @@ void jino::FileReader::read(std::string& path, std::string& text) {
   }
 }
 
-void jino::FileReader::getParams(jino::Data& params) {
+void jino::ParamsReader::read(jino::Data& params) {
   std::string text;
-  std::string paramsPath = consts::kInputPath + consts::kParamFile;
-  read(paramsPath, text);
+  std::string path = consts::kInputPath + consts::kParamFile;
+  readText(path, text);
   try {
     json jsonData = json::parse(text);
     for (std::uint64_t i = 0; i < consts::kParamNames.size(); ++i) {
@@ -79,7 +74,7 @@ void jino::FileReader::getParams(jino::Data& params) {
   }
 }
 
-void jino::FileReader::setParam(Data& params, const std::string& paramName,
+void jino::ParamsReader::setParam(Data& params, const std::string& paramName,
                                const std::uint8_t paramType, const nlohmann::json& jsonValue) {
   switch (paramType) {
     case consts::eInt8: {
@@ -134,6 +129,6 @@ void jino::FileReader::setParam(Data& params, const std::string& paramName,
 }
 
 template <typename T>
-void jino::FileReader::setParam(Data& params, const std::string& paramName, const T& value) {
+void jino::ParamsReader::setParam(Data& params, const std::string& paramName, const T& value) {
   params.setValue(paramName, value);
 }
