@@ -18,6 +18,7 @@
 #include "Buffers.h"
 
 #include <algorithm>
+#include <string>
 
 jino::Buffers& jino::Buffers::get() {
   static Buffers this_;
