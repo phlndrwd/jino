@@ -18,6 +18,7 @@
 #include "Buffer.h"
 #include "Buffers.h"
 
+#include <iostream>
 #include <stdexcept>
 #include <string>
 
@@ -81,4 +82,11 @@ template<class T> const T& jino::Buffer<T>::getNext() {
 template<class T>
 std::uint64_t jino::Buffer<T>::size() const {
   return buffer_.size();
+}
+
+template<class T>
+void jino::Buffer<T>::print() {
+  for (std::uint64_t i = 0; i < size(); ++i) {
+    std::cout << getNext() << std::endl;
+  }
 }

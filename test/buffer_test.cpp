@@ -65,10 +65,7 @@ int main() {
       buffer.setNext() = y;
     }
   }
-
-  for (std::uint64_t i = 0; i < buffer.size(); ++i) {
-    std::cout << buffer.getNext() << std::endl;
-  }
+  jino::Buffers::get().print();
 
   return 0;
 }

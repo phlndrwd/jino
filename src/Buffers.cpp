@@ -18,11 +18,24 @@
 #include "Buffers.h"
 
 #include <algorithm>
+#include <iostream>
+#include <stdexcept>
 #include <string>
 
 jino::Buffers& jino::Buffers::get() {
   static Buffers this_;
   return this_;
+}
+
+void jino::Buffers::attach(BufferBase* buffer) {
+  buffers_.push_back(buffer);
+}
+
+void jino::Buffers::detach(BufferBase* buffer) {
+  auto it = std::find(buffers_.begin(), buffers_.end(), buffer);
+  if (it != buffers_.end()) {
+    buffers_.erase(it);
+  }
 }
 
 template<class T>
@@ -43,13 +56,12 @@ template jino::Buffer<double> jino::Buffers::newBuffer(const std::uint64_t);
 template jino::Buffer<long double> jino::Buffers::newBuffer(const std::uint64_t);
 template jino::Buffer<std::string> jino::Buffers::newBuffer(const std::uint64_t);
 
-void jino::Buffers::attach(BufferBase* buffer) {
-  buffers_.push_back(buffer);
-}
-
-void jino::Buffers::detach(BufferBase* buffer) {
-  auto it = std::find(buffers_.begin(), buffers_.end(), buffer);
-  if (it != buffers_.end()) {
-    buffers_.erase(it);
+void jino::Buffers::print() {
+  for (auto& buffer : buffers_) {
+    if (buffer != nullptr) {
+      buffer->print();
+    } else {
+      throw std::runtime_error("Type mismatch or invalid cast.");
+    }
   }
 }

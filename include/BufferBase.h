@@ -27,6 +27,7 @@ class BufferBase {
   virtual ~BufferBase() = default;
 
   virtual std::uint64_t size() const = 0;
+  virtual void print() = 0;
 };
 }  // namespace jino
 

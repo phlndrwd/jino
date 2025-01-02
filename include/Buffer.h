@@ -42,6 +42,8 @@ class Buffer : public BufferBase {
 
   std::uint64_t size() const override;
 
+  void print() override;
+
  private:
   Buffers* const parent_;
   std::vector<T> buffer_;

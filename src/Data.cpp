@@ -85,7 +85,7 @@ template <typename T>
 T jino::Data::getValue(const std::string& key) const {
   auto it = values_.find(key);
   if (it != values_.end()) {
-    jino::Datum<T>* datum = dynamic_cast<jino::Datum<T>*>(it->second.get());
+    Datum<T>* datum = dynamic_cast<Datum<T>*>(it->second.get());
     if (datum) {
       return datum->getValue();
     } else {

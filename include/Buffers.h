@@ -40,6 +40,8 @@ class Buffers {
   template<class T>
   Buffer<T> newBuffer(const std::uint64_t);
 
+  void print();
+
  private:
   Buffers() = default;
   ~Buffers() = default;
