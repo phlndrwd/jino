@@ -58,7 +58,7 @@ int main() {
   const long double yInc = calcIncrement(yMin, yMax, maxTimeSteps);
   const std::uint64_t dataSize = divide(maxTimeSteps, samplingRate);
 
-  jino::Buffer<double> buffer = jino::Buffers::get().newBuffer<double>("y", dataSize);
+  jino::Buffer<double> buffer = jino::Buffers::get().newBuffer<double>(dataSize);
 
   long double y;
   for (std::uint64_t t = 0; t < maxTimeSteps; ++t) {

@@ -52,8 +52,7 @@ int main() {
 
   std::cout << "5. Testing buffer creation..." << std::endl;
 
-  jino::Buffer<std::int64_t> buffer =
-                             jino::Buffers::get().newBuffer<std::int64_t>("test", samplingRate);
+  jino::Buffer<std::int64_t> buffer = jino::Buffers::get().newBuffer<std::int64_t>(samplingRate);
   assert(buffer.size() == samplingRate);
   for (std::uint64_t i = 0; i < samplingRate; ++i) {
     buffer.at(i) = i;
