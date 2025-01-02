@@ -17,8 +17,6 @@
 
 #include "Datum.h"
 
-jino::Data::Data() {}
-
 jino::DatumBase& jino::Data::operator[](const std::uint64_t index) {
   if (index >= keys_.size()) {
     throw std::out_of_range("Index out of range.");

@@ -20,7 +20,7 @@
 namespace jino {
 class Data {
  public:
-  Data();
+  Data() = default;
 
   jino::DatumBase& operator[](const std::uint64_t);
   jino::DatumBase& operator[](const std::string&);
