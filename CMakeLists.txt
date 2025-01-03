@@ -73,6 +73,7 @@ list(APPEND JINO_SOURCES
   src/Datum.cpp
   src/File.cpp
   src/ParamsReader.cpp
+  src/Writer.cpp
 )
 
 list(APPEND JINO_HEADERS
@@ -85,6 +86,7 @@ list(APPEND JINO_HEADERS
   include/DatumBase.h
   include/File.h
   include/ParamsReader.h
+  include/Writer.h
 )
 
 set(TEST_SOURCES

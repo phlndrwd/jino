@@ -66,6 +66,7 @@ int main() {
     }
   }
   jino::Buffers::get().print();
+  jino::Buffers::get().toFile();
 
   return 0;
 }

@@ -91,6 +91,11 @@ template jino::Buffer<double> jino::Buffers::newBuffer(const char*, const std::u
 template jino::Buffer<long double> jino::Buffers::newBuffer(const char*, const std::uint64_t);
 template jino::Buffer<std::string> jino::Buffers::newBuffer(const char*, const std::uint64_t);
 
+void jino::Buffers::toFile() {
+  const std::string path = "/usr/share/test/test.nc";
+  writer_.toFile(*this, path);
+}
+
 void jino::Buffers::print() {
   for (auto const& [bufferName, buffer] : buffers_) {
     if (buffer != nullptr) {

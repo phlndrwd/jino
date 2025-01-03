@@ -21,7 +21,6 @@
 
 #include <iostream>
 #include <memory>
-#include <stdexcept>
 #include <string>
 
 jino::File::File(const std::string& path, const netCDF::NcFile::FileMode mode) :
@@ -40,13 +39,6 @@ jino::File::~File() {
 }
 
 void jino::File::close() {
-  getFile().close();
+  file_->close();
   file_.reset();
-}
-
-netCDF::NcFile& jino::File::getFile() {
-  if (file_ == nullptr) {
-    throw std::runtime_error("ERROR: Data file has not been initialised...");
-  }
-  return *file_;
 }

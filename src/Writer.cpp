@@ -15,35 +15,11 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#ifndef INCLUDE_FILE_H_
-#define INCLUDE_FILE_H_
+#include "Writer.h"
 
-#include <netcdf>
+#include "Buffers.h"
+#include "File.h"
 
-#include <memory>
-#include <string>
-
-namespace jino {
-class File {
- public:
-  File(const std::string&, const netCDF::NcFile::FileMode);
-  ~File();
-
-  File()                       = delete;
-  File(File&&)                 = delete;
-  File(const File&)            = delete;
-  File& operator=(File&&)      = delete;
-  File& operator=(const File&) = delete;
-
-  void close();
-
- private:
-  std::unique_ptr<netCDF::NcFile> file_;
-
-  std::string path_;
-  netCDF::NcFile::FileMode mode_;
-};
-}  // namespace monio
-
-#endif  // INCLUDE_FILE_H_
-
+void jino::Writer::toFile(jino::Buffers&, const std::string& path) {
+  File file(path, netCDF::NcFile::replace);
+}

@@ -18,11 +18,12 @@
 #ifndef INCLUDE_BUFFERS_H_
 #define INCLUDE_BUFFERS_H_
 
-#include "Buffer.h"
-#include "BufferBase.h"
-
 #include <map>
 #include <string>
+
+#include "Buffer.h"
+#include "BufferBase.h"
+#include "Writer.h"
 
 namespace jino {
 class Buffers {
@@ -43,6 +44,7 @@ class Buffers {
   template<class T>
   Buffer<T> newBuffer(const char*, const std::uint64_t);
 
+  void toFile();
   void print();
 
  private:
@@ -50,6 +52,8 @@ class Buffers {
   ~Buffers() = default;
 
   std::map<const std::string, BufferBase* const> buffers_;
+
+  Writer writer_;
 };
 
 }  // namespace jino
