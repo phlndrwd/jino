@@ -17,6 +17,8 @@
 
 #include "Writer.h"
 
+#include <string>
+
 #include "Buffers.h"
 #include "File.h"
 
