@@ -1,7 +1,7 @@
 /**********************************************************************************************
 * JSON In NetCDF Out                                                                          *
 *                                                                                             *
-* (C) Copyright 2025, Phil Underwood. All rights reserved.                                    *
+* (C) Copyright 2025, Phil Underwood.                                                         *
 *                                                                                             *
 * This program is free software: you can redistribute it and/or modify it under the terms of  *
 * the GNU General Public License as published by the Free Software Foundation, either version *
