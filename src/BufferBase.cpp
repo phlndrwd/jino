@@ -17,6 +17,8 @@
 
 #include "BufferBase.h"
 
+#include <string>
+
 jino::BufferBase::BufferBase(const std::string& name) : name_(name) {}
 
 const std::string& jino::BufferBase::getName() const {
