@@ -19,15 +19,23 @@
 #define INCLUDE_BUFFERBASE_H_
 
 #include <cstdint>
+#include <string>
 
 namespace jino {
 class BufferBase {
  public:
-  BufferBase() {}
+  explicit BufferBase(const std::string&);
   virtual ~BufferBase() = default;
+
+  BufferBase() = delete;
+
+  const std::string& getName() const;
 
   virtual std::uint64_t size() const = 0;
   virtual void print() = 0;
+
+ private:
+  const std::string name_;
 };
 }  // namespace jino
 

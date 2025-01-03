@@ -39,7 +39,7 @@ std::uint64_t divide(const std::uint64_t numerator, const std::uint64_t denomina
     throw std::invalid_argument("Division by zero is not allowed...");
   }
   long double result = static_cast<long double>(numerator) / static_cast<long double>(denominator);
-  return static_cast<std::uint64_t>(std::round(result));  // Round to nearest integer
+  return static_cast<std::uint64_t>(std::round(result));
 }
 
 int main() {
@@ -54,10 +54,10 @@ int main() {
   const long double yMax = params.getValue<float>(jino::consts::kYMax);
 
   const long double yInc = calcIncrement(yMin, yMax, maxTimeSteps);
-  const std::uint64_t dataSize = divide(maxTimeSteps, samplingRate) + 1;
+  const std::uint64_t dataSize = divide(maxTimeSteps, samplingRate) + 1;  // Add one for full-range.
 
-  jino::Buffer<double> yBuffer = jino::Buffers::get().newBuffer<double>(dataSize);
-  jino::Buffer<std::uint64_t> tBuffer = jino::Buffers::get().newBuffer<std::uint64_t>(dataSize);
+  auto yBuffer = jino::Buffers::get().newBuffer<double>("Y", dataSize);
+  auto tBuffer = jino::Buffers::get().newBuffer<std::uint64_t>("t", dataSize);
   for (std::uint64_t t = 0; t <= maxTimeSteps; ++t) {
     long double y = yMin + t * yInc;
     if (t % samplingRate == 0) {

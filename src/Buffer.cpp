@@ -17,14 +17,15 @@
 
 #include "Buffer.h"
 #include "Buffers.h"
+#include "Constants.h"
 
 #include <iostream>
 #include <stdexcept>
 #include <string>
 
 template <class T>
-jino::Buffer<T>::Buffer(const std::uint64_t size, Buffers* const parent) :
-                 parent_(parent), buffer_(size), readIndex_(0), writeIndex_(0) {
+jino::Buffer<T>::Buffer(const std::string& name, const std::uint64_t size, Buffers* const parent) :
+                 BufferBase(name), parent_(parent), buffer_(size), readIndex_(0), writeIndex_(0) {
   parent_->attach(this);
 }
 
@@ -87,6 +88,6 @@ std::uint64_t jino::Buffer<T>::size() const {
 template<class T>
 void jino::Buffer<T>::print() {
   for (std::uint64_t i = 0; i < size(); ++i) {
-    std::cout << getNext() << std::endl;
+    std::cout << getName() << consts::kSeparator << getNext() << std::endl;
   }
 }

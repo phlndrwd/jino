@@ -38,7 +38,7 @@ class Buffers {
   void detach(BufferBase*);
 
   template<class T>
-  Buffer<T> newBuffer(const std::uint64_t);
+  Buffer<T> newBuffer(const std::string&, const std::uint64_t);
 
   void print();
 

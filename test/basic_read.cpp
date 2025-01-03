@@ -51,13 +51,13 @@ int main() {
   assert(params.keys().size() == params.size());
 
   std::cout << "5. Testing buffer creation..." << std::endl;
-
-  jino::Buffer<std::int64_t> buffer = jino::Buffers::get().newBuffer<std::int64_t>(samplingRate);
+  auto buffer = jino::Buffers::get().newBuffer<std::uint64_t>("test", samplingRate);
   assert(buffer.size() == samplingRate);
   for (std::uint64_t i = 0; i < samplingRate; ++i) {
     buffer.at(i) = i;
   }
   assert(buffer.at(samplingRate - 1) == samplingRate - 1);
   std::cout << "All Passed." << std::endl;
+
   return 0;
 }

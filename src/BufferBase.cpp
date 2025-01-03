@@ -15,43 +15,10 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#ifndef INCLUDE_BUFFER_H_
-#define INCLUDE_BUFFER_H_
-
 #include "BufferBase.h"
 
-#include <cstdint>
-#include <string>
-#include <vector>
+jino::BufferBase::BufferBase(const std::string& name): name_(name) {}
 
-namespace jino {
-class Buffers;
-
-template<class T>
-class Buffer : public BufferBase {
- public:
-  explicit Buffer(const std::string&, const std::uint64_t, Buffers* const);
-  ~Buffer();
-
-  Buffer() = delete;
-
-  T& at(const std::uint64_t);
-  const T& at(const std::uint64_t) const;
-
-  T& setNext();
-  const T& getNext();
-
-  std::uint64_t size() const override;
-
-  void print() override;
-
- private:
-  Buffers* const parent_;
-  std::vector<T> buffer_;
-
-  std::uint64_t readIndex_;
-  std::uint64_t writeIndex_;
-};
-}  // namespace jino
-
-#endif // INCLUDE_BUFFER_H_
+const std::string& jino::BufferBase::getName() const {
+  return name_;
+}

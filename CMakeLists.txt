@@ -67,6 +67,7 @@ endif()
 ## Add local source and header files
 list(APPEND JINO_SOURCES
   src/Buffer.cpp
+  src/BufferBase.cpp
   src/Buffers.cpp
   src/Data.cpp
   src/Datum.cpp
