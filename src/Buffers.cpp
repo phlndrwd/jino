@@ -17,7 +17,6 @@
 
 #include "Buffers.h"
 
-#include <algorithm>
 #include <stdexcept>
 #include <string>
 
@@ -26,14 +25,21 @@ jino::Buffers& jino::Buffers::get() {
   return this_;
 }
 
-void jino::Buffers::attach(BufferBase* buffer) {
-  buffers_.push_back(buffer);
+void jino::Buffers::attach(BufferBase* const buffer) {
+  auto it = buffers_.find(buffer->getName());
+  if (it == buffers_.end()) {
+    buffers_.insert({buffer->getName(), buffer});
+  } else {
+    throw std::out_of_range("Buffer \"" + buffer->getName() + "\" alredy exists.");
+  }
 }
 
-void jino::Buffers::detach(BufferBase* buffer) {
-  auto it = std::find(buffers_.begin(), buffers_.end(), buffer);
+void jino::Buffers::detach(BufferBase* const buffer) {
+  auto it = buffers_.find(buffer->getName());
   if (it != buffers_.end()) {
     buffers_.erase(it);
+  } else {
+    throw std::out_of_range("Buffer \"" + buffer->getName() + "\" not found.");
   }
 }
 
@@ -74,7 +80,7 @@ template jino::Buffer<long double> jino::Buffers::newBuffer(const char*, const s
 template jino::Buffer<std::string> jino::Buffers::newBuffer(const char*, const std::uint64_t);
 
 void jino::Buffers::print() {
-  for (auto& buffer : buffers_) {
+  for (auto const& [bufferName, buffer] : buffers_) {
     if (buffer != nullptr) {
       buffer->print();
     } else {
