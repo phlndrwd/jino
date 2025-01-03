@@ -55,6 +55,24 @@ template jino::Buffer<double> jino::Buffers::newBuffer(const std::string&, const
 template jino::Buffer<long double> jino::Buffers::newBuffer(const std::string&, const std::uint64_t);
 template jino::Buffer<std::string> jino::Buffers::newBuffer(const std::string&, const std::uint64_t);
 
+template<class T>
+jino::Buffer<T> jino::Buffers::newBuffer(const char* name, const std::uint64_t size) {
+  return jino::Buffer<T>(std::string(name), size, this);
+}
+
+template jino::Buffer<std::int8_t> jino::Buffers::newBuffer(const char*, const std::uint64_t);
+template jino::Buffer<std::int16_t> jino::Buffers::newBuffer(const char*, const std::uint64_t);
+template jino::Buffer<std::int32_t> jino::Buffers::newBuffer(const char*, const std::uint64_t);
+template jino::Buffer<std::int64_t> jino::Buffers::newBuffer(const char*, const std::uint64_t);
+template jino::Buffer<std::uint8_t> jino::Buffers::newBuffer(const char*, const std::uint64_t);
+template jino::Buffer<std::uint16_t> jino::Buffers::newBuffer(const char*, const std::uint64_t);
+template jino::Buffer<std::uint32_t> jino::Buffers::newBuffer(const char*, const std::uint64_t);
+template jino::Buffer<std::uint64_t> jino::Buffers::newBuffer(const char*, const std::uint64_t);
+template jino::Buffer<float> jino::Buffers::newBuffer(const char*, const std::uint64_t);
+template jino::Buffer<double> jino::Buffers::newBuffer(const char*, const std::uint64_t);
+template jino::Buffer<long double> jino::Buffers::newBuffer(const char*, const std::uint64_t);
+template jino::Buffer<std::string> jino::Buffers::newBuffer(const char*, const std::uint64_t);
+
 void jino::Buffers::print() {
   for (auto& buffer : buffers_) {
     if (buffer != nullptr) {

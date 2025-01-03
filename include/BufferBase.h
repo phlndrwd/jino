@@ -25,6 +25,7 @@ namespace jino {
 class BufferBase {
  public:
   explicit BufferBase(const std::string&);
+
   virtual ~BufferBase() = default;
 
   BufferBase() = delete;

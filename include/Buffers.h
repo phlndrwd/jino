@@ -40,6 +40,9 @@ class Buffers {
   template<class T>
   Buffer<T> newBuffer(const std::string&, const std::uint64_t);
 
+  template<class T>
+  Buffer<T> newBuffer(const char*, const std::uint64_t);
+
   void print();
 
  private:
