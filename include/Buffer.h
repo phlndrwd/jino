@@ -34,7 +34,11 @@ class Buffer : public BufferBase {
 
   friend class Buffers;
 
-  Buffer() = delete;
+  Buffer()                         = delete;
+  Buffer(Buffer&&)                 = delete;
+  Buffer(const Buffer&)            = delete;
+  Buffer& operator=(Buffer&&)      = delete;
+  Buffer& operator=(const Buffer&) = delete;
 
   T& at(const std::uint64_t);
   const T& at(const std::uint64_t) const;
