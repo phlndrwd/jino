@@ -42,7 +42,8 @@ std::uint64_t calcDataSize(const std::uint64_t maxTimeSteps, const std::uint64_t
   if (samplingRate == 0) {
     throw std::invalid_argument("Division by zero is not allowed...");
   }
-  long double result = static_cast<long double>(maxTimeSteps) / static_cast<long double>(samplingRate - 1);
+  long double result = static_cast<long double>(maxTimeSteps) /
+                       static_cast<long double>(samplingRate - 1);
   return static_cast<std::uint64_t>(std::round(result));
 }
 
@@ -71,7 +72,7 @@ int main() {
       tBuffer.setNext() = t;
     }
   }
-  //jino::Buffers::get().print();
+  jino::Buffers::get().print();
   jino::Buffers::get().toFile();
 
   return 0;

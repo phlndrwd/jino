@@ -91,7 +91,8 @@ template jino::Buffer<double> jino::Buffers::newBuffer(const char*, const std::u
 template jino::Buffer<long double> jino::Buffers::newBuffer(const char*, const std::uint64_t);
 template jino::Buffer<std::string> jino::Buffers::newBuffer(const char*, const std::uint64_t);
 
-void jino::Buffers::forEachBuffer(const std::function<void(const std::string&, BufferBase* const)>& callback) const {
+void jino::Buffers::forEachBuffer(const std::function<void(const std::string&,
+                                  BufferBase* const)>& callback) const {
   for (const auto& [name, buffer] : buffers_) {
     callback(name, buffer);
   }
