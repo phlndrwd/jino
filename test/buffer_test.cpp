@@ -21,6 +21,10 @@
 #include "Data.h"
 #include "ParamsReader.h"
 
+void outOfScopeTest(const std::uint64_t dataSize) {
+  auto testBuffer = jino::Buffers::get().newBuffer<std::uint64_t>("testBuffer", dataSize);
+}
+
 long double calcIncrement(const float min, const float max, const std::uint64_t timeSteps) {
   if (min > max) {
     throw std::invalid_argument("min cannot be greater than max");
@@ -55,6 +59,8 @@ int main() {
 
   const long double yInc = calcIncrement(yMin, yMax, maxTimeSteps);
   const std::uint64_t dataSize = divide(maxTimeSteps, samplingRate) + 1;  // Add one for full-range.
+
+  outOfScopeTest(dataSize);
 
   auto yBuffer = jino::Buffers::get().newBuffer<double>("Y", dataSize);
   auto tBuffer = jino::Buffers::get().newBuffer<std::uint64_t>("t", dataSize);
