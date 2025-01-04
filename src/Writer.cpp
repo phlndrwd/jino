@@ -22,6 +22,16 @@
 #include "Buffers.h"
 #include "File.h"
 
-void jino::Writer::toFile(jino::Buffers&, const std::string& path) {
+void jino::Writer::toFile() {
+  const std::string path = "/usr/share/test/test.nc";
   File file(path, netCDF::NcFile::replace);
+
+  Buffers::get().forEachBuffer([](const std::string& name, BufferBase* const buffer) {
+    std::cout << "Buffer name: " << name << std::endl;
+    if (buffer != nullptr) {
+      buffer->print();
+    } else {
+      throw std::runtime_error("Type mismatch or invalid cast.");
+    }
+  });
 }

@@ -35,7 +35,7 @@ class BufferBase {
   virtual std::uint64_t size() const = 0;
   virtual void print() = 0;
 
- private:
+ protected:
   const std::string name_;
 };
 }  // namespace jino

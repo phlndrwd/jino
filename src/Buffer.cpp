@@ -87,7 +87,7 @@ std::uint64_t jino::Buffer<T>::size() const {
 
 template<class T>
 void jino::Buffer<T>::print() {
-  for (std::uint64_t i = 0; i < size(); ++i) {
-    std::cout << getName() << consts::kSeparator << getNext() << std::endl;
+  for (std::uint64_t i = 0; i < buffer_.size(); ++i) {
+    std::cout << name_ << consts::kSeparator << buffer_.at(i) << std::endl;
   }
 }

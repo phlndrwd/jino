@@ -35,14 +35,14 @@ long double calcIncrement(const float min, const float max, const std::uint64_t 
   return static_cast<long double>(max - min) / static_cast<long double>(timeSteps - 1);
 }
 
-std::uint64_t divide(const std::uint64_t numerator, const std::uint64_t denominator) {
-  if (numerator == 0) {
+std::uint64_t calcDataSize(const std::uint64_t maxTimeSteps, const std::uint64_t samplingRate) {
+  if (maxTimeSteps == 0) {
     throw std::invalid_argument("Numerator must be greater than zero...");
   }
-  if (denominator == 0) {
+  if (samplingRate == 0) {
     throw std::invalid_argument("Division by zero is not allowed...");
   }
-  long double result = static_cast<long double>(numerator) / static_cast<long double>(denominator);
+  long double result = static_cast<long double>(maxTimeSteps) / static_cast<long double>(samplingRate - 1);
   return static_cast<std::uint64_t>(std::round(result));
 }
 
@@ -58,7 +58,7 @@ int main() {
   const long double yMax = params.getValue<float>(jino::consts::kYMax);
 
   const long double yInc = calcIncrement(yMin, yMax, maxTimeSteps);
-  const std::uint64_t dataSize = divide(maxTimeSteps, samplingRate) + 1;  // Add one for full-range.
+  const std::uint64_t dataSize = calcDataSize(maxTimeSteps, samplingRate);
 
   outOfScopeTest(dataSize);
 
@@ -71,7 +71,7 @@ int main() {
       tBuffer.setNext() = t;
     }
   }
-  jino::Buffers::get().print();
+  //jino::Buffers::get().print();
   jino::Buffers::get().toFile();
 
   return 0;

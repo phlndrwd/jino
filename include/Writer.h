@@ -27,7 +27,7 @@ class Writer {
  public:
   Writer() = default;
 
-  void toFile(jino::Buffers&, const std::string&);
+  void toFile();
 
  private:
 

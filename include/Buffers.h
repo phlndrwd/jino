@@ -18,6 +18,7 @@
 #ifndef INCLUDE_BUFFERS_H_
 #define INCLUDE_BUFFERS_H_
 
+#include <functional>
 #include <map>
 #include <string>
 
@@ -43,6 +44,11 @@ class Buffers {
 
   template<class T>
   Buffer<T> newBuffer(const char*, const std::uint64_t);
+
+  std::uint64_t size();
+  BufferBase* const getBuffer(const std::string&);
+
+  void forEachBuffer(const std::function<void(const std::string&, BufferBase* const)>&) const;
 
   void toFile();
   void print();
