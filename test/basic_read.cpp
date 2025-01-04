@@ -18,6 +18,8 @@
 #include <array>
 #include <cassert>
 #include <iostream>
+#include <memory>
+#include <string>
 
 #include "Buffer.h"
 #include "Buffers.h"

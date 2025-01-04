@@ -92,12 +92,12 @@ template double jino::Data::getValue<double>(const std::string&) const;
 template long double jino::Data::getValue<long double>(const std::string&) const;
 template std::string jino::Data::getValue<std::string>(const std::string&) const;
 
-void jino::Data::forEachDatum(const std::function<void(const std::string&, const std::unique_ptr<DatumBase>&)>& callback) const {
+void jino::Data::forEachDatum(const std::function<void(const std::string&,
+                              const std::unique_ptr<DatumBase>&)>& callback) const {
   for (const auto& [name, datum] : values_) {
     callback(name, datum);
   }
 }
-
 
 std::uint64_t jino::Data::size() const {
   return values_.size();
