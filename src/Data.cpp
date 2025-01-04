@@ -17,20 +17,11 @@
 
 #include "Data.h"
 
-#include <algorithm>
 #include <memory>
 #include <stdexcept>
 #include <string>
-#include <vector>
 
 #include "Datum.h"
-
-jino::DatumBase& jino::Data::operator[](const std::uint64_t index) {
-  if (index >= keys_.size()) {
-    throw std::out_of_range("Index out of range.");
-  }
-  return *values_[keys_.at(index)].get();
-}
 
 jino::DatumBase& jino::Data::operator[](const std::string& key) {
   auto it = values_.find(key);
@@ -39,13 +30,6 @@ jino::DatumBase& jino::Data::operator[](const std::string& key) {
   } else {
     throw std::out_of_range("Datum \"" + key + "\" not found.");
   }
-}
-
-const jino::DatumBase& jino::Data::operator[](const std::uint64_t index) const {
-  if (index >= keys_.size()) {
-    throw std::out_of_range("Index out of range.");
-  }
-  return this->operator[](keys_.at(index));
 }
 
 const jino::DatumBase& jino::Data::operator[](const std::string& key) const {
@@ -61,7 +45,6 @@ template <typename T>
 void jino::Data::setValue(const std::string& key, const T value) {
   auto it = values_.find(key);
   if (it == values_.end()) {
-    keys_.push_back(key);
     values_.insert({key, std::make_unique<Datum<T>>(value)});
   } else {
     throw std::out_of_range("Datum \"" + key + "\" alredy exists.");
@@ -109,16 +92,12 @@ template double jino::Data::getValue<double>(const std::string&) const;
 template long double jino::Data::getValue<long double>(const std::string&) const;
 template std::string jino::Data::getValue<std::string>(const std::string&) const;
 
-const std::string& jino::Data::keyAt(const std::uint64_t index) const {
-  if (index >= keys_.size()) {
-    throw std::out_of_range("Index out of range.");
+void jino::Data::forEachDatum(const std::function<void(const std::string&, const std::unique_ptr<DatumBase>&)>& callback) const {
+  for (const auto& [name, datum] : values_) {
+    callback(name, datum);
   }
-  return keys_.at(index);
 }
 
-const std::vector<std::string>& jino::Data::keys() const {
-  return keys_;
-}
 
 std::uint64_t jino::Data::size() const {
   return values_.size();
@@ -137,7 +116,6 @@ void jino::Data::erase(const std::string& key) {
   auto it = values_.find(key);
   if (it != values_.end()) {
     values_.erase(it);
-    keys_.erase(find(keys_.begin(), keys_.end(), key));
   } else {
     throw std::out_of_range("Datum \"" + key + "\" not found.");
   }
@@ -148,5 +126,4 @@ void jino::Data::clear() {
     valPtr.reset();
   }
   values_.clear();
-  keys_.clear();
 }

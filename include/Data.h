@@ -18,10 +18,10 @@
 #ifndef INCLUDE_DATA_H_
 #define INCLUDE_DATA_H_
 
+#include <functional>
 #include <map>
 #include <memory>
 #include <string>
-#include <vector>
 
 #include "DatumBase.h"
 
@@ -30,10 +30,7 @@ class Data {
  public:
   Data() = default;
 
-  jino::DatumBase& operator[](const std::uint64_t);
   jino::DatumBase& operator[](const std::string&);
-
-  const jino::DatumBase& operator[](const std::uint64_t) const;
   const jino::DatumBase& operator[](const std::string&) const;
 
   template <typename T>
@@ -42,8 +39,7 @@ class Data {
   template <typename T>
   T getValue(const std::string&) const;
 
-  const std::string& keyAt(const std::uint64_t) const;
-  const std::vector<std::string>& keys() const;
+  void forEachDatum(const std::function<void(const std::string&, const std::unique_ptr<DatumBase>&)>&) const;
 
   std::uint64_t size() const;
 
@@ -53,7 +49,6 @@ class Data {
   void clear();
 
  private:
-  std::vector<std::string> keys_;
   std::map<const std::string, std::unique_ptr<DatumBase>> values_;
 };
 }  // namespace jino

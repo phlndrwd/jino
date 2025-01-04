@@ -15,15 +15,24 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
+#include <array>
 #include <cassert>
 #include <iostream>
-#include <vector>
 
 #include "Buffer.h"
 #include "Buffers.h"
 #include "Constants.h"
 #include "Data.h"
+#include "DatumBase.h"
 #include "ParamsReader.h"
+
+std::uint8_t fileStringInArray(const std::string str, std::array<std::string, 4> vec) {
+  if (std::find(vec.begin(), vec.end(), str) != vec.end()) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 int main() {
   std::cout << "1. Testing file reading..." << std::endl;
@@ -32,11 +41,11 @@ int main() {
   paramsReader.read(params);
 
   std::cout << "2. Validating read data..." << std::endl;
-  assert(params.keys().size() == params.size());
-  for (std::uint64_t i = 0; i < params.size(); i++) {
-    assert(params.keyAt(i) == jino::consts::kParamNames.at(i));
-    static_cast<void>(params[i].getValueStr());
-  }
+  assert(params.size() == jino::consts::kParamNames.size());
+  params.forEachDatum([&](const std::string& name, const std::unique_ptr<jino::DatumBase>& datum) {
+    assert(params.contains(name) == true);
+    assert(fileStringInArray(name, jino::consts::kParamNames));
+  });
 
   std::cout << "3. Testing data retrieval..." << std::endl;
   static_cast<void>(params.getValue<std::uint64_t>(jino::consts::kMaxTimeSteps));
@@ -48,7 +57,7 @@ int main() {
   std::cout << "4. Testing element erasure..." << std::endl;
   params.erase(jino::consts::kSamplingRate);
   assert(params.contains(jino::consts::kSamplingRate) == false);
-  assert(params.keys().size() == params.size());
+  assert(params.size() == jino::consts::kParamNames.size() - 1);
 
   std::cout << "5. Testing buffer creation..." << std::endl;
   auto buffer = jino::Buffers::get().newBuffer<std::uint64_t>("test", samplingRate);
