@@ -22,6 +22,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 template <class T>
 jino::Buffer<T>::Buffer(const std::string& name, const std::uint64_t size, Buffers* const parent) :
