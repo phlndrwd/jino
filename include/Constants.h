@@ -61,6 +61,20 @@ constexpr std::string kSamplingRate = "SamplingRate";
 constexpr std::string kYMin = "YMin";
 constexpr std::string kYMax = "YMax";
 
+const std::array<std::string, eNumberOfDataTypes> kDataTypeNames = {
+  "byte",
+  "char",
+  "short",
+  "int",
+  "float",
+  "double",
+  "unsigned byte",
+  "unsigned short",
+  "unsigned int",
+  "long int",
+  "std::string"
+};
+
 const std::array<std::string, eNumberOfParams> kParamNames = {
   kMaxTimeSteps,
   kSamplingRate,

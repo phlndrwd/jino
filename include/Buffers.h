@@ -45,9 +45,12 @@ class Buffers {
   template<class T>
   Buffer<T> newBuffer(const char*, const std::uint64_t);
 
-  std::uint64_t size();
-  BufferBase* const getBuffer(const std::string&);
+  void addDimension(const std::string&, const std::uint64_t);
+  void addDimension(const char*, const std::uint64_t);
 
+  std::string getDimensionName(const std::uint64_t) const;
+
+  void forEachDimension(const std::function<void(const std::string&, const std::uint64_t)>&) const;
   void forEachBuffer(const std::function<void(const std::string&, BufferBase* const)>&) const;
 
   void toFile();
@@ -58,6 +61,7 @@ class Buffers {
   ~Buffers() = default;
 
   std::map<const std::string, BufferBase* const> buffers_;
+  std::map<const std::uint64_t, const std::string> dimensions_;
 
   Writer writer_;
 };

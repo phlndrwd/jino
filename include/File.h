@@ -20,8 +20,10 @@
 
 #include <netcdf>
 
+#include <cstdint>
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace jino {
 class File {
@@ -34,6 +36,12 @@ class File {
   File(const File&)            = delete;
   File& operator=(File&&)      = delete;
   File& operator=(const File&) = delete;
+
+  void addDimension(const std::string&, const std::uint64_t);
+  void addVariable(const std::string&, const std::string&, const std::string&);
+
+  template <typename T>
+  void addData(const std::string&, const std::vector<T>&);
 
   void close();
 

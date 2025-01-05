@@ -20,6 +20,7 @@
 
 #include <cstdint>
 #include <string>
+#include <typeinfo>
 
 namespace jino {
 class BufferBase {
@@ -32,6 +33,7 @@ class BufferBase {
 
   const std::string& getName() const;
 
+  virtual const std::type_info& getType() const = 0;
   virtual std::uint64_t size() const = 0;
   virtual void print() = 0;
 

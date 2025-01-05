@@ -46,7 +46,10 @@ class Buffer : public BufferBase {
   T& setNext();
   const T& getNext();
 
+  const std::type_info& getType() const override;
   std::uint64_t size() const override;
+
+  const std::vector<T>& getData() const;
 
   void print() override;
 
@@ -54,7 +57,7 @@ class Buffer : public BufferBase {
   explicit Buffer(const std::string&, const std::uint64_t, Buffers* const);
 
   Buffers* const parent_;
-  std::vector<T> buffer_;
+  std::vector<T> data_;
 
   std::uint64_t readIndex_;
   std::uint64_t writeIndex_;

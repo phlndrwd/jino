@@ -45,7 +45,7 @@ void jino::Buffers::detach(BufferBase* const buffer) {
 
 template<class T>
 jino::Buffer<T> jino::Buffers::newBuffer(const std::string& name, const std::uint64_t size) {
-  return jino::Buffer<T>(name, size, this);
+  return Buffer<T>(name, size, this);
 }
 
 template jino::Buffer<std::int8_t> jino::Buffers::newBuffer(const std::string&,
@@ -75,7 +75,7 @@ template jino::Buffer<std::string> jino::Buffers::newBuffer(const std::string&,
 
 template<class T>
 jino::Buffer<T> jino::Buffers::newBuffer(const char* name, const std::uint64_t size) {
-  return jino::Buffer<T>(std::string(name), size, this);
+  return newBuffer<T>(std::string(name), size);
 }
 
 template jino::Buffer<std::int8_t> jino::Buffers::newBuffer(const char*, const std::uint64_t);
@@ -90,6 +90,25 @@ template jino::Buffer<float> jino::Buffers::newBuffer(const char*, const std::ui
 template jino::Buffer<double> jino::Buffers::newBuffer(const char*, const std::uint64_t);
 template jino::Buffer<long double> jino::Buffers::newBuffer(const char*, const std::uint64_t);
 template jino::Buffer<std::string> jino::Buffers::newBuffer(const char*, const std::uint64_t);
+
+void jino::Buffers::addDimension(const std::string& name, const std::uint64_t size) {
+  dimensions_.insert({size, name});
+}
+
+void jino::Buffers::addDimension(const char* name, const std::uint64_t size) {
+  addDimension(std::string(name), size);
+}
+
+std::string jino::Buffers::getDimensionName(const std::uint64_t size) const {
+  return dimensions_.at(size);
+}
+
+void jino::Buffers::forEachDimension(const std::function<void(const std::string&,
+                                     const std::uint64_t)>& callback) const {
+  for (const auto& [size, name] : dimensions_) {
+    callback(name, size);
+  }
+}
 
 void jino::Buffers::forEachBuffer(const std::function<void(const std::string&,
                                   BufferBase* const)>& callback) const {

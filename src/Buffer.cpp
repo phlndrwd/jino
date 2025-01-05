@@ -25,7 +25,7 @@
 
 template <class T>
 jino::Buffer<T>::Buffer(const std::string& name, const std::uint64_t size, Buffers* const parent) :
-                 BufferBase(name), parent_(parent), buffer_(size), readIndex_(0), writeIndex_(0) {
+                 BufferBase(name), parent_(parent), data_(size), readIndex_(0), writeIndex_(0) {
   parent_->attach(this);
 }
 
@@ -45,49 +45,58 @@ template class jino::Buffer<std::string>;
 template <class T>
 jino::Buffer<T>::~Buffer() {
   parent_->detach(this);
-  buffer_.clear();
+  data_.clear();
 }
 
 template<class T> T& jino::Buffer<T>::at(const std::uint64_t index) {
-  if (index >= buffer_.size()) {
+  if (index >= data_.size()) {
     throw std::out_of_range("Index out of range.");
   }
-  return buffer_.at(index);
+  return data_.at(index);
 }
 
 template<class T> const T& jino::Buffer<T>::at(const std::uint64_t index) const {
-  if (index >= buffer_.size()) {
+  if (index >= data_.size()) {
     throw std::out_of_range("Index out of range.");
   }
-  return buffer_.at(index);
+  return data_.at(index);
 }
 
 template<class T> T& jino::Buffer<T>::setNext() {
-  if (writeIndex_ >= buffer_.size()) {
+  if (writeIndex_ >= data_.size()) {
     throw std::out_of_range("WriteIndex out of range.");
   }
   std::uint64_t i = writeIndex_;
   ++writeIndex_;
-  return buffer_.at(i);
+  return data_.at(i);
 }
 
 template<class T> const T& jino::Buffer<T>::getNext() {
-  if (readIndex_ >= buffer_.size() && readIndex_ <= writeIndex_) {
+  if (readIndex_ >= data_.size() && readIndex_ <= writeIndex_) {
     throw std::out_of_range("ReadIndex out of range.");
   }
   std::uint64_t i = readIndex_;
   ++readIndex_;
-  return buffer_.at(i);
+  return data_.at(i);
+}
+
+template<class T> const std::type_info& jino::Buffer<T>::getType() const {
+  return typeid(T);
 }
 
 template<class T>
 std::uint64_t jino::Buffer<T>::size() const {
-  return buffer_.size();
+  return data_.size();
+}
+
+template<class T>
+const std::vector<T>& jino::Buffer<T>::getData() const {
+  return data_;
 }
 
 template<class T>
 void jino::Buffer<T>::print() {
-  for (std::uint64_t i = 0; i < buffer_.size(); ++i) {
-    std::cout << name_ << consts::kSeparator << buffer_.at(i) << std::endl;
+  for (std::uint64_t i = 0; i < data_.size(); ++i) {
+    std::cout << name_ << consts::kSeparator << data_.at(i) << std::endl;
   }
 }

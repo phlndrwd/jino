@@ -63,6 +63,8 @@ int main() {
 
   outOfScopeTest(dataSize);
 
+  jino::Buffers::get().addDimension("dataSize", dataSize);
+
   auto yBuffer = jino::Buffers::get().newBuffer<double>("Y", dataSize);
   auto tBuffer = jino::Buffers::get().newBuffer<std::uint64_t>("t", dataSize);
   for (std::uint64_t t = 0; t <= maxTimeSteps; ++t) {

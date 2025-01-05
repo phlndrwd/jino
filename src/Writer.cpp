@@ -26,13 +26,52 @@
 void jino::Writer::toFile() {
   const std::string path = "/usr/share/test/test.nc";
   File file(path, netCDF::NcFile::replace);
-
-  Buffers::get().forEachBuffer([](const std::string& name, BufferBase* const buffer) {
+  Buffers::get().forEachDimension([&](const std::string& name, const std::uint64_t size) {
+    file.addDimension(name, size);
+  });
+  Buffers::get().forEachBuffer([&](const std::string& name, BufferBase* const buffer) {
     std::cout << "Buffer name: " << name << std::endl;
     if (buffer != nullptr) {
-      buffer->print();
-    } else {
-      throw std::runtime_error("Type mismatch or invalid cast.");
+      std::string dimName = Buffers::get().getDimensionName(buffer->size());
+      file.addVariable(name, "double", dimName);
+      const auto& type = buffer->getType();
+      if (type == typeid(std::int8_t)) {
+        auto typedBuffer = static_cast<Buffer<std::int8_t>*>(buffer);
+        file.addData<std::int8_t>(name, typedBuffer->getData());
+      } else if (type == typeid(std::int16_t)) {
+        auto typedBuffer = static_cast<Buffer<std::int16_t>*>(buffer);
+        file.addData<std::int16_t>(name, typedBuffer->getData());
+      } else if (type == typeid(std::int32_t)) {
+        auto typedBuffer = static_cast<Buffer<std::int32_t>*>(buffer);
+        file.addData<std::int32_t>(name, typedBuffer->getData());
+      } else if (type == typeid(std::int64_t)) {
+        auto typedBuffer = static_cast<Buffer<std::int64_t>*>(buffer);
+        file.addData<std::int64_t>(name, typedBuffer->getData());
+      } else if (type == typeid(std::uint8_t)) {
+        auto typedBuffer = static_cast<Buffer<std::uint8_t>*>(buffer);
+        file.addData<std::uint8_t>(name, typedBuffer->getData());
+      } else if (type == typeid(std::uint16_t)) {
+        auto typedBuffer = static_cast<Buffer<std::uint16_t>*>(buffer);
+        file.addData<std::uint16_t>(name, typedBuffer->getData());
+      } else if (type == typeid(std::uint32_t)) {
+        auto typedBuffer = static_cast<Buffer<std::uint32_t>*>(buffer);
+        file.addData<std::uint32_t>(name, typedBuffer->getData());
+      } else if (type == typeid(std::uint64_t)) {
+        auto typedBuffer = static_cast<Buffer<std::uint64_t>*>(buffer);
+        file.addData<std::uint64_t>(name, typedBuffer->getData());
+      } else if (type == typeid(float)) {
+        auto typedBuffer = static_cast<Buffer<float>*>(buffer);
+        file.addData<float>(name, typedBuffer->getData());
+      } else if (type == typeid(double)) {
+        auto typedBuffer = static_cast<Buffer<double>*>(buffer);
+        file.addData<double>(name, typedBuffer->getData());
+      } else if (type == typeid(long double)) {
+        auto typedBuffer = static_cast<Buffer<long double>*>(buffer);
+        file.addData<long double>(name, typedBuffer->getData());
+      } else if (type == typeid(std::string)) {
+        auto typedBuffer = static_cast<Buffer<std::string>*>(buffer);
+        file.addData<std::string>(name, typedBuffer->getData());
+      }
     }
   });
 }
