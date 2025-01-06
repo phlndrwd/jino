@@ -72,7 +72,7 @@ list(APPEND JINO_SOURCES
   src/Data.cpp
   src/Datum.cpp
   src/File.cpp
-  src/ParamsReader.cpp
+  src/JsonReader.cpp
   src/Writer.cpp
 )
 
@@ -85,7 +85,7 @@ list(APPEND JINO_HEADERS
   include/Datum.h
   include/DatumBase.h
   include/File.h
-  include/ParamsReader.h
+  include/JsonReader.h
   include/Writer.h
 )
 

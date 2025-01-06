@@ -26,10 +26,10 @@
 #include "Constants.h"
 #include "Data.h"
 #include "DatumBase.h"
-#include "ParamsReader.h"
+#include "JsonReader.h"
 
-std::uint8_t fileStringInArray(const std::string str, std::array<std::string, 4> vec) {
-  if (std::find(vec.begin(), vec.end(), str) != vec.end()) {
+std::uint8_t isStringInArray(const std::string str, std::array<std::string, 4> array) {
+  if (std::find(array.begin(), array.end(), str) != array.end()) {
     return true;
   } else {
     return false;
@@ -39,14 +39,14 @@ std::uint8_t fileStringInArray(const std::string str, std::array<std::string, 4>
 int main() {
   std::cout << "1. Testing file reading..." << std::endl;
   jino::Data params;
-  jino::ParamsReader paramsReader;
-  paramsReader.read(params);
+  jino::JsonReader jsonReader;
+  jsonReader.readParams(params);
 
   std::cout << "2. Validating read data..." << std::endl;
   assert(params.size() == jino::consts::kParamNames.size());
   params.forEachDatum([&](const std::string& name, const std::unique_ptr<jino::DatumBase>& datum) {
     assert(params.contains(name) == true);
-    assert(fileStringInArray(name, jino::consts::kParamNames));
+    assert(isStringInArray(name, jino::consts::kParamNames));
   });
 
   std::cout << "3. Testing data retrieval..." << std::endl;

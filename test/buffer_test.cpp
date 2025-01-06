@@ -19,7 +19,7 @@
 #include "Buffers.h"
 #include "Constants.h"
 #include "Data.h"
-#include "ParamsReader.h"
+#include "JsonReader.h"
 
 void outOfScopeTest(const std::uint64_t dataSize) {
   auto testBuffer = jino::Buffers::get().newBuffer<std::uint64_t>("testBuffer", dataSize);
@@ -49,33 +49,36 @@ std::uint64_t calcDataSize(const std::uint64_t maxTimeSteps, const std::uint64_t
 
 int main() {
   jino::Data params;
-  jino::ParamsReader paramsReader;
-  paramsReader.read(params);
+  jino::Data attrs;
+  jino::JsonReader jsonReader;
+  if (jsonReader.readParams(params) == true) {
+    jsonReader.readAttrs(attrs);
 
-  const std::uint64_t maxTimeSteps = params.getValue<std::uint64_t>(jino::consts::kMaxTimeSteps);
-  const std::uint64_t samplingRate = params.getValue<std::uint64_t>(jino::consts::kSamplingRate);
+    const std::uint64_t maxTimeSteps = params.getValue<std::uint64_t>(jino::consts::kMaxTimeSteps);
+    const std::uint64_t samplingRate = params.getValue<std::uint64_t>(jino::consts::kSamplingRate);
 
-  const long double yMin = params.getValue<float>(jino::consts::kYMin);
-  const long double yMax = params.getValue<float>(jino::consts::kYMax);
+    const long double yMin = params.getValue<float>(jino::consts::kYMin);
+    const long double yMax = params.getValue<float>(jino::consts::kYMax);
 
-  const long double yInc = calcIncrement(yMin, yMax, maxTimeSteps);
-  const std::uint64_t dataSize = calcDataSize(maxTimeSteps, samplingRate);
+    const long double yInc = calcIncrement(yMin, yMax, maxTimeSteps);
+    const std::uint64_t dataSize = calcDataSize(maxTimeSteps, samplingRate);
 
-  outOfScopeTest(dataSize);
+    outOfScopeTest(dataSize);
 
-  jino::Buffers::get().addDimension("dataSize", dataSize);
+    jino::Buffers::get().addDimension("dataSize", dataSize);
 
-  auto yBuffer = jino::Buffers::get().newBuffer<double>("Y", dataSize);
-  auto tBuffer = jino::Buffers::get().newBuffer<std::uint64_t>("t", dataSize);
-  for (std::uint64_t t = 0; t <= maxTimeSteps; ++t) {
-    long double y = yMin + t * yInc;
-    if (t % samplingRate == 0) {
-      yBuffer.setNext() = y;
-      tBuffer.setNext() = t;
+    auto yBuffer = jino::Buffers::get().newBuffer<double>("Y", dataSize);
+    auto tBuffer = jino::Buffers::get().newBuffer<std::uint64_t>("t", dataSize);
+    for (std::uint64_t t = 0; t <= maxTimeSteps; ++t) {
+      long double y = yMin + t * yInc;
+      if (t % samplingRate == 0) {
+        yBuffer.setNext() = y;
+        tBuffer.setNext() = t;
+      }
     }
+    //jino::Buffers::get().print();
+    //jino::Buffers::get().toFile();
   }
-  jino::Buffers::get().print();
-  jino::Buffers::get().toFile();
 
   return 0;
 }

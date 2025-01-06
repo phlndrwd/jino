@@ -27,12 +27,14 @@
 using json = nlohmann::json;
 
 namespace jino {
-class ParamsReader {
+class JsonReader {
  public:
-  ParamsReader() = default;
+  JsonReader() = default;
 
-  void readText(std::string&, std::string&);
-  void read(jino::Data&);
+  std::uint8_t readText(std::string&, std::string&);
+
+  std::uint8_t readParams(jino::Data&);
+  void readAttrs(jino::Data&);
 
  private:
   template <typename T>

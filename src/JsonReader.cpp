@@ -15,7 +15,7 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#include "ParamsReader.h"
+#include "JsonReader.h"
 
 #include <fstream>
 #include <iostream>
@@ -33,7 +33,7 @@ std::streamsize getFileSize(const std::string& filePath) {
 }
 }  // Anonymous namespace
 
-void jino::ParamsReader::readText(std::string& path, std::string& text) {
+std::uint8_t jino::JsonReader::readText(std::string& path, std::string& text) {
   try {
     std::ifstream fileIn(path);
     fileIn.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -47,35 +47,90 @@ void jino::ParamsReader::readText(std::string& path, std::string& text) {
       std::cout << "ERROR: Input file \"" << path << "\" is too large..." << std::endl;
     }
     fileIn.close();
+    return true;
   } catch (const std::exception& error) {
     std::cout << "ERROR: Could not access file \"" << path << "\"..." << std::endl;
     std::cerr << error.what() << std::endl;
+    return false;
   }
 }
 
-void jino::ParamsReader::read(jino::Data& params) {
+std::uint8_t jino::JsonReader::readParams(jino::Data& params) {
   std::string text;
-  std::string path = consts::kInputPath + consts::kParamFile;
-  readText(path, text);
-  try {
-    json jsonData = json::parse(text);
-    for (std::uint64_t i = 0; i < consts::kParamNames.size(); ++i) {
-      const std::string& paramName = consts::kParamNames[i];
-      const std::uint8_t paramType = consts::kParamTypes[i];
-      if (jsonData.contains(paramName)) {
-        setParam(params, paramName, paramType, jsonData[paramName]);
+  std::string path = consts::kInputPath + consts::kParamsFile;
+  if (readText(path, text) == true) {
+    try {
+      json jsonData = json::parse(text);  // Arranged alphabetically
+      if (jsonData.is_object() && jsonData.size() == consts::kParamNames.size()) {
+        for (std::uint64_t i = 0; i < jsonData.size(); ++i) {
+          const std::string& paramName = consts::kParamNames.at(i);
+          const std::uint8_t paramType = consts::kParamTypes.at(i);
+
+          if (jsonData.contains(paramName)) {
+            setParam(params, paramName, paramType, jsonData[paramName]);
+          } else {
+            throw std::out_of_range("Parameter \"" + paramName + "\" not found.");
+          }
+        }
       } else {
-        throw std::out_of_range("JSON key \"" + paramName + "\" not found.");
+        throw std::runtime_error("Unexpected file format.");
       }
+    } catch (const std::exception& error) {
+      std::cout << "ERROR: Params file not formatted correctly..." << std::endl;
+      std::cerr << error.what() << std::endl;
+      return false;
     }
-  } catch (const std::exception& error) {
-    std::cout << "ERROR: Input file not formatted correctly..." << std::endl;
-    std::cerr << error.what() << std::endl;
+  }
+  return true;
+}
+
+
+void jino::JsonReader::readAttrs(jino::Data& attrs) {
+  std::string text;
+  std::string path = consts::kInputPath + consts::kAttrsFile;
+
+  if (readText(path, text) == true) {
+    try {
+    json jsonData = json::parse(text);
+
+      if (jsonData.is_object()) {
+        for (std::uint64_t i = 0; i < jsonData.size(); ++i) {
+          auto item = std::next(jsonData.begin(), i);
+          std::string key = static_cast<std::string>(item.key());
+          std::cout << "KEY: " << key << std::endl;
+        }
+      }
+
+
+    if (jsonData.is_object()) {
+      for (auto it = jsonData.begin(); it != jsonData.end(); ++it) {
+        std::cout << "Key: " << it.key() << ", Value: " << it.value() << ", Type: " << it.value().type_name() << std::endl;
+
+        it.value().type();
+
+        if (it.value().is_array()) {
+          for (const auto& elem : it.value()) {
+            std::cout << "  Array element: " << elem << std::endl;
+          }
+        } else if (it.value().is_object()) {
+          for (auto inner_it = it.value().begin(); inner_it != it.value().end(); ++inner_it) {
+            std::cout << "  Inner key: " << inner_it.key() << ", Value: " << inner_it.value() << std::endl;
+          }
+        }
+        // Add additional processing for `attrs` here
+      }
+    } else {
+      std::cerr << "Unsupported JSON structure." << std::endl;
+    }
+    } catch (const std::exception& error) {
+      std::cout << "ERROR: Input file not formatted correctly..." << std::endl;
+      std::cerr << error.what() << std::endl;
+    }
   }
 }
 
-void jino::ParamsReader::setParam(Data& params, const std::string& paramName,
-                               const std::uint8_t paramType, const nlohmann::json& jsonValue) {
+void jino::JsonReader::setParam(Data& params, const std::string& paramName,
+                                const std::uint8_t paramType, const nlohmann::json& jsonValue) {
   switch (paramType) {
     case consts::eInt8: {
       setParam(params, paramName, static_cast<std::int8_t>(jsonValue));
@@ -129,6 +184,6 @@ void jino::ParamsReader::setParam(Data& params, const std::string& paramName,
 }
 
 template <typename T>
-void jino::ParamsReader::setParam(Data& params, const std::string& paramName, const T& value) {
+void jino::JsonReader::setParam(Data& params, const std::string& paramName, const T& value) {
   params.setValue(paramName, value);
 }

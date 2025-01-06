@@ -53,7 +53,8 @@ const std::size_t kMaxFileSizeInBytes = 1048576;  // 1MB
 // Other strings
 constexpr std::string kSeparator = ", ";
 constexpr std::string kInputPath = "./input/";
-constexpr std::string kParamFile = "params.json";
+constexpr std::string kParamsFile = "params.json";
+constexpr std::string kAttrsFile = "attrs.json";
 
 // Parameter names
 constexpr std::string kMaxTimeSteps = "MaxTimeSteps";
