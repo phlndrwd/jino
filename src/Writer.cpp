@@ -23,7 +23,7 @@
 #include "Buffers.h"
 #include "File.h"
 
-void jino::Writer::toFile() {
+void jino::Writer::toFile(const jino::Data& attrs) {
   const std::string path = "/usr/share/test/test.nc";
   File file(path, netCDF::NcFile::replace);
   Buffers::get().forEachDimension([&](const std::string& name, const std::uint64_t size) {

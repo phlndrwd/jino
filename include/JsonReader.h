@@ -31,9 +31,9 @@ class JsonReader {
  public:
   JsonReader() = default;
 
-  std::uint8_t readText(std::string&, std::string&);
+  void readText(const std::string&, std::string&);
 
-  std::uint8_t readParams(jino::Data&);
+  void readParams(jino::Data&);
   void readAttrs(jino::Data&);
 
  private:

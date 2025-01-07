@@ -117,8 +117,8 @@ void jino::Buffers::forEachBuffer(const std::function<void(const std::string&,
   }
 }
 
-void jino::Buffers::toFile() {
-  writer_.toFile();
+void jino::Buffers::toFile(const jino::Data& attrs) {
+  writer_.toFile(attrs);
 }
 
 void jino::Buffers::print() {

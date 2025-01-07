@@ -24,8 +24,8 @@
 #include "Constants.h"
 
 namespace {
-std::streamsize getFileSize(const std::string& filePath) {
-  std::ifstream file(filePath, std::ios::binary | std::ios::ate);
+std::streamsize getFileSize(const std::string& path) {
+  std::ifstream file(path, std::ios::binary | std::ios::ate);
   if (!file) {
     throw std::ios_base::failure("Could not open file.");
   }
@@ -33,99 +33,84 @@ std::streamsize getFileSize(const std::string& filePath) {
 }
 }  // Anonymous namespace
 
-std::uint8_t jino::JsonReader::readText(std::string& path, std::string& text) {
+void jino::JsonReader::readText(const std::string& path, std::string& text) {
   try {
     std::ifstream fileIn(path);
     fileIn.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     if (!fileIn.is_open()) {
-      throw std::ios_base::failure("Failed to open file.");
+      throw std::ios_base::failure("Could not open file.");
     }
     std::streamsize sz = getFileSize(path);
     if (static_cast<std::size_t>(sz) <= consts::kMaxFileSizeInBytes) {
       text.assign((std::istreambuf_iterator<char>(fileIn)), std::istreambuf_iterator<char>());
     } else {
-      std::cout << "ERROR: Input file \"" << path << "\" is too large..." << std::endl;
+      throw std::runtime_error("File is too large.");
     }
     fileIn.close();
-    return true;
   } catch (const std::exception& error) {
     std::cout << "ERROR: Could not access file \"" << path << "\"..." << std::endl;
     std::cerr << error.what() << std::endl;
-    return false;
+    std::exit(EXIT_FAILURE);
   }
 }
 
-std::uint8_t jino::JsonReader::readParams(jino::Data& params) {
+void jino::JsonReader::readParams(jino::Data& params) {
   std::string text;
   std::string path = consts::kInputPath + consts::kParamsFile;
-  if (readText(path, text) == true) {
-    try {
-      json jsonData = json::parse(text);  // Arranged alphabetically
-      if (jsonData.is_object() && jsonData.size() == consts::kParamNames.size()) {
-        for (std::uint64_t i = 0; i < jsonData.size(); ++i) {
-          const std::string& paramName = consts::kParamNames.at(i);
-          const std::uint8_t paramType = consts::kParamTypes.at(i);
-
-          if (jsonData.contains(paramName)) {
-            setParam(params, paramName, paramType, jsonData[paramName]);
-          } else {
-            throw std::out_of_range("Parameter \"" + paramName + "\" not found.");
-          }
+  readText(path, text);
+  try {
+    json jsonData = json::parse(text);  // Arranged alphabetically
+    if (jsonData.is_object() && jsonData.size() == consts::kParamNames.size()) {
+      for (std::uint64_t i = 0; i < jsonData.size(); ++i) {
+        const std::string& paramName = consts::kParamNames.at(i);
+        const std::uint8_t paramType = consts::kParamTypes.at(i);
+        if (jsonData.contains(paramName)) {
+          setParam(params, paramName, paramType, jsonData[paramName]);
+        } else {
+          throw std::out_of_range("Required parameter \"" + paramName + "\" not found in file.");
         }
-      } else {
-        throw std::runtime_error("Unexpected file format.");
       }
-    } catch (const std::exception& error) {
-      std::cout << "ERROR: Params file not formatted correctly..." << std::endl;
-      std::cerr << error.what() << std::endl;
-      return false;
+    } else {
+      throw std::runtime_error("Incorrect file format.");
     }
+  } catch (const std::exception& error) {
+    std::cout << "ERROR: Params file not formatted correctly..." << std::endl;
+    std::cerr << error.what() << std::endl;
+    std::exit(EXIT_FAILURE);
   }
-  return true;
 }
-
 
 void jino::JsonReader::readAttrs(jino::Data& attrs) {
   std::string text;
   std::string path = consts::kInputPath + consts::kAttrsFile;
-
-  if (readText(path, text) == true) {
-    try {
+  readText(path, text);
+  try {
     json jsonData = json::parse(text);
-
-      if (jsonData.is_object()) {
-        for (std::uint64_t i = 0; i < jsonData.size(); ++i) {
-          auto item = std::next(jsonData.begin(), i);
-          std::string key = static_cast<std::string>(item.key());
-          std::cout << "KEY: " << key << std::endl;
-        }
-      }
-
-
     if (jsonData.is_object()) {
       for (auto it = jsonData.begin(); it != jsonData.end(); ++it) {
-        std::cout << "Key: " << it.key() << ", Value: " << it.value() << ", Type: " << it.value().type_name() << std::endl;
-
-        it.value().type();
-
-        if (it.value().is_array()) {
-          for (const auto& elem : it.value()) {
-            std::cout << "  Array element: " << elem << std::endl;
+        const std::string& key = it.key();
+        const auto& value = it.value();
+        if (value.is_string()) {
+          setParam(attrs, key, value.get<std::string>());
+        } else if (value.is_number()) {
+          if (value.is_number_integer()) {
+            setParam(attrs, key, value.get<std::int32_t>());
+          } else if (value.is_number_float()) {
+            setParam(attrs, key, value.get<float>());
           }
-        } else if (it.value().is_object()) {
-          for (auto inner_it = it.value().begin(); inner_it != it.value().end(); ++inner_it) {
-            std::cout << "  Inner key: " << inner_it.key() << ", Value: " << inner_it.value() << std::endl;
-          }
+        } else if (value.is_boolean()) {
+          setParam(attrs, key, value.get<std::int8_t>());
+        } else {
+          throw std::runtime_error("Value type for key \"" + key + "\" is unsupported.");
         }
-        // Add additional processing for `attrs` here
       }
     } else {
-      std::cerr << "Unsupported JSON structure." << std::endl;
+      throw std::runtime_error("Incorrect file format.");
     }
-    } catch (const std::exception& error) {
-      std::cout << "ERROR: Input file not formatted correctly..." << std::endl;
-      std::cerr << error.what() << std::endl;
-    }
+  } catch (const std::exception& error) {
+    std::cout << "ERROR: Input file not formatted correctly..." << std::endl;
+    std::cerr << error.what() << std::endl;
+    std::exit(EXIT_FAILURE);
   }
 }
 

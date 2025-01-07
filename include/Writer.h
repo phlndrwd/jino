@@ -20,6 +20,8 @@
 
 #include <string>
 
+#include "Data.h"
+
 namespace jino {
 class Buffers;
 
@@ -27,7 +29,7 @@ class Writer {
  public:
   Writer() = default;
 
-  void toFile();
+  void toFile(const Data&);
 
  private:
 

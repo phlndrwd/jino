@@ -24,6 +24,7 @@
 
 #include "Buffer.h"
 #include "BufferBase.h"
+#include "Data.h"
 #include "Writer.h"
 
 namespace jino {
@@ -53,7 +54,7 @@ class Buffers {
   void forEachDimension(const std::function<void(const std::string&, const std::uint64_t)>&) const;
   void forEachBuffer(const std::function<void(const std::string&, BufferBase* const)>&) const;
 
-  void toFile();
+  void toFile(const Data&);
   void print();
 
  private:

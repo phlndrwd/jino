@@ -32,6 +32,7 @@ jino::File::File(const std::string& path, const netCDF::NcFile::FileMode mode) :
     close();
     std::cout << "ERROR: Could not access file \"" << path_ << "\"..." << std::endl;
     std::cerr << error.what() << std::endl;
+    std::exit(EXIT_FAILURE);
   }
 }
 
@@ -48,10 +49,74 @@ void jino::File::addVariable(const std::string& name, const std::string& typeNam
   file_->addVar(name, typeName, dimName);
 }
 
+template <>
+void jino::File::addAttribute(const std::string& name, const std::int8_t attr) {
+  file_->putAtt(name, netCDF::NcType::nc_BYTE, attr);
+}
+
+template <>
+void jino::File::addAttribute(const std::string& name, const std::int16_t attr) {
+  file_->putAtt(name, netCDF::NcType::nc_SHORT, attr);
+}
+
+template <>
+void jino::File::addAttribute(const std::string& name, const std::int32_t attr) {
+  file_->putAtt(name, netCDF::NcType::nc_INT, attr);
+}
+
+template <>
+void jino::File::addAttribute(const std::string& name, const std::int64_t attr) {
+  file_->putAtt(name, netCDF::NcType::nc_INT64, static_cast<unsigned long long>(attr));
+}
+
+template <>
+void jino::File::addAttribute(const std::string& name, const std::uint8_t attr) {
+  file_->putAtt(name, netCDF::NcType::nc_UBYTE, attr);
+}
+
+template <>
+void jino::File::addAttribute(const std::string& name, const std::uint16_t attr) {
+  file_->putAtt(name, netCDF::NcType::nc_USHORT, attr);
+}
+
+template <>
+void jino::File::addAttribute(const std::string& name, const std::uint32_t attr) {
+  file_->putAtt(name, netCDF::NcType::nc_UINT, attr);
+}
+
+template <>
+void jino::File::addAttribute(const std::string& name, const std::uint64_t attr) {
+  file_->putAtt(name, netCDF::NcType::nc_UINT64, static_cast<unsigned long long>(attr));
+}
+
+template <>
+void jino::File::addAttribute(const std::string& name, const float attr) {
+  file_->putAtt(name,  netCDF::NcType::nc_FLOAT, attr);
+}
+
+template <>
+void jino::File::addAttribute(const std::string& name, const double attr) {
+  file_->putAtt(name,  netCDF::NcType::nc_DOUBLE, attr);
+}
+
+template <>
+void jino::File::addAttribute(const std::string& name, const long double attr) {
+  file_->putAtt(name,  netCDF::NcType::nc_DOUBLE, static_cast<double>(attr));
+}
+
+template <>
+void jino::File::addAttribute(const std::string& name, const std::string attr) {
+  file_->putAtt(name, attr);
+}
+
 template <typename T>
 void jino::File::addData(const std::string& name, const std::vector<T>& data) {
   auto var = file_->getVar(name);
   var.putVar(data.data());
+
+  file_->putAtt("TEST", netCDF::NcType::nc_INT, 2);
+
+            file_->putAtt("globAttrName", "globAttrStr->getValue()");
 }
 
 template void jino::File::addData<std::int8_t>(const std::string&,

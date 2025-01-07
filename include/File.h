@@ -41,6 +41,9 @@ class File {
   void addVariable(const std::string&, const std::string&, const std::string&);
 
   template <typename T>
+  void addAttribute(const std::string&, const T);
+
+  template <typename T>
   void addData(const std::string&, const std::vector<T>&);
 
   void close();
