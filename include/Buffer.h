@@ -46,7 +46,7 @@ class Buffer : public BufferBase {
   T& setNext();
   const T& getNext();
 
-  const std::type_info& getType() const override;
+  std::uint8_t getType() const override;
   std::uint64_t size() const override;
 
   const std::vector<T>& getData() const;
