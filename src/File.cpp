@@ -114,10 +114,6 @@ template <typename T>
 void jino::File::addData(const std::string& name, const std::vector<T>& data) {
   auto var = file_->getVar(name);
   var.putVar(data.data());
-
-  file_->putAtt("TEST", netCDF::NcType::nc_INT, 2);
-
-            file_->putAtt("globAttrName", "globAttrStr->getValue()");
 }
 
 template void jino::File::addData<std::int8_t>(const std::string&,

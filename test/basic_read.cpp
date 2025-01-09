@@ -18,7 +18,6 @@
 #include <array>
 #include <cassert>
 #include <iostream>
-#include <memory>
 #include <string>
 
 #include "Buffer.h"
@@ -44,7 +43,8 @@ int main() {
 
   std::cout << "2. Validating read data..." << std::endl;
   assert(params.size() == jino::consts::kParamNames.size());
-  params.forEachDatum([&](const std::string& name, const std::unique_ptr<jino::DatumBase>& datum) {
+
+  params.forEachDatum([&](const std::string& name, const jino::DatumBase& datum) {
     assert(params.contains(name) == true);
     assert(isStringInArray(name, jino::consts::kParamNames));
   });

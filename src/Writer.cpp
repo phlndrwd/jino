@@ -27,6 +27,11 @@
 void jino::Writer::toFile(const jino::Data& attrs) {
   const std::string path = "/usr/share/test/test.nc";
   File file(path, netCDF::NcFile::replace);
+
+  attrs.forEachDatum([&](const std::string& key, const DatumBase& datum) {
+    file.addAttribute(key, datum.getValueStr());
+  });
+
   Buffers::get().forEachDimension([&](const std::string& name, const std::uint64_t size) {
     file.addDimension(name, size);
   });

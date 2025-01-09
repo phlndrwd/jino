@@ -39,7 +39,7 @@ class Data {
   template <typename T>
   T getValue(const std::string&) const;
 
-  void forEachDatum(const std::function<void(const std::string&, const std::unique_ptr<DatumBase>&)>&) const;
+  void forEachDatum(const std::function<void(const std::string&, const DatumBase&)>&) const;
 
   std::uint64_t size() const;
 
