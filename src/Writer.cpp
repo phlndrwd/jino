@@ -35,7 +35,7 @@ void jino::Writer::toFile(const jino::Data& attrs) {
     if (buffer != nullptr) {
       std::string dimName = Buffers::get().getDimensionName(buffer->size());
       file.addVariable(name, "double", dimName);
-      switch(buffer->getType()) {
+      switch (buffer->getType()) {
         case consts::eInt8: {
           auto typedBuffer = static_cast<Buffer<std::int8_t>*>(buffer);
           file.addData<std::int8_t>(name, typedBuffer->getData());

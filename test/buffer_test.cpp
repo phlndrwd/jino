@@ -76,7 +76,7 @@ int main() {
       tBuffer.setNext() = t;
     }
   }
-  //jino::Buffers::get().print();
+  jino::Buffers::get().print();
   jino::Buffers::get().toFile(attrs);
 
   return 0;

@@ -66,7 +66,7 @@ void jino::File::addAttribute(const std::string& name, const std::int32_t attr) 
 
 template <>
 void jino::File::addAttribute(const std::string& name, const std::int64_t attr) {
-  file_->putAtt(name, netCDF::NcType::nc_INT64, static_cast<unsigned long long>(attr));
+  file_->putAtt(name, netCDF::NcType::nc_INT64, attr);
 }
 
 template <>
@@ -86,6 +86,7 @@ void jino::File::addAttribute(const std::string& name, const std::uint32_t attr)
 
 template <>
 void jino::File::addAttribute(const std::string& name, const std::uint64_t attr) {
+  /// NOLINTNEXTLINE(runtime/int)
   file_->putAtt(name, netCDF::NcType::nc_UINT64, static_cast<unsigned long long>(attr));
 }
 
