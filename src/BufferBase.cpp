@@ -19,8 +19,13 @@
 
 #include <string>
 
-jino::BufferBase::BufferBase(const std::string& name) : name_(name) {}
+jino::BufferBase::BufferBase(const std::string& name, const std::uint8_t type) :
+                  name_(name), type_(type) {}
 
 const std::string& jino::BufferBase::getName() const {
   return name_;
+}
+
+const std::uint8_t& jino::BufferBase::getType() const {
+  return type_;
 }

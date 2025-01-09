@@ -22,6 +22,7 @@ project(jino LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 
+file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/input)
 file(COPY ${CMAKE_SOURCE_DIR}/input DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 ## Download required files
@@ -79,6 +80,7 @@ list(APPEND JINO_SOURCES
 list(APPEND JINO_HEADERS
   include/Buffer.h
   include/BufferBase.h
+  include/BufferTraits.h
   include/Buffers.h
   include/Constants.h
   include/Data.h
@@ -109,8 +111,7 @@ add_test(NAME coding_norms
 
 foreach(TEST_SOURCE ${TEST_SOURCES})
   get_filename_component(EXECUTABLE_NAME ${TEST_SOURCE} NAME_WE)
-  add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE}
-    src/Buffers.cpp)
+  add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE})
   target_link_libraries(${EXECUTABLE_NAME} PRIVATE jino)
   add_test(NAME ${EXECUTABLE_NAME} COMMAND ${EXECUTABLE_NAME})
 endforeach()

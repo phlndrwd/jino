@@ -20,25 +20,28 @@
 
 #include <cstdint>
 #include <string>
-#include <typeinfo>
+
+#include "Constants.h"
 
 namespace jino {
+
 class BufferBase {
  public:
-  explicit BufferBase(const std::string&);
+  explicit BufferBase(const std::string&, const std::uint8_t);
 
   virtual ~BufferBase() = default;
 
   BufferBase() = delete;
 
   const std::string& getName() const;
+  const std::uint8_t& getType() const;
 
-  virtual std::uint8_t getType() const = 0;
   virtual std::uint64_t size() const = 0;
   virtual void print() = 0;
 
  protected:
   const std::string name_;
+  const std::uint8_t type_;
 };
 }  // namespace jino
 

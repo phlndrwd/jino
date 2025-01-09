@@ -17,6 +17,7 @@
 
 #include "Buffer.h"
 #include "Buffers.h"
+#include "BufferTraits.h"
 #include "Constants.h"
 
 #include <iostream>
@@ -26,7 +27,8 @@
 
 template <class T>
 jino::Buffer<T>::Buffer(const std::string& name, const std::uint64_t size, Buffers* const parent) :
-                 BufferBase(name), parent_(parent), data_(size), readIndex_(0), writeIndex_(0) {
+                 BufferBase(name, BufferTraits<T>::type), parent_(parent), data_(size),
+                 readIndex_(0), writeIndex_(0) {
   parent_->attach(this);
 }
 
@@ -79,54 +81,6 @@ template<class T> const T& jino::Buffer<T>::getNext() {
   std::uint64_t i = readIndex_;
   ++readIndex_;
   return data_.at(i);
-}
-
-template<> std::uint8_t jino::Buffer<std::int8_t>::getType() const {
-  return consts::eInt8;
-}
-
-template<> std::uint8_t jino::Buffer<std::int16_t>::getType() const {
-  return consts::eInt16;
-}
-
-template<> std::uint8_t jino::Buffer<std::int32_t>::getType() const {
-  return consts::eInt32;
-}
-
-template<> std::uint8_t jino::Buffer<std::int64_t>::getType() const {
-  return consts::eInt64;
-}
-
-template<> std::uint8_t jino::Buffer<std::uint8_t>::getType() const {
-  return consts::eUInt8;
-}
-
-template<> std::uint8_t jino::Buffer<std::uint16_t>::getType() const {
-  return consts::eUInt16;
-}
-
-template<> std::uint8_t jino::Buffer<std::uint32_t>::getType() const {
-  return consts::eUInt32;
-}
-
-template<> std::uint8_t jino::Buffer<std::uint64_t>::getType() const {
-  return consts::eUInt64;
-}
-
-template<> std::uint8_t jino::Buffer<float>::getType() const {
-  return consts::eFloat;
-}
-
-template<> std::uint8_t jino::Buffer<double>::getType() const {
-  return consts::eDouble;
-}
-
-template<> std::uint8_t jino::Buffer<long double>::getType() const {
-  return consts::eLongDouble;
-}
-
-template<> std::uint8_t jino::Buffer<std::string>::getType() const {
-  return consts::eString;
 }
 
 template<class T>

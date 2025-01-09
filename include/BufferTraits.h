@@ -15,52 +15,77 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#ifndef INCLUDE_BUFFER_H_
-#define INCLUDE_BUFFER_H_
-
-#include "BufferBase.h"
+#ifndef INCLUDE_BUFFERTRAITS_H_
+#define INCLUDE_BUFFERTRAITS_H_
 
 #include <cstdint>
 #include <string>
-#include <vector>
+
+#include "Constants.h"
 
 namespace jino {
-class Buffers;
+template <typename T>
+struct BufferTraits;
 
-template<class T>
-class Buffer : public BufferBase {
- public:
-  ~Buffer();
+template <>
+struct BufferTraits<std::int8_t> {
+  static constexpr std::uint8_t type = consts::eInt8;
+};
 
-  friend class Buffers;
+template <>
+struct BufferTraits<std::int16_t> {
+  static constexpr std::uint8_t type = consts::eInt16;
+};
 
-  Buffer()                         = delete;
-  Buffer(Buffer&&)                 = delete;
-  Buffer(const Buffer&)            = delete;
-  Buffer& operator=(Buffer&&)      = delete;
-  Buffer& operator=(const Buffer&) = delete;
+template <>
+struct BufferTraits<std::int32_t> {
+  static constexpr std::uint8_t type = consts::eInt32;
+};
 
-  T& at(const std::uint64_t);
-  const T& at(const std::uint64_t) const;
+template <>
+struct BufferTraits<std::int64_t> {
+  static constexpr std::uint8_t type = consts::eInt64;
+};
 
-  T& setNext();
-  const T& getNext();
+template <>
+struct BufferTraits<std::uint8_t> {
+  static constexpr std::uint8_t type = consts::eUInt8;
+};
 
-  std::uint64_t size() const override;
+template <>
+struct BufferTraits<std::uint16_t> {
+  static constexpr std::uint8_t type = consts::eUInt16;
+};
 
-  const std::vector<T>& getData() const;
+template <>
+struct BufferTraits<std::uint32_t> {
+  static constexpr std::uint8_t type = consts::eUInt32;
+};
 
-  void print() override;
+template <>
+struct BufferTraits<std::uint64_t> {
+  static constexpr std::uint8_t type = consts::eUInt64;
+};
 
- private:
-  explicit Buffer(const std::string&, const std::uint64_t, Buffers* const);
+template <>
+struct BufferTraits<float> {
+  static constexpr std::uint8_t type = consts::eFloat;
+};
 
-  Buffers* const parent_;
-  std::vector<T> data_;
+template <>
+struct BufferTraits<double> {
+  static constexpr std::uint8_t type = consts::eDouble;
+};
 
-  std::uint64_t readIndex_;
-  std::uint64_t writeIndex_;
+template <>
+struct BufferTraits<long double> {
+  static constexpr std::uint8_t type = consts::eLongDouble;
+};
+
+template <>
+struct BufferTraits<std::string> {
+  static constexpr std::uint8_t type = consts::eString;
 };
 }  // namespace jino
 
-#endif // INCLUDE_BUFFER_H_
+#endif // INCLUDE_BUFFERTRAITS_H
