@@ -38,8 +38,8 @@ class JsonReader {
 
  private:
   template <typename T>
-  void setParam(jino::Data&, const std::string&, const T&);
-  void setParam(jino::Data&, const std::string&, const std::uint8_t, const nlohmann::json&);
+  void setValue(jino::Data&, const std::string&, const T&);
+  void setValue(jino::Data&, const std::string&, const std::uint8_t, const nlohmann::json&);
 };
 }  // namespace jino
 

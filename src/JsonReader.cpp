@@ -17,6 +17,8 @@
 
 #include "JsonReader.h"
 
+#include <chrono>
+#include <format>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -65,7 +67,7 @@ void jino::JsonReader::readParams(jino::Data& params) {
         const std::string& paramName = consts::kParamNames.at(i);
         const std::uint8_t paramType = consts::kParamTypes.at(i);
         if (jsonData.contains(paramName)) {
-          setParam(params, paramName, paramType, jsonData[paramName]);
+          setValue(params, paramName, paramType, jsonData[paramName]);
         } else {
           throw std::out_of_range("Required parameter \"" + paramName + "\" not found in file.");
         }
@@ -84,22 +86,31 @@ void jino::JsonReader::readAttrs(jino::Data& attrs) {
   std::string text;
   std::string path = consts::kInputPath + consts::kAttrsFile;
   readText(path, text);
+  auto now = std::chrono::system_clock::now();
+  auto nowSeconds = floor<std::chrono::seconds>(now);
+  std::string formatted_time = std::format("{:%Y-%m-%d_%H:%M:%S}", nowSeconds);
   try {
-    json jsonData = json::parse(text);
+    json jsonData = json::parse(text);  // Arranged alphabetically
     if (jsonData.is_object()) {
       for (auto it = jsonData.begin(); it != jsonData.end(); ++it) {
         const std::string& key = it.key();
         const auto& value = it.value();
         if (value.is_string()) {
-          setParam(attrs, key, value.get<std::string>());
+          setValue(attrs, key, value.get<std::string>());
         } else if (value.is_number()) {
           if (value.is_number_integer()) {
-            setParam(attrs, key, value.get<std::int32_t>());
+            setValue(attrs, key, value.get<std::int32_t>());
           } else if (value.is_number_float()) {
-            setParam(attrs, key, value.get<float>());
+            setValue(attrs, key, value.get<float>());
           }
         } else if (value.is_boolean()) {
-          setParam(attrs, key, value.get<std::int8_t>());
+          std::uint8_t getDate = value.get<std::int8_t>();
+          if (key == consts::kDateKey && getDate == true) {
+            std::string formattedTime = std::format(consts::kDateFormat, nowSeconds);
+            setValue(attrs, key, formattedTime);
+          } else {
+            setValue(attrs, key, getDate);
+          }
         } else {
           throw std::runtime_error("Value type for key \"" + key + "\" is unsupported.");
         }
@@ -114,61 +125,61 @@ void jino::JsonReader::readAttrs(jino::Data& attrs) {
   }
 }
 
-void jino::JsonReader::setParam(Data& params, const std::string& paramName,
+void jino::JsonReader::setValue(Data& params, const std::string& paramName,
                                 const std::uint8_t paramType, const nlohmann::json& jsonValue) {
   switch (paramType) {
     case consts::eInt8: {
-      setParam(params, paramName, static_cast<std::int8_t>(jsonValue));
+      setValue(params, paramName, static_cast<std::int8_t>(jsonValue));
       break;
     }
     case consts::eInt16: {
-      setParam(params, paramName, static_cast<std::int16_t>(jsonValue));
+      setValue(params, paramName, static_cast<std::int16_t>(jsonValue));
       break;
     }
     case consts::eInt32: {
-      setParam(params, paramName, static_cast<std::int32_t>(jsonValue));
+      setValue(params, paramName, static_cast<std::int32_t>(jsonValue));
       break;
     }
     case consts::eInt64: {
-      setParam(params, paramName, static_cast<std::int64_t>(jsonValue));
+      setValue(params, paramName, static_cast<std::int64_t>(jsonValue));
       break;
     }
     case consts::eUInt8: {
-      setParam(params, paramName, static_cast<std::uint8_t>(jsonValue));
+      setValue(params, paramName, static_cast<std::uint8_t>(jsonValue));
       break;
     }
     case consts::eUInt16: {
-      setParam(params, paramName, static_cast<std::uint16_t>(jsonValue));
+      setValue(params, paramName, static_cast<std::uint16_t>(jsonValue));
       break;
     }
     case consts::eUInt32: {
-      setParam(params, paramName, static_cast<std::uint32_t>(jsonValue));
+      setValue(params, paramName, static_cast<std::uint32_t>(jsonValue));
       break;
     }
     case consts::eUInt64: {
-      setParam(params, paramName, static_cast<std::uint64_t>(jsonValue));
+      setValue(params, paramName, static_cast<std::uint64_t>(jsonValue));
       break;
     }
     case consts::eFloat: {
-      setParam(params, paramName, static_cast<float>(jsonValue));
+      setValue(params, paramName, static_cast<float>(jsonValue));
       break;
     }
     case consts::eDouble: {
-      setParam(params, paramName, static_cast<double>(jsonValue));
+      setValue(params, paramName, static_cast<double>(jsonValue));
       break;
     }
     case consts::eLongDouble: {
-      setParam(params, paramName, static_cast<long double>(jsonValue));
+      setValue(params, paramName, static_cast<long double>(jsonValue));
       break;
     }
     case consts::eString: {
-      setParam(params, paramName, static_cast<std::string>(jsonValue));
+      setValue(params, paramName, static_cast<std::string>(jsonValue));
       break;
     }
   }
 }
 
 template <typename T>
-void jino::JsonReader::setParam(Data& params, const std::string& paramName, const T& value) {
+void jino::JsonReader::setValue(Data& params, const std::string& paramName, const T& value) {
   params.setValue(paramName, value);
 }
