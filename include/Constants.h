@@ -58,7 +58,7 @@ constexpr std::string kAttrsFile = "attrs.json";
 
 // Parameter names
 constexpr std::string kDateKey = "date";
-constexpr std::string kMaxTimeSteps = "MaxTimeSteps";
+constexpr std::string kMaxTimeStep = "MaxTimeStep";
 constexpr std::string kSamplingRate = "SamplingRate";
 constexpr std::string kYMin = "YMin";
 constexpr std::string kYMax = "YMax";
@@ -80,7 +80,7 @@ const std::array<std::string, eNumberOfDataTypes> kDataTypeNames = {
 };
 
 const std::array<std::string, eNumberOfParams> kParamNames = {
-  kMaxTimeSteps,
+  kMaxTimeStep,
   kSamplingRate,
   kYMin,
   kYMax
