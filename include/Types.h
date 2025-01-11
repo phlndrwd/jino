@@ -15,43 +15,72 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#include "Datum.h"
-#include "Types.h"
+#ifndef INCLUDE_TYPES_H_
+#define INCLUDE_TYPES_H_
 
 #include <cstdint>
 #include <string>
 
-template<class T> jino::Datum<T>::Datum(const T value): DatumBase(Types<T>::type), value_(value) {}
+#include "Constants.h"
 
-template class jino::Datum<std::int8_t>;
-template class jino::Datum<std::int16_t>;
-template class jino::Datum<std::int32_t>;
-template class jino::Datum<std::int64_t>;
-template class jino::Datum<std::uint8_t>;
-template class jino::Datum<std::uint16_t>;
-template class jino::Datum<std::uint32_t>;
-template class jino::Datum<std::uint64_t>;
-template class jino::Datum<float>;
-template class jino::Datum<double>;
-template class jino::Datum<std::string>;
+namespace jino {
+template <typename T>
+struct Types;
 
-template<class T>
-const std::string jino::Datum<T>::getValueStr() const {
-  return std::to_string(value_);
-}
+template <>
+struct Types<std::int8_t> {
+  static constexpr std::uint8_t type = consts::eInt8;
+};
 
-template const std::string jino::Datum<std::int8_t>::getValueStr() const;
-template const std::string jino::Datum<std::int16_t>::getValueStr() const;
-template const std::string jino::Datum<std::int32_t>::getValueStr() const;
-template const std::string jino::Datum<std::int64_t>::getValueStr() const;
-template const std::string jino::Datum<std::uint8_t>::getValueStr() const;
-template const std::string jino::Datum<std::uint16_t>::getValueStr() const;
-template const std::string jino::Datum<std::uint32_t>::getValueStr() const;
-template const std::string jino::Datum<std::uint64_t>::getValueStr() const;
-template const std::string jino::Datum<float>::getValueStr() const;
-template const std::string jino::Datum<double>::getValueStr() const;
+template <>
+struct Types<std::int16_t> {
+  static constexpr std::uint8_t type = consts::eInt16;
+};
 
-template<>
-const std::string jino::Datum<std::string>::getValueStr() const {
-  return value_;
-}
+template <>
+struct Types<std::int32_t> {
+  static constexpr std::uint8_t type = consts::eInt32;
+};
+
+template <>
+struct Types<std::int64_t> {
+  static constexpr std::uint8_t type = consts::eInt64;
+};
+
+template <>
+struct Types<std::uint8_t> {
+  static constexpr std::uint8_t type = consts::eUInt8;
+};
+
+template <>
+struct Types<std::uint16_t> {
+  static constexpr std::uint8_t type = consts::eUInt16;
+};
+
+template <>
+struct Types<std::uint32_t> {
+  static constexpr std::uint8_t type = consts::eUInt32;
+};
+
+template <>
+struct Types<std::uint64_t> {
+  static constexpr std::uint8_t type = consts::eUInt64;
+};
+
+template <>
+struct Types<float> {
+  static constexpr std::uint8_t type = consts::eFloat;
+};
+
+template <>
+struct Types<double> {
+  static constexpr std::uint8_t type = consts::eDouble;
+};
+
+template <>
+struct Types<std::string> {
+  static constexpr std::uint8_t type = consts::eString;
+};
+}  // namespace jino
+
+#endif // INCLUDE_TYPES_H_

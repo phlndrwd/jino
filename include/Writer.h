@@ -18,9 +18,8 @@
 #ifndef INCLUDE_WRITER_H_
 #define INCLUDE_WRITER_H_
 
-#include <string>
-
 #include "Data.h"
+#include "File.h"
 
 namespace jino {
 class Buffers;
@@ -29,10 +28,12 @@ class Writer {
  public:
   Writer() = default;
 
-  void toFile(const Data&);
+  void toFile(File&, const jino::Data& attrs, const jino::Data& params) const;
 
  private:
-
+  void addAttrs(File&, const Data&) const;
+  void addDims(File&) const;
+  void addData(File&) const;
 };
 }  // namespace jino
 

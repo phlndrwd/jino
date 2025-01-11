@@ -39,11 +39,11 @@ class Data {
   template <typename T>
   T getValue(const std::string&) const;
 
-  void forEachDatum(const std::function<void(const std::string&, const DatumBase&)>&) const;
+  void forEachDatum(const std::function<void(const std::string&, DatumBase* const)>&) const;
 
   std::uint64_t size() const;
 
-  std::uint8_t contains(const std::string&);
+  std::uint8_t contains(const std::string&) const;
 
   void erase(const std::string&);
   void clear();

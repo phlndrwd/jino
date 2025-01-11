@@ -15,72 +15,10 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#ifndef INCLUDE_BUFFERTRAITS_H_
-#define INCLUDE_BUFFERTRAITS_H_
+#include "DatumBase.h"
 
-#include <cstdint>
-#include <string>
+jino::DatumBase::DatumBase(const std::uint8_t type) : type_(type) {}
 
-#include "Constants.h"
-
-namespace jino {
-template <typename T>
-struct BufferTraits;
-
-template <>
-struct BufferTraits<std::int8_t> {
-  static constexpr std::uint8_t type = consts::eInt8;
-};
-
-template <>
-struct BufferTraits<std::int16_t> {
-  static constexpr std::uint8_t type = consts::eInt16;
-};
-
-template <>
-struct BufferTraits<std::int32_t> {
-  static constexpr std::uint8_t type = consts::eInt32;
-};
-
-template <>
-struct BufferTraits<std::int64_t> {
-  static constexpr std::uint8_t type = consts::eInt64;
-};
-
-template <>
-struct BufferTraits<std::uint8_t> {
-  static constexpr std::uint8_t type = consts::eUInt8;
-};
-
-template <>
-struct BufferTraits<std::uint16_t> {
-  static constexpr std::uint8_t type = consts::eUInt16;
-};
-
-template <>
-struct BufferTraits<std::uint32_t> {
-  static constexpr std::uint8_t type = consts::eUInt32;
-};
-
-template <>
-struct BufferTraits<std::uint64_t> {
-  static constexpr std::uint8_t type = consts::eUInt64;
-};
-
-template <>
-struct BufferTraits<float> {
-  static constexpr std::uint8_t type = consts::eFloat;
-};
-
-template <>
-struct BufferTraits<double> {
-  static constexpr std::uint8_t type = consts::eDouble;
-};
-
-template <>
-struct BufferTraits<std::string> {
-  static constexpr std::uint8_t type = consts::eString;
-};
-}  // namespace jino
-
-#endif // INCLUDE_BUFFERTRAITS_H
+const std::uint8_t& jino::DatumBase::getType() const {
+  return type_;
+}

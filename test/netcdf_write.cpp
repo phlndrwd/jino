@@ -78,7 +78,8 @@ int main() {
       jino::Buffers::get().record();
     }
   }
-  jino::Buffers::get().toFile(attrs);
+
+  jino::Buffers::get().toFile(attrs, params);
 
   return 0;
 }

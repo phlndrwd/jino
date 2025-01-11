@@ -61,7 +61,6 @@ template void jino::Data::setValue<std::uint32_t>(const std::string&, const std:
 template void jino::Data::setValue<std::uint64_t>(const std::string&, const std::uint64_t);
 template void jino::Data::setValue<float>(const std::string&, const float);
 template void jino::Data::setValue<double>(const std::string&, const double);
-template void jino::Data::setValue<long double>(const std::string&, const long double);
 template void jino::Data::setValue<std::string>(const std::string&, const std::string);
 
 template <typename T>
@@ -89,13 +88,12 @@ template std::uint32_t jino::Data::getValue<std::uint32_t>(const std::string&) c
 template std::uint64_t jino::Data::getValue<std::uint64_t>(const std::string&) const;
 template float jino::Data::getValue<float>(const std::string&) const;
 template double jino::Data::getValue<double>(const std::string&) const;
-template long double jino::Data::getValue<long double>(const std::string&) const;
 template std::string jino::Data::getValue<std::string>(const std::string&) const;
 
 void jino::Data::forEachDatum(const std::function<void(const std::string&,
-                              const DatumBase&)>& callback) const {
+                              DatumBase* const)>& callback) const {
   for (const auto& [name, datum] : values_) {
-    callback(name, *datum.get());
+    callback(name, datum.get());
   }
 }
 
@@ -103,7 +101,7 @@ std::uint64_t jino::Data::size() const {
   return values_.size();
 }
 
-std::uint8_t jino::Data::contains(const std::string& key) {
+std::uint8_t jino::Data::contains(const std::string& key) const {
   auto it = values_.find(key);
   if (it != values_.end()) {
     return true;

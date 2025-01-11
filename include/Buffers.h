@@ -50,7 +50,7 @@ class Buffers {
   void forEachDimension(const std::function<void(const std::string&, const std::uint64_t)>&) const;
   void forEachBuffer(const std::function<void(const std::string&, BufferBase* const)>&) const;
 
-  void toFile(const Data&);
+  void toFile(Data&, const Data&);
   void print();
 
  private:

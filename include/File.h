@@ -49,7 +49,7 @@ class File {
   void close();
 
  private:
-  std::unique_ptr<netCDF::NcFile> file_;
+  std::unique_ptr<netCDF::NcFile> netCDF_;
 
   std::string path_;
   netCDF::NcFile::FileMode mode_;

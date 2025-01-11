@@ -17,6 +17,8 @@
 
 #include "Buffers.h"
 
+#include <chrono>
+#include <format>
 #include <stdexcept>
 #include <string>
 
@@ -75,8 +77,18 @@ void jino::Buffers::forEachBuffer(const std::function<void(const std::string&,
   }
 }
 
-void jino::Buffers::toFile(const jino::Data& attrs) {
-  writer_.toFile(attrs);
+void jino::Buffers::toFile(jino::Data& attrs, const jino::Data& params) {
+  auto now = std::chrono::system_clock::now();
+  auto nowSeconds = floor<std::chrono::seconds>(now);
+  std::string formattedTime = std::format(consts::kDateFormat, nowSeconds);
+  if (attrs.contains(consts::kDateKey) == true) {
+    std::uint8_t setDate = attrs.getValue<std::uint8_t>(consts::kDateKey);
+    attrs.erase(consts::kDateKey);
+    attrs.setValue<std::string>(consts::kDateKey, formattedTime);
+  }
+  const std::string path = "/usr/share/test/test.nc";
+  File file(path, netCDF::NcFile::replace);
+  writer_.toFile(file, attrs, params);
 }
 
 void jino::Buffers::print() {

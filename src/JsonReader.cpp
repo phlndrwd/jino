@@ -17,8 +17,6 @@
 
 #include "JsonReader.h"
 
-#include <chrono>
-#include <format>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -93,9 +91,6 @@ void jino::JsonReader::readAttrs(jino::Data& attrs) {
   std::string text;
   std::string path = consts::kInputPath + consts::kAttrsFile;
   readText(path, text);
-  auto now = std::chrono::system_clock::now();
-  auto nowSeconds = floor<std::chrono::seconds>(now);
-  std::string formatted_time = std::format("{:%Y-%m-%d_%H:%M:%S}", nowSeconds);
   try {
     json jsonData = json::parse(text);  // Arranged alphabetically
     if (jsonData.is_object()) {
@@ -111,13 +106,7 @@ void jino::JsonReader::readAttrs(jino::Data& attrs) {
             setValue(attrs, key, value.get<float>());
           }
         } else if (value.is_boolean()) {
-          std::uint8_t getDate = value.get<std::int8_t>();
-          if (strCompare(key, consts::kDateKey) == true && getDate == true) {
-            std::string formattedTime = std::format(consts::kDateFormat, nowSeconds);
-            setValue(attrs, key, formattedTime);
-          } else {
-            setValue(attrs, key, getDate);
-          }
+          setValue(attrs, key, value.get<std::uint8_t>());
         } else {
           throw std::runtime_error("Value type for key \"" + key + "\" is unsupported.");
         }
