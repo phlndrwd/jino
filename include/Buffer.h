@@ -30,8 +30,8 @@ class Buffers;
 template<class T>
 class Buffer : public BufferBase {
  public:
-  explicit Buffer(const std::string&, const std::uint64_t, T&);
-  explicit Buffer(const char*, const std::uint64_t, T&);
+  explicit Buffer(const std::string&, const std::uint64_t, const T&);
+  explicit Buffer(const char*, const std::uint64_t, const T&);
 
   ~Buffer();
 
@@ -56,7 +56,7 @@ class Buffer : public BufferBase {
 
 
  private:
-  T& var_;
+  const T& var_;
   std::vector<T> data_;
 
   std::uint64_t readIndex_;

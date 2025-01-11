@@ -26,14 +26,14 @@
 #include <vector>
 
 template <class T>
-jino::Buffer<T>::Buffer(const std::string& name, const std::uint64_t size, T& var) :
+jino::Buffer<T>::Buffer(const std::string& name, const std::uint64_t size, const T& var) :
                  BufferBase(name, BufferTraits<T>::type), data_(size), var_(var),
                  readIndex_(0), writeIndex_(0) {
   Buffers::get().attach(this);
 }
 
 template <class T>
-jino::Buffer<T>::Buffer(const char* name, const std::uint64_t size, T& var) :
+jino::Buffer<T>::Buffer(const char* name, const std::uint64_t size, const T& var) :
                  BufferBase(std::string(name), BufferTraits<T>::type), data_(size), var_(var),
                  readIndex_(0), writeIndex_(0) {
   Buffers::get().attach(this);

@@ -113,9 +113,9 @@ void jino::File::addAttribute(const std::string& name, const std::string attr) {
 
 template<> void jino::File::addData<std::uint64_t>(const std::string& name,
                                                    const std::vector<std::uint64_t> &data) {
-  std::vector<unsigned long long> castedData(data.size());
+  std::vector<unsigned long long> castedData(data.size());  /// NOLINT(runtime/int)
   std::transform(data.begin(), data.end(), castedData.begin(), [](std::uint64_t value) {
-    return static_cast<unsigned long long>(value);
+    return static_cast<unsigned long long>(value);  /// NOLINT(runtime/int)
   });
   auto var = file_->getVar(name);
   var.putVar(castedData.data());
