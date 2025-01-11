@@ -32,6 +32,13 @@ jino::Buffer<T>::Buffer(const std::string& name, const std::uint64_t size) :
   Buffers::get().attach(this);
 }
 
+template <class T>
+jino::Buffer<T>::Buffer(const char* name, const std::uint64_t size) :
+                 BufferBase(std::string(name), BufferTraits<T>::type), data_(size),
+                 readIndex_(0), writeIndex_(0) {
+  Buffers::get().attach(this);
+}
+
 template class jino::Buffer<std::int8_t>;
 template class jino::Buffer<std::int16_t>;
 template class jino::Buffer<std::int32_t>;

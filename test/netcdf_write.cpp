@@ -22,7 +22,7 @@
 #include "JsonReader.h"
 
 void outOfScopeTest(const std::uint64_t dataSize) {
-  auto testBuffer = jino::Buffers::get().newBuffer<std::uint64_t>("testBuffer", dataSize);
+  auto testBuffer = jino::Buffer<std::uint64_t>("testBuffer", dataSize);
 }
 
 long double calcIncrement(const float min, const float max, const std::uint64_t timeSteps) {
@@ -69,8 +69,8 @@ int main() {
 
   long double y = 0;
   std::uint64_t t = 0;
-  auto yBuffer = jino::Buffers::get().newBuffer<double>("Y", dataSize);
-  auto tBuffer = jino::Buffers::get().newBuffer<std::uint64_t>("t", dataSize);
+  auto yBuffer = jino::Buffer<double>("Y", dataSize);
+  auto tBuffer = jino::Buffer<std::uint64_t>("t", dataSize);
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
     if (t % samplingRate == 0) {

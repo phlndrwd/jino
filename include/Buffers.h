@@ -40,12 +40,6 @@ class Buffers {
   void attach(BufferBase* const);
   void detach(BufferBase* const);
 
-  template<class T>
-  Buffer<T> newBuffer(const std::string&, const std::uint64_t);
-
-  template<class T>
-  Buffer<T> newBuffer(const char*, const std::uint64_t);
-
   void addDimension(const std::string&, const std::uint64_t);
   void addDimension(const char*, const std::uint64_t);
 
