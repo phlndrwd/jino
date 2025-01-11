@@ -20,10 +20,10 @@
 #include <iostream>
 #include <string>
 
-#include "Buffers.h"
 #include "Constants.h"
 #include "Datum.h"
 #include "File.h"
+#include "Output.h"
 
 void jino::Writer::toFile(File& file, const jino::Data& attrs, const jino::Data& params) const {
   addDims(file);
@@ -33,7 +33,7 @@ void jino::Writer::toFile(File& file, const jino::Data& attrs, const jino::Data&
 }
 
 void jino::Writer::addDims(File& file) const {
-  Buffers::get().forEachDimension([&](const std::string& name, const std::uint64_t size) {
+  Output::get().forEachDimension([&](const std::string& name, const std::uint64_t size) {
     file.addDimension(name, size);
   });
 }
@@ -101,10 +101,10 @@ void jino::Writer::addAttrs(File& file, const jino::Data& attrs) const {
 }
 
 void jino::Writer::addData(File& file) const {
-  Buffers::get().forEachBuffer([&](const std::string& name, BufferBase* const buffer) {
+  Output::get().forEachBuffer([&](const std::string& name, BufferBase* const buffer) {
     std::cout << "Buffer name: " << name << std::endl;
     if (buffer != nullptr) {
-      std::string dimName = Buffers::get().getDimensionName(buffer->size());
+      std::string dimName = Output::get().getDimensionName(buffer->size());
       file.addVariable(name, "double", dimName);
       switch (buffer->getType()) {
         case consts::eInt8: {

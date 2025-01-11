@@ -28,14 +28,14 @@
 #include "Writer.h"
 
 namespace jino {
-class Buffers {
+class Output {
  public:
-  Buffers(Buffers&&)                 = delete;
-  Buffers(const Buffers&)            = delete;
-  Buffers& operator=(Buffers&&)      = delete;
-  Buffers& operator=(const Buffers&) = delete;
+  Output(Output&&)                 = delete;
+  Output(const Output&)            = delete;
+  Output& operator=(Output&&)      = delete;
+  Output& operator=(const Output&) = delete;
 
-  static Buffers& get();
+  static Output& get();
 
   void record();
 
@@ -54,8 +54,8 @@ class Buffers {
   void print();
 
  private:
-  Buffers() = default;
-  ~Buffers() = default;
+  Output() = default;
+  ~Output() = default;
 
   std::map<const std::string, BufferBase* const> buffers_;
   std::map<const std::uint64_t, const std::string> dimensions_;

@@ -69,12 +69,12 @@ endif()
 list(APPEND JINO_SOURCES
   src/Buffer.cpp
   src/BufferBase.cpp
-  src/Buffers.cpp
   src/Data.cpp
   src/Datum.cpp
   src/DatumBase.cpp
   src/File.cpp
   src/JsonReader.cpp
+  src/Output.cpp
   src/Writer.cpp
 )
 
@@ -82,13 +82,13 @@ list(APPEND JINO_HEADERS
   include/Buffer.h
   include/BufferBase.h
   include/BufferTraits.h
-  include/Buffers.h
   include/Constants.h
   include/Data.h
   include/Datum.h
   include/DatumBase.h
   include/File.h
   include/JsonReader.h
+  include/Output.h
   include/Writer.h
 )
 

@@ -16,8 +16,8 @@
 **********************************************************************************************/
 
 #include "Buffer.h"
-#include "Buffers.h"
 #include "Constants.h"
+#include "Output.h"
 #include "Types.h"
 
 #include <iostream>
@@ -29,14 +29,14 @@ template <class T>
 jino::Buffer<T>::Buffer(const std::string& name, const std::uint64_t size, const T& var) :
                  BufferBase(name, Types<T>::type), data_(size), var_(var),
                  readIndex_(0), writeIndex_(0) {
-  Buffers::get().attach(this);
+  Output::get().attach(this);
 }
 
 template <class T>
 jino::Buffer<T>::Buffer(const char* name, const std::uint64_t size, const T& var) :
                  BufferBase(std::string(name), Types<T>::type), data_(size), var_(var),
                  readIndex_(0), writeIndex_(0) {
-  Buffers::get().attach(this);
+  Output::get().attach(this);
 }
 
 template class jino::Buffer<std::int8_t>;
@@ -53,7 +53,7 @@ template class jino::Buffer<std::string>;
 
 template <class T>
 jino::Buffer<T>::~Buffer() {
-  Buffers::get().detach(this);
+  Output::get().detach(this);
   data_.clear();
 }
 

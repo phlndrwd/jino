@@ -16,10 +16,10 @@
 **********************************************************************************************/
 
 #include "Buffer.h"
-#include "Buffers.h"
 #include "Constants.h"
 #include "Data.h"
 #include "JsonReader.h"
+#include "Output.h"
 
 void outOfScopeTest(const std::uint64_t dataSize) {
   std::uint64_t x = 0;
@@ -66,7 +66,7 @@ int main() {
 
   outOfScopeTest(dataSize);
 
-  jino::Buffers::get().addDimension("dataSize", dataSize);
+  jino::Output::get().addDimension("dataSize", dataSize);
 
   double y = 0;
   std::uint64_t t = 0;
@@ -75,10 +75,10 @@ int main() {
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
     if (t % samplingRate == 0) {
-      jino::Buffers::get().record();
+      jino::Output::get().record();
     }
   }
-  jino::Buffers::get().print();
+  jino::Output::get().print();
 
   return 0;
 }

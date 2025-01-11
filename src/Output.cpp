@@ -15,25 +15,25 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#include "Buffers.h"
+#include "Output.h"
 
 #include <chrono>
 #include <format>
 #include <stdexcept>
 #include <string>
 
-jino::Buffers& jino::Buffers::get() {
-  static Buffers this_;
+jino::Output& jino::Output::get() {
+  static Output this_;
   return this_;
 }
 
-void jino::Buffers::record() {
+void jino::Output::record() {
   for (const auto& [name, buffer] : buffers_) {
     buffer->record();
   }
 }
 
-void jino::Buffers::attach(BufferBase* const buffer) {
+void jino::Output::attach(BufferBase* const buffer) {
   auto it = buffers_.find(buffer->getName());
   if (it == buffers_.end()) {
     buffers_.insert({buffer->getName(), buffer});
@@ -42,7 +42,7 @@ void jino::Buffers::attach(BufferBase* const buffer) {
   }
 }
 
-void jino::Buffers::detach(BufferBase* const buffer) {
+void jino::Output::detach(BufferBase* const buffer) {
   auto it = buffers_.find(buffer->getName());
   if (it != buffers_.end()) {
     buffers_.erase(it);
@@ -51,33 +51,33 @@ void jino::Buffers::detach(BufferBase* const buffer) {
   }
 }
 
-void jino::Buffers::addDimension(const std::string& name, const std::uint64_t size) {
+void jino::Output::addDimension(const std::string& name, const std::uint64_t size) {
   dimensions_.insert({size, name});
 }
 
-void jino::Buffers::addDimension(const char* name, const std::uint64_t size) {
+void jino::Output::addDimension(const char* name, const std::uint64_t size) {
   addDimension(std::string(name), size);
 }
 
-std::string jino::Buffers::getDimensionName(const std::uint64_t size) const {
+std::string jino::Output::getDimensionName(const std::uint64_t size) const {
   return dimensions_.at(size);
 }
 
-void jino::Buffers::forEachDimension(const std::function<void(const std::string&,
+void jino::Output::forEachDimension(const std::function<void(const std::string&,
                                      const std::uint64_t)>& callback) const {
   for (const auto& [size, name] : dimensions_) {
     callback(name, size);
   }
 }
 
-void jino::Buffers::forEachBuffer(const std::function<void(const std::string&,
+void jino::Output::forEachBuffer(const std::function<void(const std::string&,
                                   BufferBase* const)>& callback) const {
   for (const auto& [name, buffer] : buffers_) {
     callback(name, buffer);
   }
 }
 
-void jino::Buffers::toFile(jino::Data& attrs, const jino::Data& params) {
+void jino::Output::toFile(jino::Data& attrs, const jino::Data& params) {
   auto now = std::chrono::system_clock::now();
   auto nowSeconds = floor<std::chrono::seconds>(now);
   std::string formattedTime = std::format(consts::kDateFormat, nowSeconds);
@@ -91,7 +91,7 @@ void jino::Buffers::toFile(jino::Data& attrs, const jino::Data& params) {
   writer_.toFile(file, attrs, params);
 }
 
-void jino::Buffers::print() {
+void jino::Output::print() {
   for (auto const& [name, buffer] : buffers_) {
     if (buffer != nullptr) {
       buffer->print();
