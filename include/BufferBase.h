@@ -36,8 +36,10 @@ class BufferBase {
   const std::string& getName() const;
   const std::uint8_t& getType() const;
 
-  virtual std::uint64_t size() const = 0;
+  virtual void record() = 0;
   virtual void print() = 0;
+
+  virtual std::uint64_t size() const = 0;
 
  protected:
   const std::string name_;

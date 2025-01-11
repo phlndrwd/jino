@@ -37,6 +37,8 @@ class Buffers {
 
   static Buffers& get();
 
+  void record();
+
   void attach(BufferBase* const);
   void detach(BufferBase* const);
 

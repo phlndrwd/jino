@@ -76,11 +76,9 @@ int main() {
     y = yMin + t * yInc;
 
     if (t % samplingRate == 0) {
-      yBuffer.record();
-      tBuffer.record();
+      jino::Buffers::get().record();
     }
   }
-  jino::Buffers::get().print();
   jino::Buffers::get().toFile(attrs);
 
   return 0;

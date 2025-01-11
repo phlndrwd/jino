@@ -65,6 +65,18 @@ template<class T> void jino::Buffer<T>::record() {
   ++writeIndex_;
 }
 
+template<class T>
+void jino::Buffer<T>::print() {
+  for (std::uint64_t i = 0; i < data_.size(); ++i) {
+    std::cout << name_ << consts::kSeparator << data_.at(i) << std::endl;
+  }
+}
+
+template<class T>
+std::uint64_t jino::Buffer<T>::size() const {
+  return data_.size();
+}
+
 template<class T> T& jino::Buffer<T>::at(const std::uint64_t index) {
   if (index >= data_.size()) {
     throw std::out_of_range("Index out of range.");
@@ -98,18 +110,6 @@ template<class T> const T& jino::Buffer<T>::getNext() {
 }
 
 template<class T>
-std::uint64_t jino::Buffer<T>::size() const {
-  return data_.size();
-}
-
-template<class T>
 const std::vector<T>& jino::Buffer<T>::getData() const {
   return data_;
-}
-
-template<class T>
-void jino::Buffer<T>::print() {
-  for (std::uint64_t i = 0; i < data_.size(); ++i) {
-    std::cout << name_ << consts::kSeparator << data_.at(i) << std::endl;
-  }
 }

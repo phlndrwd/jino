@@ -25,6 +25,12 @@ jino::Buffers& jino::Buffers::get() {
   return this_;
 }
 
+void jino::Buffers::record() {
+  for (const auto& [name, buffer] : buffers_) {
+    buffer->record();
+  }
+}
+
 void jino::Buffers::attach(BufferBase* const buffer) {
   auto it = buffers_.find(buffer->getName());
   if (it == buffers_.end()) {

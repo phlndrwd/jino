@@ -41,7 +41,10 @@ class Buffer : public BufferBase {
   Buffer& operator=(Buffer&&)      = delete;
   Buffer& operator=(const Buffer&) = delete;
 
-  void record();
+  void record() override;
+  void print() override;
+
+  std::uint64_t size() const override;
 
   T& at(const std::uint64_t);
   const T& at(const std::uint64_t) const;
@@ -49,11 +52,8 @@ class Buffer : public BufferBase {
   T& setNext();
   const T& getNext();
 
-  std::uint64_t size() const override;
-
   const std::vector<T>& getData() const;
 
-  void print() override;
 
  private:
   T& var_;
