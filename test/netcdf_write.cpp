@@ -74,6 +74,7 @@ int main() {
   auto tBuffer = jino::Buffer<std::uint64_t>("t", dataSize, t);
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
+
     if (t % samplingRate == 0) {
       yBuffer.record();
       tBuffer.record();

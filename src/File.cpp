@@ -19,6 +19,7 @@
 
 #include <netcdf>
 
+#include <algorithm>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -110,6 +111,16 @@ void jino::File::addAttribute(const std::string& name, const std::string attr) {
   file_->putAtt(name, attr);
 }
 
+template<> void jino::File::addData<std::uint64_t>(const std::string& name,
+                                                   const std::vector<std::uint64_t> &data) {
+  std::vector<unsigned long long> castedData(data.size());
+  std::transform(data.begin(), data.end(), castedData.begin(), [](std::uint64_t value) {
+    return static_cast<unsigned long long>(value);
+  });
+  auto var = file_->getVar(name);
+  var.putVar(castedData.data());
+}
+
 template <typename T>
 void jino::File::addData(const std::string& name, const std::vector<T>& data) {
   auto var = file_->getVar(name);
@@ -130,8 +141,6 @@ template void jino::File::addData<std::uint16_t>(const std::string&,
               const std::vector<std::uint16_t>&);
 template void jino::File::addData<std::uint32_t>(const std::string&,
               const std::vector<std::uint32_t>&);
-template void jino::File::addData<std::uint64_t>(const std::string&,
-              const std::vector<std::uint64_t>&);
 template void jino::File::addData<float>(const std::string&,
               const std::vector<float>&);
 template void jino::File::addData<double>(const std::string&,
