@@ -67,13 +67,15 @@ int main() {
 
   jino::Buffers::get().addDimension("dataSize", dataSize);
 
+  long double y = 0;
+  std::uint64_t t = 0;
   auto yBuffer = jino::Buffers::get().newBuffer<double>("Y", dataSize);
   auto tBuffer = jino::Buffers::get().newBuffer<std::uint64_t>("t", dataSize);
-  for (std::uint64_t t = 0; t <= maxTimeStep; ++t) {
-    long double y = yMin + t * yInc;
+  for (t = 0; t <= maxTimeStep; ++t) {
+    y = yMin + t * yInc;
     if (t % samplingRate == 0) {
-      yBuffer.setNext() = y;
-      tBuffer.setNext() = t;
+      //yBuffer.setNext() = y;
+      //tBuffer.setNext() = t;
     }
   }
   jino::Buffers::get().toFile(attrs);

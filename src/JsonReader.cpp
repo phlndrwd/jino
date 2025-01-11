@@ -33,6 +33,13 @@ std::streamsize getFileSize(const std::string& path) {
   }
   return file.tellg();
 }
+
+std::uint8_t strCompare(const std::string& str1, const std::string& str2) {
+  return str1.size() == str2.size() && std::equal(str1.begin(), str1.end(), str2.begin(),
+                                                  [](unsigned char c1, unsigned char c2) {
+    return std::tolower(c1) == std::tolower(c2);
+  });
+}
 }  // Anonymous namespace
 
 void jino::JsonReader::readText(const std::string& path, std::string& text) {
@@ -105,7 +112,7 @@ void jino::JsonReader::readAttrs(jino::Data& attrs) {
           }
         } else if (value.is_boolean()) {
           std::uint8_t getDate = value.get<std::int8_t>();
-          if (key == consts::kDateKey && getDate == true) {
+          if (strCompare(key, consts::kDateKey) == true && getDate == true) {
             std::string formattedTime = std::format(consts::kDateFormat, nowSeconds);
             setValue(attrs, key, formattedTime);
           } else {
