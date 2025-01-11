@@ -175,10 +175,6 @@ void jino::JsonReader::setValue(Data& params, const std::string& paramName,
       setValue(params, paramName, static_cast<double>(jsonValue));
       break;
     }
-    case consts::eLongDouble: {
-      setValue(params, paramName, static_cast<long double>(jsonValue));
-      break;
-    }
     case consts::eString: {
       setValue(params, paramName, static_cast<std::string>(jsonValue));
       break;

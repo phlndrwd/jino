@@ -43,7 +43,6 @@ enum eDataTypes : std::uint8_t {
   eUInt64,
   eFloat,
   eDouble,
-  eLongDouble,
   eString,
   eNumberOfDataTypes
 };
@@ -67,15 +66,15 @@ constexpr std::string_view kDateFormat = "{:%Y-%m-%d_%H:%M:%S}";
 
 const std::array<std::string, eNumberOfDataTypes> kDataTypeNames = {
   "byte",
-  "char",
   "short",
   "int",
-  "float",
-  "double",
+  "long int",
   "unsigned byte",
   "unsigned short",
   "unsigned int",
-  "long int",
+  "unsigned long",
+  "float",
+  "double",
   "std::string"
 };
 

@@ -62,10 +62,11 @@ int main() {
   assert(params.size() == jino::consts::kParamNames.size() - 1);
 
   std::cout << "5. Testing buffer creation..." << std::endl;
-  auto buffer = jino::Buffer<std::uint64_t>("test", samplingRate);
+  std::uint64_t i = 0;
+  auto buffer = jino::Buffer<std::uint64_t>("test", samplingRate, i);
   assert(buffer.size() == samplingRate);
-  for (std::uint64_t i = 0; i < samplingRate; ++i) {
-    buffer.at(i) = i;
+  for (i = 0; i < samplingRate; ++i) {
+    buffer.record();
   }
   assert(buffer.at(samplingRate - 1) == samplingRate - 1);
   std::cout << "All Passed." << std::endl;

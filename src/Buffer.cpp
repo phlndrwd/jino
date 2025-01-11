@@ -26,15 +26,15 @@
 #include <vector>
 
 template <class T>
-jino::Buffer<T>::Buffer(const std::string& name, const std::uint64_t size) :
-                 BufferBase(name, BufferTraits<T>::type), data_(size),
+jino::Buffer<T>::Buffer(const std::string& name, const std::uint64_t size, T& var) :
+                 BufferBase(name, BufferTraits<T>::type), data_(size), var_(var),
                  readIndex_(0), writeIndex_(0) {
   Buffers::get().attach(this);
 }
 
 template <class T>
-jino::Buffer<T>::Buffer(const char* name, const std::uint64_t size) :
-                 BufferBase(std::string(name), BufferTraits<T>::type), data_(size),
+jino::Buffer<T>::Buffer(const char* name, const std::uint64_t size, T& var) :
+                 BufferBase(std::string(name), BufferTraits<T>::type), data_(size), var_(var),
                  readIndex_(0), writeIndex_(0) {
   Buffers::get().attach(this);
 }
@@ -49,13 +49,20 @@ template class jino::Buffer<std::uint32_t>;
 template class jino::Buffer<std::uint64_t>;
 template class jino::Buffer<float>;
 template class jino::Buffer<double>;
-template class jino::Buffer<long double>;
 template class jino::Buffer<std::string>;
 
 template <class T>
 jino::Buffer<T>::~Buffer() {
   Buffers::get().detach(this);
   data_.clear();
+}
+
+template<class T> void jino::Buffer<T>::record() {
+  if (writeIndex_ >= data_.size()) {
+    throw std::out_of_range("WriteIndex out of range.");
+  }
+  data_.at(writeIndex_) = var_;
+  ++writeIndex_;
 }
 
 template<class T> T& jino::Buffer<T>::at(const std::uint64_t index) {

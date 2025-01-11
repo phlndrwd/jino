@@ -91,11 +91,6 @@ void jino::Writer::toFile(const jino::Data& attrs) {
           file.addData<double>(name, typedBuffer->getData());
           break;
         }
-        case consts::eLongDouble: {
-          auto typedBuffer = static_cast<Buffer<long double>*>(buffer);
-          file.addData<long double>(name, typedBuffer->getData());
-          break;
-        }
         case consts::eString: {
           auto typedBuffer = static_cast<Buffer<std::string>*>(buffer);
           file.addData<std::string>(name, typedBuffer->getData());

@@ -78,11 +78,6 @@ struct BufferTraits<double> {
 };
 
 template <>
-struct BufferTraits<long double> {
-  static constexpr std::uint8_t type = consts::eLongDouble;
-};
-
-template <>
 struct BufferTraits<std::string> {
   static constexpr std::uint8_t type = consts::eString;
 };
