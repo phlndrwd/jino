@@ -26,10 +26,10 @@
 #include <vector>
 
 template <class T>
-jino::Buffer<T>::Buffer(const std::string& name, const std::uint64_t size, Buffers* const parent) :
-                 BufferBase(name, BufferTraits<T>::type), parent_(parent), data_(size),
+jino::Buffer<T>::Buffer(const std::string& name, const std::uint64_t size) :
+                 BufferBase(name, BufferTraits<T>::type), data_(size),
                  readIndex_(0), writeIndex_(0) {
-  parent_->attach(this);
+  Buffers::get().attach(this);
 }
 
 template class jino::Buffer<std::int8_t>;
@@ -47,7 +47,7 @@ template class jino::Buffer<std::string>;
 
 template <class T>
 jino::Buffer<T>::~Buffer() {
-  parent_->detach(this);
+  Buffers::get().detach(this);
   data_.clear();
 }
 

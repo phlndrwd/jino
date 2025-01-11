@@ -74,8 +74,8 @@ int main() {
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
     if (t % samplingRate == 0) {
-      //yBuffer.setNext() = y;
-      //tBuffer.setNext() = t;
+      // yBuffer.setNext() = y;
+      // tBuffer.setNext() = t;
     }
   }
   jino::Buffers::get().toFile(attrs);

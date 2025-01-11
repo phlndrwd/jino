@@ -30,9 +30,9 @@ class Buffers;
 template<class T>
 class Buffer : public BufferBase {
  public:
-  ~Buffer();
+  explicit Buffer(const std::string&, const std::uint64_t);
 
-  friend class Buffers;
+  ~Buffer();
 
   Buffer()                         = delete;
   Buffer(Buffer&&)                 = delete;
@@ -53,9 +53,6 @@ class Buffer : public BufferBase {
   void print() override;
 
  private:
-  explicit Buffer(const std::string&, const std::uint64_t, Buffers* const);
-
-  Buffers* const parent_;
   std::vector<T> data_;
 
   std::uint64_t readIndex_;

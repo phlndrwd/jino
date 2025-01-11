@@ -45,7 +45,7 @@ void jino::Buffers::detach(BufferBase* const buffer) {
 
 template<class T>
 jino::Buffer<T> jino::Buffers::newBuffer(const std::string& name, const std::uint64_t size) {
-  return Buffer<T>(name, size, this);
+  return Buffer<T>(name, size);
 }
 
 template jino::Buffer<std::int8_t> jino::Buffers::newBuffer(const std::string&,
