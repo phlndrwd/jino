@@ -40,7 +40,7 @@ void jino::Writer::addDims(File& file) const {
 
 void jino::Writer::addAttrs(File& file, const jino::Data& attrs) const {
   attrs.forEachDatum([&](const std::string& key, DatumBase* const datum) {
-    switch(datum->getType()) {
+    switch (datum->getType()) {
       case consts::eInt8: {
         auto typedDatum = static_cast<Datum<std::int8_t>*>(datum);
         file.addAttribute(key, typedDatum->getValue());

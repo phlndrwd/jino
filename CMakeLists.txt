@@ -72,6 +72,7 @@ list(APPEND JINO_SOURCES
   src/Buffers.cpp
   src/Data.cpp
   src/Datum.cpp
+  src/DatumBase.cpp
   src/File.cpp
   src/JsonReader.cpp
   src/Writer.cpp
@@ -112,8 +113,7 @@ add_test(NAME coding_norms
 
 foreach(TEST_SOURCE ${TEST_SOURCES})
   get_filename_component(EXECUTABLE_NAME ${TEST_SOURCE} NAME_WE)
-  add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE}
-    src/DatumBase.cpp)
+  add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE})
   target_link_libraries(${EXECUTABLE_NAME} PRIVATE jino)
   add_test(NAME ${EXECUTABLE_NAME} COMMAND ${EXECUTABLE_NAME})
 endforeach()
