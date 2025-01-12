@@ -18,19 +18,52 @@
 #include "Output.h"
 
 #include <chrono>
+#include <filesystem>
 #include <format>
 #include <stdexcept>
 #include <string>
+
+namespace {
+  std::string getFormattedDateStr() {
+    auto now = std::chrono::system_clock::now();
+    auto nowSeconds = floor<std::chrono::seconds>(now);
+    return std::format(jino::consts::kDateFormat, nowSeconds);
+  }
+}
+
+jino::Output::Output() : formattedDate_(getFormattedDateStr()), attrs_(nullptr) {
+  initDir();
+}
 
 jino::Output& jino::Output::get() {
   static Output this_;
   return this_;
 }
 
+void jino::Output::initDir() {
+}
+
+
 void jino::Output::record() {
   for (const auto& [name, buffer] : buffers_) {
     buffer->record();
   }
+}
+
+void jino::Output::addAttrs(Data* const attrs) {
+  attrs_ = attrs;
+  if (attrs_ != nullptr) {
+    if (attrs_->contains(consts::kDateKey) == true) {
+      if (attrs_->getValue<std::uint8_t>(consts::kDateKey) == true) {
+        attrs_->erase(consts::kDateKey);
+        attrs_->setValue<std::string>(consts::kDateKey, formattedDate_);
+      }
+    }
+  }
+}
+
+void jino::Output::addParams(Data* const params) {
+  params_ = params;
 }
 
 void jino::Output::attach(BufferBase* const buffer) {
@@ -77,18 +110,18 @@ void jino::Output::forEachBuffer(const std::function<void(const std::string&,
   }
 }
 
-void jino::Output::toFile(jino::Data& attrs, const jino::Data& params) {
-  auto now = std::chrono::system_clock::now();
-  auto nowSeconds = floor<std::chrono::seconds>(now);
-  std::string formattedTime = std::format(consts::kDateFormat, nowSeconds);
-  if (attrs.contains(consts::kDateKey) == true) {
-    std::uint8_t setDate = attrs.getValue<std::uint8_t>(consts::kDateKey);
-    attrs.erase(consts::kDateKey);
-    attrs.setValue<std::string>(consts::kDateKey, formattedTime);
+void jino::Output::toFile() {
+  const std::string path = consts::kOutputDir + formattedDate_ + ".nc";
+  const std::filesystem::path dir = std::filesystem::path(path).parent_path();
+  try {
+    if (!std::filesystem::exists(dir)) {
+      std::filesystem::create_directories(dir);
+    }
+    File file(path, netCDF::NcFile::replace);
+    writer_.toFile(file, attrs_, params_);
+  } catch (const std::exception& e) {
+    std::cerr << e.what() << std::endl;
   }
-  const std::string path = "/usr/share/test/test.nc";
-  File file(path, netCDF::NcFile::replace);
-  writer_.toFile(file, attrs, params);
 }
 
 void jino::Output::print() {

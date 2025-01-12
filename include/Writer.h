@@ -28,10 +28,10 @@ class Writer {
  public:
   Writer() = default;
 
-  void toFile(File&, const jino::Data& attrs, const jino::Data& params) const;
+  void toFile(File&, Data* const, Data* const) const;
 
  private:
-  void addAttrs(File&, const Data&) const;
+  void addAttrs(File&, Data* const) const;
   void addDims(File&) const;
   void addData(File&) const;
 };

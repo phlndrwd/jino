@@ -20,7 +20,6 @@
 #include <netcdf>
 
 #include <algorithm>
-#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
@@ -31,9 +30,7 @@ jino::File::File(const std::string& path, const netCDF::NcFile::FileMode mode) :
     netCDF_ = std::make_unique<netCDF::NcFile>(path_, mode_);
   } catch (netCDF::exceptions::NcException& error) {
     close();
-    std::cout << "ERROR: Could not access file \"" << path_ << "\"..." << std::endl;
-    std::cerr << error.what() << std::endl;
-    std::exit(EXIT_FAILURE);
+    throw std::runtime_error("ERROR: Could not access file \"" + path_ + "\".");
   }
 }
 
@@ -144,6 +141,8 @@ template void jino::File::addData<std::string>(const std::string&,
               const std::vector<std::string>&);
 
 void jino::File::close() {
-  netCDF_->close();
-  netCDF_.reset();
+  if (netCDF_ != nullptr) {
+    netCDF_->close();
+    netCDF_.reset();
+  }
 }

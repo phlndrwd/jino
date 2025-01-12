@@ -52,8 +52,12 @@ int main() {
   jino::Data params;
   jino::Data attrs;
   jino::JsonReader jsonReader;
+
   jsonReader.readParams(params);
   jsonReader.readAttrs(attrs);
+
+  jino::Output::get().addParams(&params);
+  jino::Output::get().addAttrs(&attrs);
 
   const std::uint64_t maxTimeStep = params.getValue<std::uint64_t>(jino::consts::kMaxTimeStep);
   const std::uint64_t samplingRate = params.getValue<std::uint64_t>(jino::consts::kSamplingRate);
@@ -79,7 +83,7 @@ int main() {
     }
   }
 
-  jino::Output::get().toFile(attrs, params);
+  jino::Output::get().toFile();
 
   return 0;
 }

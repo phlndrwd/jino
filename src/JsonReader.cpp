@@ -63,7 +63,7 @@ void jino::JsonReader::readText(const std::string& path, std::string& text) {
 
 void jino::JsonReader::readParams(jino::Data& params) {
   std::string text;
-  std::string path = consts::kInputPath + consts::kParamsFile;
+  std::string path = consts::kInputDir + consts::kParamsFile;
   readText(path, text);
   try {
     json jsonData = json::parse(text);  // Arranged alphabetically
@@ -89,7 +89,7 @@ void jino::JsonReader::readParams(jino::Data& params) {
 
 void jino::JsonReader::readAttrs(jino::Data& attrs) {
   std::string text;
-  std::string path = consts::kInputPath + consts::kAttrsFile;
+  std::string path = consts::kInputDir + consts::kAttrsFile;
   readText(path, text);
   try {
     json jsonData = json::parse(text);  // Arranged alphabetically

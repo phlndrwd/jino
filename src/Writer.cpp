@@ -25,7 +25,7 @@
 #include "File.h"
 #include "Output.h"
 
-void jino::Writer::toFile(File& file, const jino::Data& attrs, const jino::Data& params) const {
+void jino::Writer::toFile(File& file, Data* const attrs, Data* const params) const {
   addDims(file);
   addAttrs(file, attrs);
   addAttrs(file, params);
@@ -38,66 +38,68 @@ void jino::Writer::addDims(File& file) const {
   });
 }
 
-void jino::Writer::addAttrs(File& file, const jino::Data& attrs) const {
-  attrs.forEachDatum([&](const std::string& key, DatumBase* const datum) {
-    switch (datum->getType()) {
-      case consts::eInt8: {
-        auto typedDatum = static_cast<Datum<std::int8_t>*>(datum);
-        file.addAttribute(key, typedDatum->getValue());
-        break;
+void jino::Writer::addAttrs(File& file, Data* const attrs) const {
+  if (attrs != nullptr) {
+    attrs->forEachDatum([&](const std::string& key, DatumBase* const datum) {
+      switch (datum->getType()) {
+        case consts::eInt8: {
+          auto typedDatum = static_cast<Datum<std::int8_t>*>(datum);
+          file.addAttribute(key, typedDatum->getValue());
+          break;
+        }
+        case consts::eInt16: {
+          auto typedDatum = static_cast<Datum<std::int16_t>*>(datum);
+          file.addAttribute(key, typedDatum->getValue());
+          break;
+        }
+        case consts::eInt32: {
+          auto typedDatum = static_cast<Datum<std::int32_t>*>(datum);
+          file.addAttribute(key, typedDatum->getValue());
+          break;
+        }
+        case consts::eInt64: {
+          auto typedDatum = static_cast<Datum<std::int64_t>*>(datum);
+          file.addAttribute(key, typedDatum->getValue());
+          break;
+        }
+        case consts::eUInt8: {
+          auto typedDatum = static_cast<Datum<std::uint8_t>*>(datum);
+          file.addAttribute(key, typedDatum->getValue());
+          break;
+        }
+        case consts::eUInt16: {
+          auto typedDatum = static_cast<Datum<std::uint16_t>*>(datum);
+          file.addAttribute(key, typedDatum->getValue());
+          break;
+        }
+        case consts::eUInt32: {
+          auto typedDatum = static_cast<Datum<std::uint32_t>*>(datum);
+          file.addAttribute(key, typedDatum->getValue());
+          break;
+        }
+        case consts::eUInt64: {
+          auto typedDatum = static_cast<Datum<std::uint64_t>*>(datum);
+          file.addAttribute(key, typedDatum->getValue());
+          break;
+        }
+        case consts::eFloat: {
+          auto typedDatum = static_cast<Datum<float>*>(datum);
+          file.addAttribute(key, typedDatum->getValue());
+          break;
+        }
+        case consts::eDouble: {
+          auto typedDatum = static_cast<Datum<double>*>(datum);
+          file.addAttribute(key, typedDatum->getValue());
+          break;
+        }
+        case consts::eString: {
+          auto typedDatum = static_cast<Datum<std::string>*>(datum);
+          file.addAttribute(key, typedDatum->getValue());
+          break;
+        }
       }
-      case consts::eInt16: {
-        auto typedDatum = static_cast<Datum<std::int16_t>*>(datum);
-        file.addAttribute(key, typedDatum->getValue());
-        break;
-      }
-      case consts::eInt32: {
-        auto typedDatum = static_cast<Datum<std::int32_t>*>(datum);
-        file.addAttribute(key, typedDatum->getValue());
-        break;
-      }
-      case consts::eInt64: {
-        auto typedDatum = static_cast<Datum<std::int64_t>*>(datum);
-        file.addAttribute(key, typedDatum->getValue());
-        break;
-      }
-      case consts::eUInt8: {
-        auto typedDatum = static_cast<Datum<std::uint8_t>*>(datum);
-        file.addAttribute(key, typedDatum->getValue());
-        break;
-      }
-      case consts::eUInt16: {
-        auto typedDatum = static_cast<Datum<std::uint16_t>*>(datum);
-        file.addAttribute(key, typedDatum->getValue());
-        break;
-      }
-      case consts::eUInt32: {
-        auto typedDatum = static_cast<Datum<std::uint32_t>*>(datum);
-        file.addAttribute(key, typedDatum->getValue());
-        break;
-      }
-      case consts::eUInt64: {
-        auto typedDatum = static_cast<Datum<std::uint64_t>*>(datum);
-        file.addAttribute(key, typedDatum->getValue());
-        break;
-      }
-      case consts::eFloat: {
-        auto typedDatum = static_cast<Datum<float>*>(datum);
-        file.addAttribute(key, typedDatum->getValue());
-        break;
-      }
-      case consts::eDouble: {
-        auto typedDatum = static_cast<Datum<double>*>(datum);
-        file.addAttribute(key, typedDatum->getValue());
-        break;
-      }
-      case consts::eString: {
-        auto typedDatum = static_cast<Datum<std::string>*>(datum);
-        file.addAttribute(key, typedDatum->getValue());
-        break;
-      }
-    }
-  });
+    });
+  }
 }
 
 void jino::Writer::addData(File& file) const {
