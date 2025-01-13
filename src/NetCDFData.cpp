@@ -17,6 +17,9 @@
 
 #include "NetCDFData.h"
 
+#include <string>
+#include <vector>
+
 void jino::NetCDFData::addDateToData(Data* const data, const std::string& formattedDate) {
   if (data != nullptr) {
     if (data->contains(consts::kDateKey) == true) {

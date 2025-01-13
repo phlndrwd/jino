@@ -18,7 +18,7 @@
 #include "NetCDFWriter.h"
 
 #include <chrono>
-#include <filesystem>
+#include <filesystem>  /// NOLINT
 #include <format>
 #include <iostream>
 #include <string>
@@ -31,11 +31,11 @@
 #include "Output.h"
 
 namespace {
-  std::string getFormattedDateStr() {
-    auto now = std::chrono::system_clock::now();
-    auto nowSeconds = floor<std::chrono::seconds>(now);
-    return std::format(jino::consts::kDateFormat, nowSeconds);
-  }
+std::string getFormattedDateStr() {
+  auto now = std::chrono::system_clock::now();
+  auto nowSeconds = floor<std::chrono::seconds>(now);
+  return std::format(jino::consts::kDateFormat, nowSeconds);
+}
 }
 
 

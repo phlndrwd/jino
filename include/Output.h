@@ -34,7 +34,6 @@ class Output {
 
   static Output& get();
 
-  void initDir();
   void record();
 
   void attach(BufferBase* const);
@@ -42,7 +41,6 @@ class Output {
 
   void forEachBuffer(const std::function<void(const std::string&, BufferBase* const)>&) const;
 
-  void toFile();
   void print();
 
  private:

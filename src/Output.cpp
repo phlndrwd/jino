@@ -56,10 +56,6 @@ void jino::Output::forEachBuffer(const std::function<void(const std::string&,
   }
 }
 
-void jino::Output::toFile() {
-
-}
-
 void jino::Output::print() {
   for (auto const& [name, buffer] : buffers_) {
     if (buffer != nullptr) {
