@@ -15,32 +15,67 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#include "Writer.h"
+#include "NetCDFWriter.h"
 
+#include <chrono>
+#include <filesystem>
+#include <format>
 #include <iostream>
 #include <string>
 
+#include "Buffer.h"
 #include "Constants.h"
+#include "Data.h"
 #include "Datum.h"
-#include "File.h"
+#include "NetCDFFile.h"
 #include "Output.h"
 
-void jino::Writer::toFile(File& file, Data* const attrs, Data* const params) const {
-  addDims(file);
-  addAttrs(file, attrs);
-  addAttrs(file, params);
-  addData(file);
+namespace {
+  std::string getFormattedDateStr() {
+    auto now = std::chrono::system_clock::now();
+    auto nowSeconds = floor<std::chrono::seconds>(now);
+    return std::format(jino::consts::kDateFormat, nowSeconds);
+  }
 }
 
-void jino::Writer::addDims(File& file) const {
-  Output::get().forEachDimension([&](const std::string& name, const std::uint64_t size) {
+
+jino::NetCDFWriter::NetCDFWriter() : date_(getFormattedDateStr()),
+    path_(consts::kOutputDir + date_ + ".nc") {}
+
+void jino::NetCDFWriter::initOutput() const {
+  const std::filesystem::path dir = std::filesystem::path(path_).parent_path();
+  try {
+    if (!std::filesystem::exists(dir)) {
+      std::filesystem::create_directories(dir);
+    }
+  } catch (const std::exception& e) {
+    std::cerr << e.what() << std::endl;
+  }
+}
+
+void jino::NetCDFWriter::toFile(NetCDFFile& file, const NetCDFData& netCDFData) const {
+  writeDims(file, netCDFData);
+  writeAttrs(file, netCDFData);
+  writeData(file, netCDFData);
+}
+
+const std::string& jino::NetCDFWriter::getDate() const {
+  return date_;
+}
+
+const std::string& jino::NetCDFWriter::getPath() const {
+  return path_;
+}
+
+void jino::NetCDFWriter::writeDims(NetCDFFile& file, const NetCDFData& netCDFData) const {
+  netCDFData.forEachDimension([&](const std::string& name, const std::uint64_t size) {
     file.addDimension(name, size);
   });
 }
 
-void jino::Writer::addAttrs(File& file, Data* const attrs) const {
-  if (attrs != nullptr) {
-    attrs->forEachDatum([&](const std::string& key, DatumBase* const datum) {
+void jino::NetCDFWriter::writeAttrs(NetCDFFile& file, const NetCDFData& netCDFData) const {
+  for (const auto& data : netCDFData.getData()) {
+    data->forEachDatum([&](const std::string& key, DatumBase* const datum) {
       switch (datum->getType()) {
         case consts::eInt8: {
           auto typedDatum = static_cast<Datum<std::int8_t>*>(datum);
@@ -102,11 +137,11 @@ void jino::Writer::addAttrs(File& file, Data* const attrs) const {
   }
 }
 
-void jino::Writer::addData(File& file) const {
+void jino::NetCDFWriter::writeData(NetCDFFile& file, const NetCDFData& netCDFData) const {
   Output::get().forEachBuffer([&](const std::string& name, BufferBase* const buffer) {
     std::cout << "Buffer name: " << name << std::endl;
     if (buffer != nullptr) {
-      std::string dimName = Output::get().getDimensionName(buffer->size());
+      std::string dimName = netCDFData.getDimensionName(buffer->size());
       file.addVariable(name, "double", dimName);
       switch (buffer->getType()) {
         case consts::eInt8: {

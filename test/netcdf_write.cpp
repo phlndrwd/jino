@@ -19,6 +19,9 @@
 #include "Constants.h"
 #include "Data.h"
 #include "JsonReader.h"
+#include "NetCDFData.h"
+#include "NetCDFFile.h"
+#include "NetCDFWriter.h"
 #include "Output.h"
 
 void outOfScopeTest(const std::uint64_t dataSize) {
@@ -49,15 +52,19 @@ std::uint64_t calcDataSize(const std::uint64_t maxTimeSteps, const std::uint64_t
 }
 
 int main() {
-  jino::Data params;
   jino::Data attrs;
-  jino::JsonReader jsonReader;
+  jino::Data params;
+  jino::JsonReader reader;
 
-  jsonReader.readParams(params);
-  jsonReader.readAttrs(attrs);
+  reader.readAttrs(attrs);
+  reader.readParams(params);
 
-  jino::Output::get().addParams(&params);
-  jino::Output::get().addAttrs(&attrs);
+  jino::NetCDFWriter writer;
+  jino::NetCDFData data;
+
+  writer.initOutput();
+  data.addDateToData(&attrs, writer.getDate());
+  data.addData(&params);
 
   const std::uint64_t maxTimeStep = params.getValue<std::uint64_t>(jino::consts::kMaxTimeStep);
   const std::uint64_t samplingRate = params.getValue<std::uint64_t>(jino::consts::kSamplingRate);
@@ -70,7 +77,7 @@ int main() {
 
   outOfScopeTest(dataSize);
 
-  jino::Output::get().addDimension("dataSize", dataSize);
+  data.addDimension("dataSize", dataSize);
 
   double y = 0;
   std::uint64_t t = 0;
@@ -82,8 +89,8 @@ int main() {
       jino::Output::get().record();
     }
   }
-
-  jino::Output::get().toFile();
+  jino::NetCDFFile file(writer.getPath(), netCDF::NcFile::replace);
+  writer.toFile(file, data);
 
   return 0;
 }

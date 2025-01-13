@@ -15,57 +15,33 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#include "Output.h"
+#ifndef INCLUDE_NETCDFWRITER_H_
+#define INCLUDE_NETCDFWRITER_H_
 
-#include <stdexcept>
-#include <string>
+#include "NetCDFData.h"
+#include "NetCDFFile.h"
 
-jino::Output& jino::Output::get() {
-  static Output this_;
-  return this_;
-}
+namespace jino {
+class Buffers;
 
-void jino::Output::record() {
-  for (const auto& [name, buffer] : buffers_) {
-    buffer->record();
-  }
-}
+class NetCDFWriter {
+ public:
+  NetCDFWriter();
 
-void jino::Output::attach(BufferBase* const buffer) {
-  auto it = buffers_.find(buffer->getName());
-  if (it == buffers_.end()) {
-    buffers_.insert({buffer->getName(), buffer});
-  } else {
-    throw std::out_of_range("Buffer \"" + buffer->getName() + "\" alredy exists.");
-  }
-}
+  void initOutput() const;
+  void toFile(NetCDFFile&, const NetCDFData&) const;
 
-void jino::Output::detach(BufferBase* const buffer) {
-  auto it = buffers_.find(buffer->getName());
-  if (it != buffers_.end()) {
-    buffers_.erase(it);
-  } else {
-    throw std::out_of_range("Buffer \"" + buffer->getName() + "\" not found.");
-  }
-}
+  const std::string& getDate() const;
+  const std::string& getPath() const;
 
-void jino::Output::forEachBuffer(const std::function<void(const std::string&,
-                                  BufferBase* const)>& callback) const {
-  for (const auto& [name, buffer] : buffers_) {
-    callback(name, buffer);
-  }
-}
+ private:
+  void writeAttrs(NetCDFFile&, const NetCDFData&) const;
+  void writeDims(NetCDFFile&, const NetCDFData&) const;
+  void writeData(NetCDFFile&, const NetCDFData&) const;
 
-void jino::Output::toFile() {
+  const std::string date_;
+  const std::string path_;
+};
+}  // namespace jino
 
-}
-
-void jino::Output::print() {
-  for (auto const& [name, buffer] : buffers_) {
-    if (buffer != nullptr) {
-      buffer->print();
-    } else {
-      throw std::runtime_error("Type mismatch or invalid cast.");
-    }
-  }
-}
+#endif // INCLUDE_NETCDFWRITER_H_

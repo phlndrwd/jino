@@ -52,7 +52,7 @@ if(IS_DIRECTORY ${INCLUDE_PATH})
   if(EXISTS ${INCLUDE_PATH}/netcdf)
     set(NetCDF_CXX_INCLUDE_DIR ${INCLUDE_PATH})
   else()
-    message(FATAL_ERROR "File not found: ${INCLUDE_PATH}/netcdf")
+    message(FATAL_ERROR "NetCDFFile not found: ${INCLUDE_PATH}/netcdf")
   endif()
 else()
   message(FATAL_ERROR "Path not found: ${INCLUDE_PATH}")
@@ -62,7 +62,7 @@ set(NetCDF_CXX_LIB_FILE "/usr/lib/x86_64-linux-gnu/libnetcdf_c++4.so")
 if(EXISTS ${NetCDF_CXX_LIB_FILE})
   set(NetCDF_CXX_LIBRARIES ${NetCDF_CXX_LIB_FILE})
 else()
-  message(FATAL_ERROR "File not found: ${NetCDF_CXX_LIB_FILE}")
+  message(FATAL_ERROR "NetCDFFile not found: ${NetCDF_CXX_LIB_FILE}")
 endif()
 
 ## Add local source and header files
@@ -72,10 +72,11 @@ list(APPEND JINO_SOURCES
   src/Data.cpp
   src/Datum.cpp
   src/DatumBase.cpp
-  src/File.cpp
+  src/NetCDFData.cpp
+  src/NetCDFFile.cpp
+  src/NetCDFWriter.cpp
   src/JsonReader.cpp
   src/Output.cpp
-  src/Writer.cpp
 )
 
 list(APPEND JINO_HEADERS
@@ -86,10 +87,11 @@ list(APPEND JINO_HEADERS
   include/Data.h
   include/Datum.h
   include/DatumBase.h
-  include/File.h
+  include/NetCDFData.h
+  include/NetCDFFile.h
+  include/NetCDFWriter.h
   include/JsonReader.h
   include/Output.h
-  include/Writer.h
 )
 
 set(TEST_SOURCES

@@ -15,26 +15,46 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#ifndef INCLUDE_WRITER_H_
-#define INCLUDE_WRITER_H_
+#ifndef INCLUDE_NETCDFFILE_H_
+#define INCLUDE_NETCDFFILE_H_
 
-#include "Data.h"
-#include "File.h"
+#include <netcdf>
+
+#include <cstdint>
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace jino {
-class Buffers;
-
-class Writer {
+class NetCDFFile {
  public:
-  Writer() = default;
+  NetCDFFile(const std::string&, const netCDF::NcFile::FileMode);
+  ~NetCDFFile();
 
-  void toFile(File&, Data* const, Data* const) const;
+  NetCDFFile()                       = delete;
+  NetCDFFile(NetCDFFile&&)                 = delete;
+  NetCDFFile(const NetCDFFile&)            = delete;
+  NetCDFFile& operator=(NetCDFFile&&)      = delete;
+  NetCDFFile& operator=(const NetCDFFile&) = delete;
+
+  void addDimension(const std::string&, const std::uint64_t);
+  void addVariable(const std::string&, const std::string&, const std::string&);
+
+  template <typename T>
+  void addAttribute(const std::string&, const T);
+
+  template <typename T>
+  void addData(const std::string&, const std::vector<T>&);
+
+  void close();
 
  private:
-  void addAttrs(File&, Data* const) const;
-  void addDims(File&) const;
-  void addData(File&) const;
-};
-}  // namespace jino
+  std::unique_ptr<netCDF::NcFile> netCDF_;
 
-#endif // INCLUDE_WRITER_H_
+  std::string path_;
+  netCDF::NcFile::FileMode mode_;
+};
+}  // namespace monio
+
+#endif  // INCLUDE_NETCDFFILE_H_
+

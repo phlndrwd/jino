@@ -15,46 +15,38 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#ifndef INCLUDE_FILE_H_
-#define INCLUDE_FILE_H_
+#ifndef INCLUDE_NETCDFDATA_H_
+#define INCLUDE_NETCDFDATA_H_
 
-#include <netcdf>
-
-#include <cstdint>
-#include <memory>
-#include <string>
+#include <map>
 #include <vector>
 
-namespace jino {
-class File {
- public:
-  File(const std::string&, const netCDF::NcFile::FileMode);
-  ~File();
+#include "BufferBase.h"
+#include "Data.h"
 
-  File()                       = delete;
-  File(File&&)                 = delete;
-  File(const File&)            = delete;
-  File& operator=(File&&)      = delete;
-  File& operator=(const File&) = delete;
+namespace jino {
+class NetCDFData {
+ public:
+  NetCDFData() = default;
+
+  void addDateToData(Data* const, const std::string&);
+  void addData(Data* const);
 
   void addDimension(const std::string&, const std::uint64_t);
-  void addVariable(const std::string&, const std::string&, const std::string&);
+  void addDimension(const char*, const std::uint64_t);
 
-  template <typename T>
-  void addAttribute(const std::string&, const T);
+  std::string getDimensionName(const std::uint64_t) const;
 
-  template <typename T>
-  void addData(const std::string&, const std::vector<T>&);
+  const std::vector<Data*>& getData() const;
 
-  void close();
+  void forEachDimension(const std::function<void(const std::string&, const std::uint64_t)>&) const;
 
  private:
-  std::unique_ptr<netCDF::NcFile> netCDF_;
+  std::vector<Data*> data_;
 
-  std::string path_;
-  netCDF::NcFile::FileMode mode_;
+  std::map<const std::string, BufferBase* const> buffers_;
+  std::map<const std::uint64_t, const std::string> dimensions_;
 };
-}  // namespace monio
+}  // namespace jino
 
-#endif  // INCLUDE_FILE_H_
-
+#endif // INCLUDE_NETCDFDATA_H_

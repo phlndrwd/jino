@@ -15,57 +15,45 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#include "Output.h"
+#include "NetCDFData.h"
 
-#include <stdexcept>
-#include <string>
-
-jino::Output& jino::Output::get() {
-  static Output this_;
-  return this_;
-}
-
-void jino::Output::record() {
-  for (const auto& [name, buffer] : buffers_) {
-    buffer->record();
-  }
-}
-
-void jino::Output::attach(BufferBase* const buffer) {
-  auto it = buffers_.find(buffer->getName());
-  if (it == buffers_.end()) {
-    buffers_.insert({buffer->getName(), buffer});
-  } else {
-    throw std::out_of_range("Buffer \"" + buffer->getName() + "\" alredy exists.");
-  }
-}
-
-void jino::Output::detach(BufferBase* const buffer) {
-  auto it = buffers_.find(buffer->getName());
-  if (it != buffers_.end()) {
-    buffers_.erase(it);
-  } else {
-    throw std::out_of_range("Buffer \"" + buffer->getName() + "\" not found.");
-  }
-}
-
-void jino::Output::forEachBuffer(const std::function<void(const std::string&,
-                                  BufferBase* const)>& callback) const {
-  for (const auto& [name, buffer] : buffers_) {
-    callback(name, buffer);
-  }
-}
-
-void jino::Output::toFile() {
-
-}
-
-void jino::Output::print() {
-  for (auto const& [name, buffer] : buffers_) {
-    if (buffer != nullptr) {
-      buffer->print();
-    } else {
-      throw std::runtime_error("Type mismatch or invalid cast.");
+void jino::NetCDFData::addDateToData(Data* const data, const std::string& formattedDate) {
+  if (data != nullptr) {
+    if (data->contains(consts::kDateKey) == true) {
+      if (data->getValue<std::uint8_t>(consts::kDateKey) == true) {
+        data->erase(consts::kDateKey);
+        data->setValue<std::string>(consts::kDateKey, formattedDate);
+      }
     }
+    data_.push_back(data);
+  }
+}
+
+void jino::NetCDFData::addData(Data* const data) {
+  if (data != nullptr) {
+    data_.push_back(data);
+  }
+}
+
+void jino::NetCDFData::addDimension(const std::string& name, const std::uint64_t size) {
+  dimensions_.insert({size, name});
+}
+
+void jino::NetCDFData::addDimension(const char* name, const std::uint64_t size) {
+  addDimension(std::string(name), size);
+}
+
+std::string jino::NetCDFData::getDimensionName(const std::uint64_t size) const {
+  return dimensions_.at(size);
+}
+
+const std::vector<jino::Data*>& jino::NetCDFData::getData() const {
+  return data_;
+}
+
+void jino::NetCDFData::forEachDimension(const std::function<void(const std::string&,
+                                     const std::uint64_t)>& callback) const {
+  for (const auto& [size, name] : dimensions_) {
+    callback(name, size);
   }
 }

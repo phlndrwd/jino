@@ -19,6 +19,7 @@
 #include "Constants.h"
 #include "Data.h"
 #include "JsonReader.h"
+#include "NetCDFData.h"
 #include "Output.h"
 
 void outOfScopeTest(const std::uint64_t dataSize) {
@@ -55,6 +56,8 @@ int main() {
   jsonReader.readParams(params);
   jsonReader.readAttrs(attrs);
 
+  jino::NetCDFData data;
+
   const std::uint64_t maxTimeStep = params.getValue<std::uint64_t>(jino::consts::kMaxTimeStep);
   const std::uint64_t samplingRate = params.getValue<std::uint64_t>(jino::consts::kSamplingRate);
 
@@ -66,7 +69,7 @@ int main() {
 
   outOfScopeTest(dataSize);
 
-  jino::Output::get().addDimension("dataSize", dataSize);
+  data.addDimension("dataSize", dataSize);
 
   double y = 0;
   std::uint64_t t = 0;

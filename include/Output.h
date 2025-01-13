@@ -22,10 +22,7 @@
 #include <map>
 #include <string>
 
-#include "Buffer.h"
 #include "BufferBase.h"
-#include "Data.h"
-#include "Writer.h"
 
 namespace jino {
 class Output {
@@ -40,36 +37,19 @@ class Output {
   void initDir();
   void record();
 
-  void addAttrs(Data* const);
-  void addParams(Data* const);
-
   void attach(BufferBase* const);
   void detach(BufferBase* const);
 
-  void addDimension(const std::string&, const std::uint64_t);
-  void addDimension(const char*, const std::uint64_t);
-
-  std::string getDimensionName(const std::uint64_t) const;
-
-  void forEachDimension(const std::function<void(const std::string&, const std::uint64_t)>&) const;
   void forEachBuffer(const std::function<void(const std::string&, BufferBase* const)>&) const;
 
   void toFile();
   void print();
 
  private:
-  Output();
+  Output() = default;
   ~Output() = default;
 
-  Data* attrs_;
-  Data* params_;
-
   std::map<const std::string, BufferBase* const> buffers_;
-  std::map<const std::uint64_t, const std::string> dimensions_;
-
-  Writer writer_;
-
-  const std::string formattedDate_;
 };
 
 }  // namespace jino
