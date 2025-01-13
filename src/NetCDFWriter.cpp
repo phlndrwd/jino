@@ -24,11 +24,11 @@
 #include <string>
 
 #include "Buffer.h"
+#include "Buffers.h"
 #include "Constants.h"
 #include "Data.h"
 #include "Datum.h"
 #include "NetCDFFile.h"
-#include "Output.h"
 
 namespace {
 std::string getFormattedDateStr() {
@@ -138,7 +138,7 @@ void jino::NetCDFWriter::writeAttrs(NetCDFFile& file, const NetCDFData& netCDFDa
 }
 
 void jino::NetCDFWriter::writeData(NetCDFFile& file, const NetCDFData& netCDFData) const {
-  Output::get().forEachBuffer([&](const std::string& name, BufferBase* const buffer) {
+  Buffers::get().forEachBuffer([&](const std::string& name, BufferBase* const buffer) {
     std::cout << "Buffer name: " << name << std::endl;
     if (buffer != nullptr) {
       std::string dimName = netCDFData.getDimensionName(buffer->size());

@@ -16,11 +16,11 @@
 **********************************************************************************************/
 
 #include "Buffer.h"
+#include "Buffers.h"
 #include "Constants.h"
 #include "Data.h"
 #include "JsonReader.h"
 #include "NetCDFData.h"
-#include "Output.h"
 
 void outOfScopeTest(const std::uint64_t dataSize) {
   std::uint64_t x = 0;
@@ -78,10 +78,10 @@ int main() {
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
     if (t % samplingRate == 0) {
-      jino::Output::get().record();
+      jino::Buffers::get().record();
     }
   }
-  jino::Output::get().print();
+  jino::Buffers::get().print();
 
   return 0;
 }

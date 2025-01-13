@@ -15,41 +15,53 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#ifndef INCLUDE_BUFFERS_H_
-#define INCLUDE_BUFFERS_H_
+#include "Buffers.h"
 
-#include <functional>
-#include <map>
+#include <stdexcept>
 #include <string>
 
-#include "BufferBase.h"
+jino::Buffers& jino::Buffers::get() {
+  static Buffers this_;
+  return this_;
+}
 
-namespace jino {
-class Output {
- public:
-  Output(Output&&)                 = delete;
-  Output(const Output&)            = delete;
-  Output& operator=(Output&&)      = delete;
-  Output& operator=(const Output&) = delete;
+void jino::Buffers::record() {
+  for (const auto& [name, buffer] : buffers_) {
+    buffer->record();
+  }
+}
 
-  static Output& get();
+void jino::Buffers::attach(BufferBase* const buffer) {
+  auto it = buffers_.find(buffer->getName());
+  if (it == buffers_.end()) {
+    buffers_.insert({buffer->getName(), buffer});
+  } else {
+    throw std::out_of_range("Buffer \"" + buffer->getName() + "\" alredy exists.");
+  }
+}
 
-  void record();
+void jino::Buffers::detach(BufferBase* const buffer) {
+  auto it = buffers_.find(buffer->getName());
+  if (it != buffers_.end()) {
+    buffers_.erase(it);
+  } else {
+    throw std::out_of_range("Buffer \"" + buffer->getName() + "\" not found.");
+  }
+}
 
-  void attach(BufferBase* const);
-  void detach(BufferBase* const);
+void jino::Buffers::forEachBuffer(const std::function<void(const std::string&,
+                                  BufferBase* const)>& callback) const {
+  for (const auto& [name, buffer] : buffers_) {
+    callback(name, buffer);
+  }
+}
 
-  void forEachBuffer(const std::function<void(const std::string&, BufferBase* const)>&) const;
-
-  void print();
-
- private:
-  Output() = default;
-  ~Output() = default;
-
-  std::map<const std::string, BufferBase* const> buffers_;
-};
-
-}  // namespace jino
-
-#endif // INCLUDE_BUFFERS_H_
+void jino::Buffers::print() {
+  for (auto const& [name, buffer] : buffers_) {
+    if (buffer != nullptr) {
+      buffer->print();
+    } else {
+      throw std::runtime_error("Type mismatch or invalid cast.");
+    }
+  }
+}

@@ -69,6 +69,7 @@ endif()
 list(APPEND JINO_SOURCES
   src/Buffer.cpp
   src/BufferBase.cpp
+  src/Buffers.cpp
   src/Data.cpp
   src/Datum.cpp
   src/DatumBase.cpp
@@ -76,12 +77,12 @@ list(APPEND JINO_SOURCES
   src/NetCDFData.cpp
   src/NetCDFFile.cpp
   src/NetCDFWriter.cpp
-  src/Output.cpp
 )
 
 list(APPEND JINO_HEADERS
   include/Buffer.h
   include/BufferBase.h
+  include/Buffers.h
   include/BufferTraits.h
   include/Constants.h
   include/Data.h
@@ -91,7 +92,6 @@ list(APPEND JINO_HEADERS
   include/NetCDFData.h
   include/NetCDFFile.h
   include/NetCDFWriter.h
-  include/Output.h
 )
 
 set(TEST_SOURCES

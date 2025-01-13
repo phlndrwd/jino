@@ -15,53 +15,41 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#include "Output.h"
+#ifndef INCLUDE_BUFFERS_H_
+#define INCLUDE_BUFFERS_H_
 
-#include <stdexcept>
+#include <functional>
+#include <map>
 #include <string>
 
-jino::Output& jino::Output::get() {
-  static Output this_;
-  return this_;
-}
+#include "BufferBase.h"
 
-void jino::Output::record() {
-  for (const auto& [name, buffer] : buffers_) {
-    buffer->record();
-  }
-}
+namespace jino {
+class Buffers {
+ public:
+  Buffers(Buffers&&)                 = delete;
+  Buffers(const Buffers&)            = delete;
+  Buffers& operator=(Buffers&&)      = delete;
+  Buffers& operator=(const Buffers&) = delete;
 
-void jino::Output::attach(BufferBase* const buffer) {
-  auto it = buffers_.find(buffer->getName());
-  if (it == buffers_.end()) {
-    buffers_.insert({buffer->getName(), buffer});
-  } else {
-    throw std::out_of_range("Buffer \"" + buffer->getName() + "\" alredy exists.");
-  }
-}
+  static Buffers& get();
 
-void jino::Output::detach(BufferBase* const buffer) {
-  auto it = buffers_.find(buffer->getName());
-  if (it != buffers_.end()) {
-    buffers_.erase(it);
-  } else {
-    throw std::out_of_range("Buffer \"" + buffer->getName() + "\" not found.");
-  }
-}
+  void record();
 
-void jino::Output::forEachBuffer(const std::function<void(const std::string&,
-                                  BufferBase* const)>& callback) const {
-  for (const auto& [name, buffer] : buffers_) {
-    callback(name, buffer);
-  }
-}
+  void attach(BufferBase* const);
+  void detach(BufferBase* const);
 
-void jino::Output::print() {
-  for (auto const& [name, buffer] : buffers_) {
-    if (buffer != nullptr) {
-      buffer->print();
-    } else {
-      throw std::runtime_error("Type mismatch or invalid cast.");
-    }
-  }
-}
+  void forEachBuffer(const std::function<void(const std::string&, BufferBase* const)>&) const;
+
+  void print();
+
+ private:
+  Buffers() = default;
+  ~Buffers() = default;
+
+  std::map<const std::string, BufferBase* const> buffers_;
+};
+
+}  // namespace jino
+
+#endif // INCLUDE_BUFFERS_H_
