@@ -98,6 +98,7 @@ set(TEST_SOURCES
   test/basic_read.cpp
   test/buffer_test.cpp
   test/netcdf_write.cpp
+  test/thread_test.cpp
 )
 
 ## Create library

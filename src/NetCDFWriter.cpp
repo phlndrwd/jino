@@ -40,9 +40,11 @@ std::string getFormattedDateStr() {
 
 
 jino::NetCDFWriter::NetCDFWriter() : date_(getFormattedDateStr()),
-    path_(consts::kOutputDir + date_ + ".nc") {}
+                                     path_(consts::kOutputDir + date_ + ".nc") {
+  init();
+}
 
-void jino::NetCDFWriter::initOutput() const {
+void jino::NetCDFWriter::init() const {
   const std::filesystem::path dir = std::filesystem::path(path_).parent_path();
   try {
     if (!std::filesystem::exists(dir)) {
@@ -53,9 +55,12 @@ void jino::NetCDFWriter::initOutput() const {
   }
 }
 
-void jino::NetCDFWriter::toFile(NetCDFFile& file, const NetCDFData& netCDFData) const {
+void jino::NetCDFWriter::metadata(NetCDFFile& file, const NetCDFData& netCDFData) const {
   writeDims(file, netCDFData);
   writeAttrs(file, netCDFData);
+}
+
+void jino::NetCDFWriter::data(NetCDFFile& file, const NetCDFData& netCDFData) const {
   writeData(file, netCDFData);
 }
 
