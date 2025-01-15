@@ -39,7 +39,11 @@ jino::NetCDFFile::~NetCDFFile() {
 }
 
 void jino::NetCDFFile::addDimension(const std::string& name, const std::uint64_t size) {
-  netCDF_->addDim(name, size);
+  if (size != 0) {
+    netCDF_->addDim(name, size);
+  } else {
+    netCDF_->addDim(name, NC_UNLIMITED);
+  }
 }
 
 void jino::NetCDFFile::addVariable(const std::string& name, const std::string& typeName,

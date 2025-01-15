@@ -25,6 +25,18 @@
 #include "Data.h"
 
 namespace jino {
+
+struct Dimension {
+  std::string name;
+  std::uint8_t isUnlimited;
+
+  Dimension(const std::string& _name)
+      : name(_name), isUnlimited(false) {}
+
+  Dimension(const std::string& _name, std::uint8_t _isUnlimited)
+      : name(_name), isUnlimited(_isUnlimited) {}
+};
+
 class NetCDFData {
  public:
   NetCDFData() = default;
@@ -32,20 +44,20 @@ class NetCDFData {
   void addDateToData(Data* const, const std::string&);
   void addData(Data* const);
 
-  void addDimension(const std::string&, const std::uint64_t);
-  void addDimension(const char*, const std::uint64_t);
+  void addDimension(const std::string&, const std::uint64_t, const std::uint8_t = false);
+  void addDimension(const char*, const std::uint64_t, const std::uint8_t = false);
 
   std::string getDimensionName(const std::uint64_t) const;
 
   const std::vector<Data*>& getData() const;
 
-  void forEachDimension(const std::function<void(const std::string&, const std::uint64_t)>&) const;
+  void forEachDimension(const std::function<void(const Dimension&, const std::uint64_t)>&) const;
 
  private:
   std::vector<Data*> data_;
 
   std::map<const std::string, BufferBase* const> buffers_;
-  std::map<const std::uint64_t, const std::string> dimensions_;
+  std::map<const std::uint64_t, const Dimension> dimensions_;
 };
 }  // namespace jino
 

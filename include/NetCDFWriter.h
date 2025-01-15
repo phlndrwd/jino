@@ -40,6 +40,7 @@ class NetCDFWriter {
   void writeAttrs(NetCDFFile&, const NetCDFData&) const;
   void writeDims(NetCDFFile&, const NetCDFData&) const;
   void writeData(NetCDFFile&, const NetCDFData&) const;
+  void writeVars(NetCDFFile&, const NetCDFData&) const;
 
   const std::string date_;
   const std::string path_;

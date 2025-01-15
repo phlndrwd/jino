@@ -64,6 +64,7 @@ void jino::NetCDFWriter::toFile(NetCDFFile& file, const NetCDFData& netCDFData) 
 void jino::NetCDFWriter::metadata(NetCDFFile& file, const NetCDFData& netCDFData) const {
   writeDims(file, netCDFData);
   writeAttrs(file, netCDFData);
+  writeVars(file, netCDFData);
 }
 
 const std::string& jino::NetCDFWriter::getDate() const {
@@ -75,8 +76,12 @@ const std::string& jino::NetCDFWriter::getPath() const {
 }
 
 void jino::NetCDFWriter::writeDims(NetCDFFile& file, const NetCDFData& netCDFData) const {
-  netCDFData.forEachDimension([&](const std::string& name, const std::uint64_t size) {
-    file.addDimension(name, size);
+  netCDFData.forEachDimension([&](const Dimension& dim, const std::uint64_t size) {
+    if (dim.isUnlimited == false) {
+      file.addDimension(dim.name, size);
+    } else {
+      file.addDimension(dim.name, NC_UNLIMITED);
+    }
   });
 }
 
@@ -204,6 +209,51 @@ void jino::NetCDFWriter::writeData(NetCDFFile& file, const NetCDFData& netCDFDat
         case consts::eString: {
           auto typedBuffer = static_cast<Buffer<std::string>*>(buffer);
           file.addData<std::string>(name, typedBuffer->getData());
+          break;
+        }
+      }
+    }
+  });
+}
+
+void jino::NetCDFWriter::writeVars(NetCDFFile& file, const NetCDFData& netCDFData) const {
+  Buffers::get().forEachBuffer([&](const std::string& name, BufferBase* const buffer) {
+    std::cout << "Buffer name: " << name << std::endl;
+    if (buffer != nullptr) {
+      std::string dimName = netCDFData.getDimensionName(buffer->size());
+      file.addVariable(name, "double", dimName);
+      switch (buffer->getType()) {
+        case consts::eInt8: {
+          break;
+        }
+        case consts::eInt16: {
+          break;
+        }
+        case consts::eInt32: {
+          break;
+        }
+        case consts::eInt64: {
+          break;
+        }
+        case consts::eUInt8: {
+          break;
+        }
+        case consts::eUInt16: {
+          break;
+        }
+        case consts::eUInt32: {
+          break;
+        }
+        case consts::eUInt64: {
+          break;
+        }
+        case consts::eFloat: {
+          break;
+        }
+        case consts::eDouble: {
+          break;
+        }
+        case consts::eString: {
           break;
         }
       }

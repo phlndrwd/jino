@@ -38,25 +38,27 @@ void jino::NetCDFData::addData(Data* const data) {
   }
 }
 
-void jino::NetCDFData::addDimension(const std::string& name, const std::uint64_t size) {
-  dimensions_.insert({size, name});
+void jino::NetCDFData::addDimension(const std::string& name, const std::uint64_t size,
+                                    const std::uint8_t isUnlimited) {
+  dimensions_.insert({size, {name, isUnlimited}});
 }
 
-void jino::NetCDFData::addDimension(const char* name, const std::uint64_t size) {
-  addDimension(std::string(name), size);
+void jino::NetCDFData::addDimension(const char* name, const std::uint64_t size,
+                                    const std::uint8_t isUnlimited) {
+  addDimension(std::string(name), size, isUnlimited);
 }
 
 std::string jino::NetCDFData::getDimensionName(const std::uint64_t size) const {
-  return dimensions_.at(size);
+  return dimensions_.at(size).name;
 }
 
 const std::vector<jino::Data*>& jino::NetCDFData::getData() const {
   return data_;
 }
 
-void jino::NetCDFData::forEachDimension(const std::function<void(const std::string&,
-                                     const std::uint64_t)>& callback) const {
-  for (const auto& [size, name] : dimensions_) {
-    callback(name, size);
+void jino::NetCDFData::forEachDimension(const std::function<void(const Dimension&,
+                                        const std::uint64_t)>& callback) const {
+  for (const auto& [size, dim] : dimensions_) {
+    callback(dim, size);
   }
 }

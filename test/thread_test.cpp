@@ -24,11 +24,6 @@
 #include "NetCDFFile.h"
 #include "NetCDFWriter.h"
 
-void outOfScopeTest(const std::uint64_t dataSize) {
-  std::uint64_t x = 0;
-  auto testBuffer = jino::Buffer<std::uint64_t>("testBuffer", dataSize, x);
-}
-
 long double calcIncrement(const float min, const float max, const std::uint64_t timeSteps) {
   if (min > max) {
     throw std::invalid_argument("min cannot be greater than max");
@@ -74,22 +69,21 @@ int main() {
   const long double yInc = calcIncrement(yMin, yMax, maxTimeStep);
   const std::uint64_t dataSize = calcDataSize(maxTimeStep, samplingRate);
 
-  outOfScopeTest(dataSize);
-
-  data.addDimension("dataSize", dataSize);
+  data.addDimension("dataSize", dataSize, true);
 
   double y = 0;
   std::uint64_t t = 0;
   auto yBuffer = jino::Buffer<double>("Y", dataSize, y);
   auto tBuffer = jino::Buffer<std::uint64_t>("t", dataSize, t);
+  jino::NetCDFFile file(writer.getPath(), netCDF::NcFile::replace);
+  writer.metadata(file, data);
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
     if (t % samplingRate == 0) {
       jino::Buffers::get().record();
     }
   }
-  jino::NetCDFFile file(writer.getPath(), netCDF::NcFile::replace);
-  writer.toFile(file, data);
+  //writer.toFile(file, data);
 
   return 0;
 }
