@@ -56,7 +56,7 @@ const std::vector<jino::Data*>& jino::NetCDFData::getData() const {
   return data_;
 }
 
-void jino::NetCDFData::forEachDimension(const std::function<void(const Dimension&,
+void jino::NetCDFData::forEachDimension(const std::function<void(const NetCDFDim&,
                                         const std::uint64_t)>& callback) const {
   for (const auto& [size, dim] : dimensions_) {
     callback(dim, size);

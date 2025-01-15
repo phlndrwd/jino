@@ -90,6 +90,7 @@ list(APPEND JINO_HEADERS
   include/DatumBase.h
   include/JsonReader.h
   include/NetCDFData.h
+  include/NetCDFDim.h
   include/NetCDFFile.h
   include/NetCDFWriter.h
 )
@@ -116,7 +117,8 @@ add_test(NAME coding_norms
 
 foreach(TEST_SOURCE ${TEST_SOURCES})
   get_filename_component(EXECUTABLE_NAME ${TEST_SOURCE} NAME_WE)
-  add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE})
+  add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE}
+    include/NetCDFDim.h)
   target_link_libraries(${EXECUTABLE_NAME} PRIVATE jino)
   add_test(NAME ${EXECUTABLE_NAME} COMMAND ${EXECUTABLE_NAME})
 endforeach()

@@ -15,40 +15,21 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#ifndef INCLUDE_NETCDFDATA_H_
-#define INCLUDE_NETCDFDATA_H_
+#ifndef INCLUDE_NETCDFDIM_H_
+#define INCLUDE_NETCDFDIM_H_
 
-#include <map>
 #include <string>
-#include <vector>
-
-#include "BufferBase.h"
-#include "Data.h"
-#include "NetCDFDim.h"
 
 namespace jino {
-class NetCDFData {
- public:
-  NetCDFData() = default;
 
-  void addDateToData(Data* const, const std::string&);
-  void addData(Data* const);
+struct NetCDFDim {
+  std::string name;
+  std::uint8_t isUnlimited;
 
-  void addDimension(const std::string&, const std::uint64_t, const std::uint8_t = false);
-  void addDimension(const char*, const std::uint64_t, const std::uint8_t = false);
-
-  std::string getDimensionName(const std::uint64_t) const;
-
-  const std::vector<Data*>& getData() const;
-
-  void forEachDimension(const std::function<void(const NetCDFDim&, const std::uint64_t)>&) const;
-
- private:
-  std::vector<Data*> data_;
-
-  std::map<const std::string, BufferBase* const> buffers_;
-  std::map<const std::uint64_t, const NetCDFDim> dimensions_;
+  NetCDFDim(const std::string& _name) : name(_name), isUnlimited(false) {}
+  NetCDFDim(const std::string& _name, std::uint8_t _isUnlimited) :
+                                      name(_name), isUnlimited(_isUnlimited) {}
 };
 }  // namespace jino
 
-#endif // INCLUDE_NETCDFDATA_H_
+#endif // INCLUDE_NETCDFDIM_H_

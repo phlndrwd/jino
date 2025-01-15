@@ -28,6 +28,7 @@
 #include "Constants.h"
 #include "Data.h"
 #include "Datum.h"
+#include "NetCDFDim.h"
 #include "NetCDFFile.h"
 
 namespace {
@@ -76,7 +77,7 @@ const std::string& jino::NetCDFWriter::getPath() const {
 }
 
 void jino::NetCDFWriter::writeDims(NetCDFFile& file, const NetCDFData& netCDFData) const {
-  netCDFData.forEachDimension([&](const Dimension& dim, const std::uint64_t size) {
+  netCDFData.forEachDimension([&](const NetCDFDim& dim, const std::uint64_t size) {
     if (dim.isUnlimited == false) {
       file.addDimension(dim.name, size);
     } else {
