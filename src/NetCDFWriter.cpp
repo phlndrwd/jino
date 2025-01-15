@@ -55,13 +55,15 @@ void jino::NetCDFWriter::init() const {
   }
 }
 
+void jino::NetCDFWriter::toFile(NetCDFFile& file, const NetCDFData& netCDFData) const {
+  writeDims(file, netCDFData);
+  writeAttrs(file, netCDFData);
+  writeData(file, netCDFData);
+}
+
 void jino::NetCDFWriter::metadata(NetCDFFile& file, const NetCDFData& netCDFData) const {
   writeDims(file, netCDFData);
   writeAttrs(file, netCDFData);
-}
-
-void jino::NetCDFWriter::data(NetCDFFile& file, const NetCDFData& netCDFData) const {
-  writeData(file, netCDFData);
 }
 
 const std::string& jino::NetCDFWriter::getDate() const {

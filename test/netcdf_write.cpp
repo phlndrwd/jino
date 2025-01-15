@@ -89,7 +89,7 @@ int main() {
     }
   }
   jino::NetCDFFile file(writer.getPath(), netCDF::NcFile::replace);
-  writer.data(file, data);
+  writer.toFile(file, data);
 
   return 0;
 }

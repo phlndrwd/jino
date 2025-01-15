@@ -24,12 +24,6 @@
 #include "NetCDFFile.h"
 #include "NetCDFWriter.h"
 
-#include <thread>
-#include <atomic>
-#include <queue>
-#include <mutex>
-#include <condition_variable>
-
 void outOfScopeTest(const std::uint64_t dataSize) {
   std::uint64_t x = 0;
   auto testBuffer = jino::Buffer<std::uint64_t>("testBuffer", dataSize, x);
@@ -81,57 +75,21 @@ int main() {
   const std::uint64_t dataSize = calcDataSize(maxTimeStep, samplingRate);
 
   outOfScopeTest(dataSize);
+
   data.addDimension("dataSize", dataSize);
 
   double y = 0;
   std::uint64_t t = 0;
   auto yBuffer = jino::Buffer<double>("Y", dataSize, y);
   auto tBuffer = jino::Buffer<std::uint64_t>("t", dataSize, t);
-  jino::NetCDFFile file(writer.getPath(), netCDF::NcFile::replace);
-  writer.metadata(file, data);
-
-  // Thread communication tools
-  std::mutex mutex;
-  std::condition_variable cv;
-  std::atomic<bool> finished{false};
-  std::atomic<bool> dataReady{false};
-
-  // Worker thread for disk writing
-  std::thread writerThread([&]() {
-    while (!finished.load()) {
-      {
-        std::unique_lock<std::mutex> lock(mutex);
-        cv.wait(lock, [&]() { return dataReady.load() || finished.load(); });
-      }
-
-      if (dataReady.load()) {
-        // Write data to disk
-        writer.data(file, data);
-
-        // Reset the flag
-        dataReady.store(false);
-      }
-    }
-  });
-
-  // Main loop
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
     if (t % samplingRate == 0) {
       jino::Buffers::get().record();
-
-      {
-        std::lock_guard<std::mutex> lock(mutex);
-        dataReady.store(true); // Notify that new data is ready
-      }
-      cv.notify_one();
     }
   }
-
-  // Signal the writer thread to finish
-  finished.store(true);
-  cv.notify_one();
-  writerThread.join();
+  jino::NetCDFFile file(writer.getPath(), netCDF::NcFile::replace);
+  writer.toFile(file, data);
 
   return 0;
 }
