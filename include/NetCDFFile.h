@@ -46,6 +46,9 @@ class NetCDFFile {
   template <typename T>
   void addData(const std::string&, const std::vector<T>&);
 
+  template <typename T>
+  void addDatum(const std::string&, const std::uint64_t, const T);
+
   void close();
 
  private:

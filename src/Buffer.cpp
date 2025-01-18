@@ -77,6 +77,11 @@ std::uint64_t jino::Buffer<T>::size() const {
   return data_.size();
 }
 
+template<class T>
+std::uint64_t jino::Buffer<T>::getReadIndex() const {
+  return readIndex_;
+}
+
 template<class T> T& jino::Buffer<T>::at(const std::uint64_t index) {
   if (index >= data_.size()) {
     throw std::out_of_range("Index out of range.");

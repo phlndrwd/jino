@@ -40,6 +40,7 @@ class BufferBase {
   virtual void print() = 0;
 
   virtual std::uint64_t size() const = 0;
+  virtual std::uint64_t getReadIndex() const = 0;
 
  protected:
   const std::string name_;

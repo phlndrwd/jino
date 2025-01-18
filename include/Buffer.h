@@ -45,6 +45,7 @@ class Buffer : public BufferBase {
   void print() override;
 
   std::uint64_t size() const override;
+  std::uint64_t getReadIndex() const override;
 
   T& at(const std::uint64_t);
   const T& at(const std::uint64_t) const;

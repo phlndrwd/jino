@@ -81,9 +81,10 @@ int main() {
     y = yMin + t * yInc;
     if (t % samplingRate == 0) {
       jino::Buffers::get().record();
+      writer.dataThread(file, data);
     }
   }
-  // writer.toFile(file, data);
+  file.close();
 
   return 0;
 }

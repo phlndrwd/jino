@@ -32,6 +32,7 @@ class NetCDFWriter {
 
   void toFile(NetCDFFile&, const NetCDFData&) const;
   void metadata(NetCDFFile&, const NetCDFData&) const;
+  void dataThread(NetCDFFile&, const NetCDFData&) const;
 
   const std::string& getDate() const;
   const std::string& getPath() const;
