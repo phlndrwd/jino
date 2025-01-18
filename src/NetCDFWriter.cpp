@@ -288,42 +288,7 @@ void jino::NetCDFWriter::writeVars(NetCDFFile& file, const NetCDFData& netCDFDat
     std::cout << "Buffer name: " << name << std::endl;
     if (buffer != nullptr) {
       std::string dimName = netCDFData.getDimensionName(buffer->size());
-      file.addVariable(name, "double", dimName);  // TODO!
-      switch (buffer->getType()) {
-        case consts::eInt8: {
-          break;
-        }
-        case consts::eInt16: {
-          break;
-        }
-        case consts::eInt32: {
-          break;
-        }
-        case consts::eInt64: {
-          break;
-        }
-        case consts::eUInt8: {
-          break;
-        }
-        case consts::eUInt16: {
-          break;
-        }
-        case consts::eUInt32: {
-          break;
-        }
-        case consts::eUInt64: {
-          break;
-        }
-        case consts::eFloat: {
-          break;
-        }
-        case consts::eDouble: {
-          break;
-        }
-        case consts::eString: {
-          break;
-        }
-      }
+      file.addVariable(name, consts::kDataTypeNames[buffer->getType()], dimName);
     }
   });
 }

@@ -69,14 +69,14 @@ const std::array<std::string, eNumberOfDataTypes> kDataTypeNames = {
   "byte",
   "short",
   "int",
-  "long int",
-  "unsigned byte",
-  "unsigned short",
-  "unsigned int",
-  "unsigned long",
+  "int64",
+  "ubyte",
+  "ushort",
+  "uint",
+  "uint64",
   "float",
   "double",
-  "std::string"
+  "string"
 };
 
 const std::array<std::string, eNumberOfParams> kParamNames = {
