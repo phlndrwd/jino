@@ -151,22 +151,33 @@ void jino::NetCDFFile::addDatum(const std::string& name, const std::uint64_t ind
   var.putVar(indexVec, datum);
 }
 
-template void jino::NetCDFFile::addDatum<std::int8_t>(const std::string&, const std::uint64_t, const std::int8_t);
-template void jino::NetCDFFile::addDatum<std::int16_t>(const std::string&, const std::uint64_t, const std::int16_t);
-template void jino::NetCDFFile::addDatum<std::int32_t>(const std::string&, const std::uint64_t, const std::int32_t);
-template void jino::NetCDFFile::addDatum<std::int64_t>(const std::string&, const std::uint64_t, const std::int64_t);
-template void jino::NetCDFFile::addDatum<std::uint8_t>(const std::string&, const std::uint64_t, const std::uint8_t);
-template void jino::NetCDFFile::addDatum<std::uint16_t>(const std::string&, const std::uint64_t, const std::uint16_t);
-template void jino::NetCDFFile::addDatum<std::uint32_t>(const std::string&, const std::uint64_t, const std::uint32_t);
-template void jino::NetCDFFile::addDatum<float>(const std::string&, const std::uint64_t, const float);
-template void jino::NetCDFFile::addDatum<double>(const std::string&, const std::uint64_t, const double);
-template void jino::NetCDFFile::addDatum<std::string>(const std::string&, const std::uint64_t, const std::string);
+template void jino::NetCDFFile::addDatum<std::int8_t>(const std::string&, const std::uint64_t,
+                                                      const std::int8_t);
+template void jino::NetCDFFile::addDatum<std::int16_t>(const std::string&, const std::uint64_t,
+                                                       const std::int16_t);
+template void jino::NetCDFFile::addDatum<std::int32_t>(const std::string&, const std::uint64_t,
+                                                       const std::int32_t);
+template void jino::NetCDFFile::addDatum<std::int64_t>(const std::string&, const std::uint64_t,
+                                                       const std::int64_t);
+template void jino::NetCDFFile::addDatum<std::uint8_t>(const std::string&, const std::uint64_t,
+                                                       const std::uint8_t);
+template void jino::NetCDFFile::addDatum<std::uint16_t>(const std::string&, const std::uint64_t,
+                                                        const std::uint16_t);
+template void jino::NetCDFFile::addDatum<std::uint32_t>(const std::string&, const std::uint64_t,
+                                                        const std::uint32_t);
+template void jino::NetCDFFile::addDatum<float>(const std::string&, const std::uint64_t,
+                                                const float);
+template void jino::NetCDFFile::addDatum<double>(const std::string&, const std::uint64_t,
+                                                 const double);
+template void jino::NetCDFFile::addDatum<std::string>(const std::string&, const std::uint64_t,
+                                                      const std::string);
 
 template <>
-void jino::NetCDFFile::addDatum(const std::string& name, const std::uint64_t index, const std::uint64_t datum) {
+void jino::NetCDFFile::addDatum(const std::string& name, const std::uint64_t index,
+                                const std::uint64_t datum) {
   auto var = netCDF_->getVar(name);
   std::vector<size_t> indexVec = {index};
-  var.putVar(indexVec, static_cast<unsigned long long>(datum));
+  var.putVar(indexVec, static_cast<unsigned long long>(datum));  /// NOLINT(runtime/int)
 }
 
 
