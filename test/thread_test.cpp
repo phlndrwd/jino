@@ -75,7 +75,6 @@ int main() {
   std::uint64_t t = 0;
   auto yBuffer = jino::Buffer<double>("Y", dataSize, y);
   auto tBuffer = jino::Buffer<std::uint64_t>("t", dataSize, t);
-  jino::NetCDFFile file(writer.getPath(), netCDF::NcFile::replace);
   writer.metadata(file, data);
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;

@@ -22,6 +22,7 @@
 #include <format>
 #include <iostream>
 #include <string>
+#include <thread>
 
 #include "Buffer.h"
 #include "Buffers.h"
@@ -68,69 +69,10 @@ void jino::NetCDFWriter::metadata(NetCDFFile& file, const NetCDFData& netCDFData
 }
 
 void jino::NetCDFWriter::dataThread(NetCDFFile& file, const NetCDFData& netCDFData) const {
-    Buffers::get().forEachBuffer([&](const std::string& name, BufferBase* const buffer) {
-    if (buffer != nullptr) {
-      std::string dimName = netCDFData.getDimensionName(buffer->size());
-      std::uint64_t index = buffer->getReadIndex();
-      switch (buffer->getType()) {
-        case consts::eInt8: {
-          auto typedBuffer = static_cast<Buffer<std::int8_t>*>(buffer);
-          file.addDatum<std::int8_t>(name, index, typedBuffer->getNext());
-          break;
-        }
-        case consts::eInt16: {
-          auto typedBuffer = static_cast<Buffer<std::int16_t>*>(buffer);
-          file.addDatum<std::int16_t>(name, index, typedBuffer->getNext());
-          break;
-        }
-        case consts::eInt32: {
-          auto typedBuffer = static_cast<Buffer<std::int32_t>*>(buffer);
-          file.addDatum<std::int32_t>(name, index, typedBuffer->getNext());
-          break;
-        }
-        case consts::eInt64: {
-          auto typedBuffer = static_cast<Buffer<std::int64_t>*>(buffer);
-          file.addDatum<std::int64_t>(name, index, typedBuffer->getNext());
-          break;
-        }
-        case consts::eUInt8: {
-          auto typedBuffer = static_cast<Buffer<std::uint8_t>*>(buffer);
-          file.addDatum<std::uint8_t>(name, index, typedBuffer->getNext());
-          break;
-        }
-        case consts::eUInt16: {
-          auto typedBuffer = static_cast<Buffer<std::uint16_t>*>(buffer);
-          file.addDatum<std::uint16_t>(name, index, typedBuffer->getNext());
-          break;
-        }
-        case consts::eUInt32: {
-          auto typedBuffer = static_cast<Buffer<std::uint32_t>*>(buffer);
-          file.addDatum<std::uint32_t>(name, index, typedBuffer->getNext());
-          break;
-        }
-        case consts::eUInt64: {
-          auto typedBuffer = static_cast<Buffer<std::uint64_t>*>(buffer);
-          file.addDatum<std::uint64_t>(name, index, typedBuffer->getNext());
-          break;
-        }
-        case consts::eFloat: {
-          auto typedBuffer = static_cast<Buffer<float>*>(buffer);
-          file.addDatum<float>(name, index, typedBuffer->getNext());
-          break;
-        }
-        case consts::eDouble: {
-          auto typedBuffer = static_cast<Buffer<double>*>(buffer);
-          file.addDatum<double>(name, index, typedBuffer->getNext());
-          break;
-        }
-        case consts::eString: {
-          auto typedBuffer = static_cast<Buffer<std::string>*>(buffer);
-          file.addDatum<std::string>(name, index, typedBuffer->getNext());
-          break;
-        }
-      }
-    }
-  });
+  std::thread writerThread(&jino::NetCDFWriter::writeDatumThread, this, std::ref(file), std::cref(netCDFData));
+  writerThread.detach();
+
+  //writeDatumThread(file, netCDFData);
 }
 
 const std::string& jino::NetCDFWriter::getDate() const {
@@ -291,3 +233,71 @@ void jino::NetCDFWriter::writeVars(NetCDFFile& file, const NetCDFData& netCDFDat
     }
   });
 }
+
+void jino::NetCDFWriter::writeDatumThread(NetCDFFile& file, const NetCDFData& netCDFData) const {
+  std::lock_guard<std::mutex> lock(fileMutex_);
+  Buffers::get().forEachBuffer([&](const std::string& name, BufferBase* const buffer) {
+    if (buffer != nullptr) {
+      std::string dimName = netCDFData.getDimensionName(buffer->size());
+      std::uint64_t index = buffer->getReadIndex();
+      switch (buffer->getType()) {
+        case consts::eInt8: {
+          auto typedBuffer = static_cast<Buffer<std::int8_t>*>(buffer);
+          file.addDatum<std::int8_t>(name, index, typedBuffer->getNext());
+          break;
+        }
+        case consts::eInt16: {
+          auto typedBuffer = static_cast<Buffer<std::int16_t>*>(buffer);
+          file.addDatum<std::int16_t>(name, index, typedBuffer->getNext());
+          break;
+        }
+        case consts::eInt32: {
+          auto typedBuffer = static_cast<Buffer<std::int32_t>*>(buffer);
+          file.addDatum<std::int32_t>(name, index, typedBuffer->getNext());
+          break;
+        }
+        case consts::eInt64: {
+          auto typedBuffer = static_cast<Buffer<std::int64_t>*>(buffer);
+          file.addDatum<std::int64_t>(name, index, typedBuffer->getNext());
+          break;
+        }
+        case consts::eUInt8: {
+          auto typedBuffer = static_cast<Buffer<std::uint8_t>*>(buffer);
+          file.addDatum<std::uint8_t>(name, index, typedBuffer->getNext());
+          break;
+        }
+        case consts::eUInt16: {
+          auto typedBuffer = static_cast<Buffer<std::uint16_t>*>(buffer);
+          file.addDatum<std::uint16_t>(name, index, typedBuffer->getNext());
+          break;
+        }
+        case consts::eUInt32: {
+          auto typedBuffer = static_cast<Buffer<std::uint32_t>*>(buffer);
+          file.addDatum<std::uint32_t>(name, index, typedBuffer->getNext());
+          break;
+        }
+        case consts::eUInt64: {
+          auto typedBuffer = static_cast<Buffer<std::uint64_t>*>(buffer);
+          file.addDatum<std::uint64_t>(name, index, typedBuffer->getNext());
+          break;
+        }
+        case consts::eFloat: {
+          auto typedBuffer = static_cast<Buffer<float>*>(buffer);
+          file.addDatum<float>(name, index, typedBuffer->getNext());
+          break;
+        }
+        case consts::eDouble: {
+          auto typedBuffer = static_cast<Buffer<double>*>(buffer);
+          file.addDatum<double>(name, index, typedBuffer->getNext());
+          break;
+        }
+        case consts::eString: {
+          auto typedBuffer = static_cast<Buffer<std::string>*>(buffer);
+          file.addDatum<std::string>(name, index, typedBuffer->getNext());
+          break;
+        }
+      }
+    }
+  });
+}
+
