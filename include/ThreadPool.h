@@ -35,22 +35,22 @@ public:
   template<class F>
   void enqueue(F&& f) {
     {
-      std::unique_lock<std::mutex> lock(queueMutex);
-      tasks.emplace(std::forward<F>(f));
+      std::unique_lock<std::mutex> lock(queueMutex_);
+      tasks_.emplace(std::forward<F>(f));
     }
-    condition.notify_one();
+    condition_.notify_one();
   }
 
   void waitForCompletion();
 
 private:
-  std::vector<std::thread> workers;
-  std::queue<std::function<void()>> tasks;
-  std::mutex queueMutex;
-  std::condition_variable condition;
+  std::vector<std::thread> workers_;
+  std::queue<std::function<void()>> tasks_;
+  std::mutex queueMutex_;
+  std::condition_variable condition_;
 
-  int completedTasks;
-  bool stop;
+  std::int32_t completedTasks_;
+  std::uint8_t stop_;
 };
 }  // namespace jino
 

@@ -19,27 +19,27 @@
 
 #include <utility>
 
-jino::ThreadPool::ThreadPool(std::uint64_t numThreads) : stop(false), completedTasks(0) {
+jino::ThreadPool::ThreadPool(std::uint64_t numThreads) : stop_(false), completedTasks_(0) {
   for (size_t i = 0; i < numThreads; ++i) {
-    workers.emplace_back([this] {
+    workers_.emplace_back([this] {
       while (true) {
         std::function<void()> task;
         {
-          std::unique_lock<std::mutex> lock(queueMutex);
-          condition.wait(lock, [this] {
-            return stop || !tasks.empty();
+          std::unique_lock<std::mutex> lock(queueMutex_);
+          condition_.wait(lock, [this] {
+            return stop_ || !tasks_.empty();
           });
-          if (stop && tasks.empty()) return;
-          task = std::move(tasks.front());
-          tasks.pop();
-          ++completedTasks;
+          if (stop_ && tasks_.empty()) return;
+          task = std::move(tasks_.front());
+          tasks_.pop();
+          ++completedTasks_;
         }
         task();
         {
-          std::lock_guard<std::mutex> lock(queueMutex);
-          completedTasks = 0;
+          std::lock_guard<std::mutex> lock(queueMutex_);
+          completedTasks_ = 0;
         }
-        condition.notify_all();
+        condition_.notify_all();
       }
     });
   }
@@ -47,18 +47,18 @@ jino::ThreadPool::ThreadPool(std::uint64_t numThreads) : stop(false), completedT
 
 jino::ThreadPool::~ThreadPool() {
   {
-    std::unique_lock<std::mutex> lock(queueMutex);
-    stop = true;
+    std::unique_lock<std::mutex> lock(queueMutex_);
+    stop_ = true;
   }
-  condition.notify_all();
-  for (std::thread& worker : workers) {
+  condition_.notify_all();
+  for (std::thread& worker : workers_) {
     worker.join();
   }
 }
 
 void jino::ThreadPool::waitForCompletion() {
-  std::unique_lock<std::mutex> lock(queueMutex);
-  condition.wait(lock, [this] {
-    return completedTasks == 0;
+  std::unique_lock<std::mutex> lock(queueMutex_);
+  condition_.wait(lock, [this] {
+    return completedTasks_ == 0;
   });
 }

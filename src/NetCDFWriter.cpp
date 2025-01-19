@@ -40,8 +40,8 @@ std::string getFormattedDateStr() {
 }
 }
 
-jino::NetCDFWriter::NetCDFWriter() : date_(getFormattedDateStr()),
-                                     path_(consts::kOutputDir + date_ + ".nc") {
+jino::NetCDFWriter::NetCDFWriter() :
+        date_(getFormattedDateStr()), path_(consts::kOutputDir + date_ + ".nc") {
   init();
   openFile();
 }
@@ -156,7 +156,6 @@ void jino::NetCDFWriter::writeAttrs(const NetCDFData& netCDFData) {
 
 void jino::NetCDFWriter::writeData(const NetCDFData& netCDFData) {
   Buffers::get().forEachBuffer([&](const std::string& name, BufferBase* const buffer) {
-    std::cout << "Buffer name: " << name << std::endl;
     if (buffer != nullptr) {
       std::string dimName = netCDFData.getDimensionName(buffer->size());
       getFile().addVariable(name, consts::kDataTypeNames[buffer->getType()], dimName);
