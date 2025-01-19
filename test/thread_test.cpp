@@ -15,7 +15,9 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
+#include <chrono>
 #include <iostream>
+#include <thread>
 
 #include "Buffer.h"
 #include "Buffers.h"
@@ -23,7 +25,7 @@
 #include "Data.h"
 #include "JsonReader.h"
 #include "NetCDFData.h"
-#include "NetCDFWriter.h"
+#include "NetCDFThreadWriter.h"
 
 long double calcIncrement(const float min, const float max, const std::uint64_t timeSteps) {
   if (min > max) {
@@ -55,7 +57,7 @@ int main() {
   reader.readAttrs(attrs);
   reader.readParams(params);
 
-  jino::NetCDFWriter writer;
+  jino::NetCDFThreadWriter writer;
   jino::NetCDFData data;
 
   data.addDateToData(&attrs, writer.getDate());
@@ -76,15 +78,17 @@ int main() {
   std::uint64_t t = 0;
   auto yBuffer = jino::Buffer<double>("Y", dataSize, y);
   auto tBuffer = jino::Buffer<std::uint64_t>("t", dataSize, t);
-  // writer.metadata(data);
+  writer.writeMetadata(data);
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
+    //std::this_thread::sleep_for(std::chrono::milliseconds(1));
     if (t % samplingRate == 0) {
       std::cout << "t=" << t << std::endl;
       jino::Buffers::get().record();
-      // writer.dataThread(data);
+      writer.writeData(data);
     }
   }
-
+  writer.waitForCompletion();
+  //std::this_thread::sleep_for(std::chrono::milliseconds(10000));
   return 0;
 }

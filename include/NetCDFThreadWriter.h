@@ -30,12 +30,12 @@ class NetCDFThreadWriter {
   NetCDFThreadWriter();
 
   void init() const;
-
   void openFile();
 
-  void metadata(const NetCDFData&);
-  void data(const NetCDFData&);
+  void writeMetadata(const NetCDFData&);
+  void writeData(const NetCDFData&);
 
+  void waitForCompletion();
   void closeFile();
 
   const std::string& getDate() const;

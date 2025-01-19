@@ -41,11 +41,15 @@ public:
     condition.notify_one();
   }
 
+  void waitForCompletion();
+
 private:
   std::vector<std::thread> workers;
   std::queue<std::function<void()>> tasks;
   std::mutex queueMutex;
   std::condition_variable condition;
+
+  int completedTasks;
   bool stop;
 };
 }  // namespace jino

@@ -19,7 +19,7 @@
 
 #include <utility>
 
-jino::ThreadPool::ThreadPool(std::uint64_t numThreads) : stop(false) {
+jino::ThreadPool::ThreadPool(std::uint64_t numThreads) : stop(false), completedTasks(0) {
   for (size_t i = 0; i < numThreads; ++i) {
     workers.emplace_back([this] {
       while (true) {
@@ -32,8 +32,14 @@ jino::ThreadPool::ThreadPool(std::uint64_t numThreads) : stop(false) {
           if (stop && tasks.empty()) return;
           task = std::move(tasks.front());
           tasks.pop();
+          ++completedTasks;
         }
         task();
+        {
+          std::lock_guard<std::mutex> lock(queueMutex);
+          completedTasks = 0;
+        }
+        condition.notify_all();
       }
     });
   }
@@ -48,4 +54,11 @@ jino::ThreadPool::~ThreadPool() {
   for (std::thread& worker : workers) {
     worker.join();
   }
+}
+
+void jino::ThreadPool::waitForCompletion() {
+  std::unique_lock<std::mutex> lock(queueMutex);
+  condition.wait(lock, [this] {
+    return completedTasks == 0;
+  });
 }

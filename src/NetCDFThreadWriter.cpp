@@ -63,18 +63,26 @@ void jino::NetCDFThreadWriter::openFile() {
   });
 }
 
-void jino::NetCDFThreadWriter::metadata(const NetCDFData& netCDFData) {
+void jino::NetCDFThreadWriter::writeMetadata(const NetCDFData& netCDFData) {
   writerPool_.enqueue([this, netCDFData] {
     writeDims(netCDFData);
+  });
+  writerPool_.enqueue([this, netCDFData] {
     writeAttrs(netCDFData);
+  });
+  writerPool_.enqueue([this, netCDFData] {
     writeVars(netCDFData);
   });
 }
 
-void jino::NetCDFThreadWriter::data(const NetCDFData& netCDFData) {
+void jino::NetCDFThreadWriter::writeData(const NetCDFData& netCDFData) {
   writerPool_.enqueue([this, netCDFData] {
     writeDatum(netCDFData);
   });
+}
+
+void jino::NetCDFThreadWriter::waitForCompletion() {
+  writerPool_.waitForCompletion();
 }
 
 void jino::NetCDFThreadWriter::closeFile() {
