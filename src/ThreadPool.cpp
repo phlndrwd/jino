@@ -29,7 +29,9 @@ jino::ThreadPool::ThreadPool(std::uint64_t numThreads) : stop_(false), completed
           condition_.wait(lock, [this] {
             return stop_ || !tasks_.empty();
           });
-          if (stop_ && tasks_.empty()) return;
+          if (stop_ && tasks_.empty()) {
+            return;
+          }
           task = std::move(tasks_.front());
           tasks_.pop();
           ++completedTasks_;

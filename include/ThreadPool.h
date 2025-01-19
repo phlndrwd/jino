@@ -28,8 +28,7 @@
 namespace jino {
 class ThreadPool {
 public:
-  ThreadPool(std::uint64_t);
-
+  explicit ThreadPool(std::uint64_t);
   ~ThreadPool();
 
   template<class F>

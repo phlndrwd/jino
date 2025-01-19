@@ -66,11 +66,7 @@ void jino::NetCDFThreadWriter::openFile() {
 void jino::NetCDFThreadWriter::writeMetadata(const NetCDFData& netCDFData) {
   writerPool_.enqueue([this, netCDFData] {
     writeDims(netCDFData);
-  });
-  writerPool_.enqueue([this, netCDFData] {
     writeAttrs(netCDFData);
-  });
-  writerPool_.enqueue([this, netCDFData] {
     writeVars(netCDFData);
   });
 }
