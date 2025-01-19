@@ -17,6 +17,8 @@
 
 #include "ThreadPool.h"
 
+#include <utility>
+
 jino::ThreadPool::ThreadPool(std::uint64_t numThreads) : stop(false) {
   for (size_t i = 0; i < numThreads; ++i) {
     workers.emplace_back([this] {
