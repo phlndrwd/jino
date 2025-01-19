@@ -32,14 +32,11 @@ class NetCDFThreadWriter {
   void init() const;
 
   void openFile();
-  void openFileThread();
 
-  void toFile(const NetCDFData&);
   void metadata(const NetCDFData&);
-  void dataThread(const NetCDFData&);
+  void data(const NetCDFData&);
 
   void closeFile();
-  void closeFileThread();
 
   const std::string& getDate() const;
   const std::string& getPath() const;
@@ -47,9 +44,10 @@ class NetCDFThreadWriter {
  private:
   void writeAttrs(const NetCDFData&);
   void writeDims(const NetCDFData&);
-  void writeData(const NetCDFData&);
   void writeVars(const NetCDFData&);
-  void writeDatumThread(const NetCDFData&);
+  void writeDatum(const NetCDFData&);
+
+  NetCDFFile& getFile() const;
 
   const std::string date_;
   const std::string path_;
