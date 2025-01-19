@@ -15,26 +15,31 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#ifndef INCLUDE_NETCDFWRITER_H_
-#define INCLUDE_NETCDFWRITER_H_
+#ifndef INCLUDE_NETCDFTHREADWRITER_H_
+#define INCLUDE_NETCDFTHREADWRITER_H_
 
 #include <memory>
 
 #include "NetCDFData.h"
 #include "NetCDFFile.h"
+#include "ThreadPool.h"
 
 namespace jino {
-class Buffers;
-
-class NetCDFWriter {
+class NetCDFThreadWriter {
  public:
-  NetCDFWriter();
+  NetCDFThreadWriter();
 
   void init() const;
+
   void openFile();
+  void openFileThread();
 
   void toFile(const NetCDFData&);
+  void metadata(const NetCDFData&);
+  void dataThread(const NetCDFData&);
+
   void closeFile();
+  void closeFileThread();
 
   const std::string& getDate() const;
   const std::string& getPath() const;
@@ -43,14 +48,15 @@ class NetCDFWriter {
   void writeAttrs(const NetCDFData&);
   void writeDims(const NetCDFData&);
   void writeData(const NetCDFData&);
-
-  NetCDFFile& getFile() const;
+  void writeVars(const NetCDFData&);
+  void writeDatumThread(const NetCDFData&);
 
   const std::string date_;
   const std::string path_;
+  ThreadPool writerPool_;
 
   std::unique_ptr<NetCDFFile> file_;
 };
-}  // namespace jino
+}
 
-#endif // INCLUDE_NETCDFWRITER_H_
+#endif // INCLUDE_NETCDFTHREADWRITER_H_

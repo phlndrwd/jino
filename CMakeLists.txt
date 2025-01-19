@@ -76,6 +76,7 @@ list(APPEND JINO_SOURCES
   src/JsonReader.cpp
   src/NetCDFData.cpp
   src/NetCDFFile.cpp
+  src/NetCDFThreadWriter.cpp
   src/NetCDFWriter.cpp
   src/ThreadPool.cpp
 )
@@ -92,6 +93,7 @@ list(APPEND JINO_HEADERS
   include/NetCDFData.h
   include/NetCDFDim.h
   include/NetCDFFile.h
+  include/NetCDFThreadWriter.h
   include/NetCDFWriter.h
   include/ThreadPool.h
   include/Types.h

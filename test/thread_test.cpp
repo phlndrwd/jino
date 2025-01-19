@@ -77,13 +77,13 @@ int main() {
   std::uint64_t t = 0;
   auto yBuffer = jino::Buffer<double>("Y", dataSize, y);
   auto tBuffer = jino::Buffer<std::uint64_t>("t", dataSize, t);
-  writer.metadata(data);
+  //writer.metadata(data);
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
     if (t % samplingRate == 0) {
       std::cout << "t=" << t << std::endl;
       jino::Buffers::get().record();
-      writer.dataThread(data);
+      //writer.dataThread(data);
     }
   }
 
