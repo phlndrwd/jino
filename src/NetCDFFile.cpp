@@ -20,19 +20,14 @@
 #include <netcdf>
 
 #include <algorithm>
-#include <memory>
 #include <string>
 #include <vector>
 
 jino::NetCDFFile::NetCDFFile(const std::string& path, const netCDF::NcFile::FileMode mode) :
-                 path_(path), mode_(mode) {
-  try {
-    netCDF_ = std::make_unique<netCDF::NcFile>(path_, mode_);
-  } catch (netCDF::exceptions::NcException& error) {
-    close();
-    throw std::runtime_error("ERROR: Could not access file \"" + path_ + "\".");
-  }
-}
+                 path_(path), mode_(mode), netCDF_(path_, mode_) {}
+
+jino::NetCDFFile::NetCDFFile(const std::string& path) :
+                 path_(path), mode_(netCDF::NcFile::replace), netCDF_(path_, mode_) {}
 
 jino::NetCDFFile::~NetCDFFile() {
   close();
@@ -40,71 +35,71 @@ jino::NetCDFFile::~NetCDFFile() {
 
 void jino::NetCDFFile::addDimension(const std::string& name, const std::uint64_t size) {
   if (size != 0) {
-    netCDF_->addDim(name, size);
+    netCDF_.addDim(name, size);
   } else {
-    netCDF_->addDim(name, NC_UNLIMITED);
+    netCDF_.addDim(name, NC_UNLIMITED);
   }
 }
 
 void jino::NetCDFFile::addVariable(const std::string& name, const std::string& typeName,
                              const std::string& dimName) {
-  netCDF_->addVar(name, typeName, dimName);
+  netCDF_.addVar(name, typeName, dimName);
 }
 
 template <>
 void jino::NetCDFFile::addAttribute(const std::string& name, const std::int8_t attr) {
-  netCDF_->putAtt(name, netCDF::NcType::nc_BYTE, attr);
+  netCDF_.putAtt(name, netCDF::NcType::nc_BYTE, attr);
 }
 
 template <>
 void jino::NetCDFFile::addAttribute(const std::string& name, const std::int16_t attr) {
-  netCDF_->putAtt(name, netCDF::NcType::nc_SHORT, attr);
+  netCDF_.putAtt(name, netCDF::NcType::nc_SHORT, attr);
 }
 
 template <>
 void jino::NetCDFFile::addAttribute(const std::string& name, const std::int32_t attr) {
-  netCDF_->putAtt(name, netCDF::NcType::nc_INT, attr);
+  netCDF_.putAtt(name, netCDF::NcType::nc_INT, attr);
 }
 
 template <>
 void jino::NetCDFFile::addAttribute(const std::string& name, const std::int64_t attr) {
-  netCDF_->putAtt(name, netCDF::NcType::nc_INT64, attr);
+  netCDF_.putAtt(name, netCDF::NcType::nc_INT64, attr);
 }
 
 template <>
 void jino::NetCDFFile::addAttribute(const std::string& name, const std::uint8_t attr) {
-  netCDF_->putAtt(name, netCDF::NcType::nc_UBYTE, attr);
+  netCDF_.putAtt(name, netCDF::NcType::nc_UBYTE, attr);
 }
 
 template <>
 void jino::NetCDFFile::addAttribute(const std::string& name, const std::uint16_t attr) {
-  netCDF_->putAtt(name, netCDF::NcType::nc_USHORT, attr);
+  netCDF_.putAtt(name, netCDF::NcType::nc_USHORT, attr);
 }
 
 template <>
 void jino::NetCDFFile::addAttribute(const std::string& name, const std::uint32_t attr) {
-  netCDF_->putAtt(name, netCDF::NcType::nc_UINT, attr);
+  netCDF_.putAtt(name, netCDF::NcType::nc_UINT, attr);
 }
 
 template <>
 void jino::NetCDFFile::addAttribute(const std::string& name, const std::uint64_t attr) {
   /// NOLINTNEXTLINE(runtime/int)
-  netCDF_->putAtt(name, netCDF::NcType::nc_UINT64, static_cast<unsigned long long>(attr));
+  netCDF_.putAtt(name, netCDF::NcType::nc_UINT64, static_cast<unsigned long long>(attr));
 }
 
 template <>
 void jino::NetCDFFile::addAttribute(const std::string& name, const float attr) {
-  netCDF_->putAtt(name,  netCDF::NcType::nc_FLOAT, attr);
+  netCDF_.putAtt(name,  netCDF::NcType::nc_FLOAT, attr);
 }
 
 template <>
 void jino::NetCDFFile::addAttribute(const std::string& name, const double attr) {
-  netCDF_->putAtt(name,  netCDF::NcType::nc_DOUBLE, attr);
+  netCDF_.putAtt(name,  netCDF::NcType::nc_DOUBLE, attr);
 }
 
 template <>
 void jino::NetCDFFile::addAttribute(const std::string& name, const std::string attr) {
-  netCDF_->putAtt(name, attr);
+  netCDF_.putAtt(name, attr);
 }
 
 template<> void jino::NetCDFFile::addData<std::uint64_t>(const std::string& name,
@@ -113,13 +108,13 @@ template<> void jino::NetCDFFile::addData<std::uint64_t>(const std::string& name
   std::transform(data.begin(), data.end(), castedData.begin(), [](std::uint64_t value) {
     return static_cast<unsigned long long>(value);  /// NOLINT(runtime/int)
   });
-  auto var = netCDF_->getVar(name);
+  auto var = netCDF_.getVar(name);
   var.putVar(castedData.data());
 }
 
 template <typename T>
 void jino::NetCDFFile::addData(const std::string& name, const std::vector<T>& data) {
-  auto var = netCDF_->getVar(name);
+  auto var = netCDF_.getVar(name);
   var.putVar(data.data());
 }
 
@@ -146,7 +141,7 @@ template void jino::NetCDFFile::addData<std::string>(const std::string&,
 
 template <typename T>
 void jino::NetCDFFile::addDatum(const std::string& name, const std::uint64_t index, const T datum) {
-  auto var = netCDF_->getVar(name);
+  auto var = netCDF_.getVar(name);
   std::vector<size_t> indexVec = {index};
   var.putVar(indexVec, datum);
 }
@@ -175,15 +170,12 @@ template void jino::NetCDFFile::addDatum<std::string>(const std::string&, const 
 template <>
 void jino::NetCDFFile::addDatum(const std::string& name, const std::uint64_t index,
                                 const std::uint64_t datum) {
-  auto var = netCDF_->getVar(name);
+  auto var = netCDF_.getVar(name);
   std::vector<size_t> indexVec = {index};
   var.putVar(indexVec, static_cast<unsigned long long>(datum));  /// NOLINT(runtime/int)
 }
 
 
 void jino::NetCDFFile::close() {
-  if (netCDF_ != nullptr) {
-    netCDF_->close();
-    netCDF_.reset();
-  }
+  netCDF_.close();
 }

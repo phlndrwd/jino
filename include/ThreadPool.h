@@ -15,35 +15,39 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#ifndef INCLUDE_BUFFERBASE_H_
-#define INCLUDE_BUFFERBASE_H_
+#ifndef INCLUDE_THREADPOOL_H_
+#define INCLUDE_THREADPOOL_H_
 
+#include <condition_variable>
 #include <cstdint>
-#include <string>
+#include <functional>
+#include <mutex>
+#include <queue>
+#include <thread>
 
 namespace jino {
+class ThreadPool {
+public:
+  ThreadPool(std::uint64_t);
 
-class BufferBase {
- public:
-  explicit BufferBase(const std::string&, const std::uint8_t);
+  ~ThreadPool();
 
-  virtual ~BufferBase() = default;
+  template<class F>
+  void enqueue(F&& f) {
+    {
+      std::unique_lock<std::mutex> lock(queueMutex);
+      tasks.emplace(std::forward<F>(f));
+    }
+    condition.notify_one();
+  }
 
-  BufferBase() = delete;
-
-  const std::string& getName() const;
-  const std::uint8_t& getType() const;
-
-  virtual void record() = 0;
-  virtual void print() = 0;
-
-  virtual std::uint64_t size() const = 0;
-  virtual std::uint64_t getReadIndex() const = 0;
-
- protected:
-  const std::string name_;
-  const std::uint8_t type_;
+private:
+  std::vector<std::thread> workers;
+  std::queue<std::function<void()>> tasks;
+  std::mutex queueMutex;
+  std::condition_variable condition;
+  bool stop;
 };
 }  // namespace jino
 
-#endif  // INCLUDE_BUFFERBASE_H_
+#endif // INCLUDE_THREADPOOL_H_

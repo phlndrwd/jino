@@ -28,7 +28,9 @@
 namespace jino {
 class NetCDFFile {
  public:
-  NetCDFFile(const std::string&, const netCDF::NcFile::FileMode);
+  explicit NetCDFFile(const std::string&, const netCDF::NcFile::FileMode);
+  explicit NetCDFFile(const std::string&);
+
   ~NetCDFFile();
 
   NetCDFFile()                       = delete;
@@ -52,10 +54,10 @@ class NetCDFFile {
   void close();
 
  private:
-  std::unique_ptr<netCDF::NcFile> netCDF_;
-
-  std::string path_;
-  netCDF::NcFile::FileMode mode_;
+  ///std::unique_ptr<netCDF::NcFile> netCDF;
+  const std::string path_;
+  const netCDF::NcFile::FileMode mode_;
+  netCDF::NcFile netCDF_;
 };
 }  // namespace monio
 

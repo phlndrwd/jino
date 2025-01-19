@@ -15,35 +15,35 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#ifndef INCLUDE_BUFFERBASE_H_
-#define INCLUDE_BUFFERBASE_H_
+#include "ThreadPool.h"
 
-#include <cstdint>
-#include <string>
+jino::ThreadPool::ThreadPool(std::uint64_t numThreads) : stop(false) {
+  for (size_t i = 0; i < numThreads; ++i) {
+    workers.emplace_back([this] {
+      while (true) {
+        std::function<void()> task;
+        {
+          std::unique_lock<std::mutex> lock(queueMutex);
+          condition.wait(lock, [this] {
+            return stop || !tasks.empty();
+          });
+          if (stop && tasks.empty()) return;
+          task = std::move(tasks.front());
+          tasks.pop();
+        }
+        task();
+      }
+    });
+  }
+}
 
-namespace jino {
-
-class BufferBase {
- public:
-  explicit BufferBase(const std::string&, const std::uint8_t);
-
-  virtual ~BufferBase() = default;
-
-  BufferBase() = delete;
-
-  const std::string& getName() const;
-  const std::uint8_t& getType() const;
-
-  virtual void record() = 0;
-  virtual void print() = 0;
-
-  virtual std::uint64_t size() const = 0;
-  virtual std::uint64_t getReadIndex() const = 0;
-
- protected:
-  const std::string name_;
-  const std::uint8_t type_;
-};
-}  // namespace jino
-
-#endif  // INCLUDE_BUFFERBASE_H_
+jino::ThreadPool::~ThreadPool() {
+  {
+    std::unique_lock<std::mutex> lock(queueMutex);
+    stop = true;
+  }
+  condition.notify_all();
+  for (std::thread& worker : workers) {
+    worker.join();
+  }
+}

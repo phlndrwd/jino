@@ -15,8 +15,8 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#ifndef INCLUDE_FILEREADER_H_
-#define INCLUDE_FILEREADER_H_
+#ifndef INCLUDE_JSONREADER_H_
+#define INCLUDE_JSONREADER_H_
 
 #include <string>
 
@@ -43,4 +43,4 @@ class JsonReader {
 };
 }  // namespace jino
 
-#endif  // INCLUDE_FILEREADER_H_
+#endif  // INCLUDE_JSONREADER_H_

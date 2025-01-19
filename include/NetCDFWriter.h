@@ -18,10 +18,11 @@
 #ifndef INCLUDE_NETCDFWRITER_H_
 #define INCLUDE_NETCDFWRITER_H_
 
+#include <memory>
+
 #include "NetCDFData.h"
 #include "NetCDFFile.h"
-
-#include <mutex>
+#include "ThreadPool.h"
 
 namespace jino {
 class Buffers;
@@ -32,24 +33,31 @@ class NetCDFWriter {
 
   void init() const;
 
-  void toFile(NetCDFFile&, const NetCDFData&) const;
-  void metadata(NetCDFFile&, const NetCDFData&) const;
-  void dataThread(NetCDFFile&, const NetCDFData&) const;
+  void openFile();
+  void openFileThread();
+
+  void toFile(const NetCDFData&);
+  void metadata(const NetCDFData&);
+  void dataThread(const NetCDFData&);
+
+  void closeFile();
+  void closeFileThread();
 
   const std::string& getDate() const;
   const std::string& getPath() const;
 
  private:
-  void writeAttrs(NetCDFFile&, const NetCDFData&) const;
-  void writeDims(NetCDFFile&, const NetCDFData&) const;
-  void writeData(NetCDFFile&, const NetCDFData&) const;
-  void writeVars(NetCDFFile&, const NetCDFData&) const;
-  void writeDatumThread(NetCDFFile&, const NetCDFData&) const;
+  void writeAttrs(const NetCDFData&);
+  void writeDims(const NetCDFData&);
+  void writeData(const NetCDFData&);
+  void writeVars(const NetCDFData&);
+  void writeDatumThread(const NetCDFData&);
 
   const std::string date_;
   const std::string path_;
+  ThreadPool writerPool_;
 
-  mutable std::mutex fileMutex_;
+  std::unique_ptr<NetCDFFile> file_;
 };
 }  // namespace jino
 

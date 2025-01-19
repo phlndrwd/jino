@@ -15,13 +15,15 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
+#include <chrono>
+#include <thread>
+
 #include "Buffer.h"
 #include "Buffers.h"
 #include "Constants.h"
 #include "Data.h"
 #include "JsonReader.h"
 #include "NetCDFData.h"
-#include "NetCDFFile.h"
 #include "NetCDFWriter.h"
 
 long double calcIncrement(const float min, const float max, const std::uint64_t timeSteps) {
@@ -75,15 +77,15 @@ int main() {
   std::uint64_t t = 0;
   auto yBuffer = jino::Buffer<double>("Y", dataSize, y);
   auto tBuffer = jino::Buffer<std::uint64_t>("t", dataSize, t);
-  writer.metadata(file, data);
+  writer.metadata(data);
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
     if (t % samplingRate == 0) {
+      std::cout << "t=" << t << std::endl;
       jino::Buffers::get().record();
-      writer.dataThread(file, data);
+      writer.dataThread(data);
     }
   }
-  file.close();
 
   return 0;
 }

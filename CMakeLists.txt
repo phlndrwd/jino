@@ -77,13 +77,13 @@ list(APPEND JINO_SOURCES
   src/NetCDFData.cpp
   src/NetCDFFile.cpp
   src/NetCDFWriter.cpp
+  src/ThreadPool.cpp
 )
 
 list(APPEND JINO_HEADERS
   include/Buffer.h
   include/BufferBase.h
   include/Buffers.h
-  include/BufferTraits.h
   include/Constants.h
   include/Data.h
   include/Datum.h
@@ -93,6 +93,8 @@ list(APPEND JINO_HEADERS
   include/NetCDFDim.h
   include/NetCDFFile.h
   include/NetCDFWriter.h
+  include/ThreadPool.h
+  include/Types.h
 )
 
 set(TEST_SOURCES
@@ -117,8 +119,7 @@ add_test(NAME coding_norms
 
 foreach(TEST_SOURCE ${TEST_SOURCES})
   get_filename_component(EXECUTABLE_NAME ${TEST_SOURCE} NAME_WE)
-  add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE}
-    include/NetCDFDim.h)
+  add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE})
   target_link_libraries(${EXECUTABLE_NAME} PRIVATE jino)
   add_test(NAME ${EXECUTABLE_NAME} COMMAND ${EXECUTABLE_NAME})
 endforeach()

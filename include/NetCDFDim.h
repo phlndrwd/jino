@@ -18,6 +18,7 @@
 #ifndef INCLUDE_NETCDFDIM_H_
 #define INCLUDE_NETCDFDIM_H_
 
+#include <cstdint>
 #include <string>
 
 namespace jino {
