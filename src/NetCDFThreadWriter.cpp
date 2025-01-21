@@ -18,7 +18,6 @@
 #include "NetCDFThreadWriter.h"
 
 #include <chrono>
-#include <filesystem>  /// NOLINT
 #include <format>
 #include <iostream>
 #include <memory>
@@ -47,10 +46,9 @@ jino::NetCDFThreadWriter::NetCDFThreadWriter() :
 }
 
 void jino::NetCDFThreadWriter::init() const {
-  const std::filesystem::path dir = std::filesystem::path(path_).parent_path();
   try {
-    if (!std::filesystem::exists(dir)) {
-      std::filesystem::create_directories(dir);
+    if (std::filesystem::exists(consts::kOutputDir) == false) {
+      std::filesystem::create_directories(consts::kOutputDir);
     }
   } catch (const std::exception& e) {
     std::cerr << e.what() << std::endl;
@@ -58,6 +56,11 @@ void jino::NetCDFThreadWriter::init() const {
 }
 
 void jino::NetCDFThreadWriter::openFile() {
+  std::uint32_t count = 1;
+  while (std::filesystem::exists(path_) == true) {
+    path_ = consts::kOutputDir + date_ + "(" + std::to_string(count) + ").nc";
+    ++count;
+  }
   writerPool_.enqueue([this] {
     file_ = std::make_unique<NetCDFFile>(path_);
   });
@@ -92,7 +95,7 @@ const std::string& jino::NetCDFThreadWriter::getDate() const {
   return date_;
 }
 
-const std::string& jino::NetCDFThreadWriter::getPath() const {
+const std::filesystem::path& jino::NetCDFThreadWriter::getPath() const {
   return path_;
 }
 

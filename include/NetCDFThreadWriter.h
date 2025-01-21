@@ -18,6 +18,7 @@
 #ifndef INCLUDE_NETCDFTHREADWRITER_H_
 #define INCLUDE_NETCDFTHREADWRITER_H_
 
+#include <filesystem>  /// NOLINT
 #include <memory>
 
 #include "NetCDFData.h"
@@ -39,7 +40,7 @@ class NetCDFThreadWriter {
   void closeFile();
 
   const std::string& getDate() const;
-  const std::string& getPath() const;
+  const std::filesystem::path& getPath() const;
 
  private:
   void writeAttrs(const NetCDFData&);
@@ -50,7 +51,8 @@ class NetCDFThreadWriter {
   NetCDFFile& getFile() const;
 
   const std::string date_;
-  const std::string path_;
+  std::filesystem::path path_;
+
   ThreadPool writerPool_;
 
   std::unique_ptr<NetCDFFile> file_;
