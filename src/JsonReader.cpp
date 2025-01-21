@@ -48,7 +48,7 @@ void jino::JsonReader::readText(const std::string& path, std::string& text) {
       throw std::ios_base::failure("Could not open file.");
     }
     std::streamsize sz = getFileSize(path);
-    if (static_cast<std::size_t>(sz) <= consts::kMaxFileSizeInBytes) {
+    if (static_cast<std::uint64_t>(sz) <= consts::kMaxFileSizeInBytes) {
       text.assign((std::istreambuf_iterator<char>(fileIn)), std::istreambuf_iterator<char>());
     } else {
       throw std::runtime_error("File is too large.");

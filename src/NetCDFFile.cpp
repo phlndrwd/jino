@@ -142,7 +142,7 @@ template void jino::NetCDFFile::addData<std::string>(const std::string&,
 template <typename T>
 void jino::NetCDFFile::addDatum(const std::string& name, const std::uint64_t index, const T datum) {
   auto var = netCDF_.getVar(name);
-  std::vector<size_t> indexVec = {index};
+  std::vector<uint64_t> indexVec = {index};
   var.putVar(indexVec, datum);
 }
 
@@ -171,7 +171,7 @@ template <>
 void jino::NetCDFFile::addDatum(const std::string& name, const std::uint64_t index,
                                 const std::uint64_t datum) {
   auto var = netCDF_.getVar(name);
-  std::vector<size_t> indexVec = {index};
+  std::vector<uint64_t> indexVec = {index};
   var.putVar(indexVec, static_cast<unsigned long long>(datum));  /// NOLINT(runtime/int)
 }
 

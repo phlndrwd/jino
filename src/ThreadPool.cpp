@@ -21,8 +21,8 @@
 #include <utility>
 
 jino::ThreadPool::ThreadPool(std::uint64_t numThreads) : stop_(false), activeTasks_(0) {
-  for (size_t i = 0; i < numThreads; ++i) {
-    workers_.emplace_back([this] {
+  for (auto _ = numThreads; _--;) {
+      workers_.emplace_back([this] {
       while (true) {
         std::function<void()> task;
         {
