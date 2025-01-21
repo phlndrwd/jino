@@ -144,6 +144,7 @@ void jino::NetCDFFile::addDatum(const std::string& name, const std::uint64_t ind
   auto var = netCDF_.getVar(name);
   std::vector<uint64_t> indexVec = {index};
   var.putVar(indexVec, datum);
+  netCDF_.sync();
 }
 
 template void jino::NetCDFFile::addDatum<std::int8_t>(const std::string&, const std::uint64_t,
