@@ -45,7 +45,7 @@ class NetCDFThreadWriter {
   void writeAttrs(const NetCDFData&);
   void writeDims(const NetCDFData&);
   void writeVars(const NetCDFData&);
-  void writeDatum(const NetCDFData&);
+  void writeDatums(const NetCDFData&);
 
   NetCDFFile& getFile() const;
 

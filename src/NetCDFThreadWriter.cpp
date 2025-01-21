@@ -73,7 +73,7 @@ void jino::NetCDFThreadWriter::writeMetadata(const NetCDFData& netCDFData) {
 
 void jino::NetCDFThreadWriter::writeData(const NetCDFData& netCDFData) {
   writerPool_.enqueue([this, netCDFData] {
-    writeDatum(netCDFData);
+    writeDatums(netCDFData);
   });
 }
 
@@ -182,7 +182,7 @@ void jino::NetCDFThreadWriter::writeVars(const NetCDFData& netCDFData) {
   });
 }
 
-void jino::NetCDFThreadWriter::writeDatum(const NetCDFData& netCDFData) {
+void jino::NetCDFThreadWriter::writeDatums(const NetCDFData& netCDFData) {
   NetCDFFile& file = getFile();
   Buffers::get().forEachBuffer([&netCDFData, &file](const std::string& name, BufferBase* const buffer) {
     if (buffer != nullptr) {
