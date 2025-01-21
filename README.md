@@ -1,4 +1,14 @@
-### Third-Party Libraries
+&copy; Copyright 2025 Phil Underwood 
+
+# jino
+
+## Description
+
+## Compilation
+
+## Usage
+
+## Third-Party Libraries
 
 Jino uses the following third-party libraries, retrieved during the build process:
 
