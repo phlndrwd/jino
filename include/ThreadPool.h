@@ -28,7 +28,7 @@
 namespace jino {
 class ThreadPool {
 public:
-  explicit ThreadPool(std::uint64_t);
+  ThreadPool(std::uint64_t numThreads);
   ~ThreadPool();
 
   template<class F>
@@ -47,10 +47,9 @@ private:
   std::queue<std::function<void()>> tasks_;
   std::mutex queueMutex_;
   std::condition_variable condition_;
-
-  std::int32_t completedTasks_;
   std::uint8_t stop_;
+  std::uint64_t activeTasks_;
 };
-}  // namespace jino
+} // namespace jino
 
 #endif // INCLUDE_THREADPOOL_H_

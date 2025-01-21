@@ -20,7 +20,7 @@
 #include <iostream>
 #include <utility>
 
-jino::ThreadPool::ThreadPool(std::uint64_t numThreads) : stop_(false), completedTasks_(0) {
+jino::ThreadPool::ThreadPool(std::uint64_t numThreads) : stop_(false), activeTasks_(0) {
   for (size_t i = 0; i < numThreads; ++i) {
     workers_.emplace_back([this] {
       while (true) {
@@ -33,24 +33,20 @@ jino::ThreadPool::ThreadPool(std::uint64_t numThreads) : stop_(false), completed
           if (stop_ && tasks_.empty()) {
             return;
           }
-          if (tasks_.empty()) {
-            continue;
-          }
           task = std::move(tasks_.front());
           tasks_.pop();
-          ++completedTasks_;
+          ++activeTasks_;
         }
         try {
           task();
         } catch (const std::exception& e) {
-          // Handle or log exception
-          std::cerr << "Task exception: " << e.what() << std::endl;
+          std::cerr << "ERROR: Task exception: " << e.what() << std::endl;
         }
         {
           std::lock_guard<std::mutex> lock(queueMutex_);
-          --completedTasks_;
+          --activeTasks_;
+          condition_.notify_all();
         }
-        condition_.notify_all();
       }
     });
   }
@@ -70,6 +66,6 @@ jino::ThreadPool::~ThreadPool() {
 void jino::ThreadPool::waitForCompletion() {
   std::unique_lock<std::mutex> lock(queueMutex_);
   condition_.wait(lock, [this] {
-    return completedTasks_ == 0;
+    return tasks_.empty() && activeTasks_ == 0;
   });
 }
