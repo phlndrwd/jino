@@ -97,72 +97,74 @@ const std::string& jino::NetCDFThreadWriter::getPath() const {
 }
 
 void jino::NetCDFThreadWriter::writeDims(const NetCDFData& netCDFData) {
-  netCDFData.forEachDimension([&](const NetCDFDim& dim, const std::uint64_t size) {
+  NetCDFFile& file = getFile();
+  netCDFData.forEachDimension([&file](const NetCDFDim& dim, const std::uint64_t size) {
     if (dim.isUnlimited == false) {
-      getFile().addDimension(dim.name, size);
+      file.addDimension(dim.name, size);
     } else {
-      getFile().addDimension(dim.name, NC_UNLIMITED);
+      file.addDimension(dim.name, NC_UNLIMITED);
     }
   });
 }
 
 void jino::NetCDFThreadWriter::writeAttrs(const NetCDFData& netCDFData) {
+  NetCDFFile& file = getFile();
   for (const auto& data : netCDFData.getData()) {
-    data->forEachDatum([&](const std::string& key, DatumBase* const datum) {
+    data->forEachDatum([&file](const std::string& key, DatumBase* const datum) {
       switch (datum->getType()) {
         case consts::eInt8: {
           auto typedDatum = static_cast<Datum<std::int8_t>*>(datum);
-          getFile().addAttribute(key, typedDatum->getValue());
+          file.addAttribute(key, typedDatum->getValue());
           break;
         }
         case consts::eInt16: {
           auto typedDatum = static_cast<Datum<std::int16_t>*>(datum);
-          getFile().addAttribute(key, typedDatum->getValue());
+          file.addAttribute(key, typedDatum->getValue());
           break;
         }
         case consts::eInt32: {
           auto typedDatum = static_cast<Datum<std::int32_t>*>(datum);
-          getFile().addAttribute(key, typedDatum->getValue());
+          file.addAttribute(key, typedDatum->getValue());
           break;
         }
         case consts::eInt64: {
           auto typedDatum = static_cast<Datum<std::int64_t>*>(datum);
-          getFile().addAttribute(key, typedDatum->getValue());
+          file.addAttribute(key, typedDatum->getValue());
           break;
         }
         case consts::eUInt8: {
           auto typedDatum = static_cast<Datum<std::uint8_t>*>(datum);
-          getFile().addAttribute(key, typedDatum->getValue());
+          file.addAttribute(key, typedDatum->getValue());
           break;
         }
         case consts::eUInt16: {
           auto typedDatum = static_cast<Datum<std::uint16_t>*>(datum);
-          getFile().addAttribute(key, typedDatum->getValue());
+          file.addAttribute(key, typedDatum->getValue());
           break;
         }
         case consts::eUInt32: {
           auto typedDatum = static_cast<Datum<std::uint32_t>*>(datum);
-          getFile().addAttribute(key, typedDatum->getValue());
+          file.addAttribute(key, typedDatum->getValue());
           break;
         }
         case consts::eUInt64: {
           auto typedDatum = static_cast<Datum<std::uint64_t>*>(datum);
-          getFile().addAttribute(key, typedDatum->getValue());
+          file.addAttribute(key, typedDatum->getValue());
           break;
         }
         case consts::eFloat: {
           auto typedDatum = static_cast<Datum<float>*>(datum);
-          getFile().addAttribute(key, typedDatum->getValue());
+          file.addAttribute(key, typedDatum->getValue());
           break;
         }
         case consts::eDouble: {
           auto typedDatum = static_cast<Datum<double>*>(datum);
-          getFile().addAttribute(key, typedDatum->getValue());
+          file.addAttribute(key, typedDatum->getValue());
           break;
         }
         case consts::eString: {
           auto typedDatum = static_cast<Datum<std::string>*>(datum);
-          getFile().addAttribute(key, typedDatum->getValue());
+          file.addAttribute(key, typedDatum->getValue());
           break;
         }
       }
@@ -171,73 +173,75 @@ void jino::NetCDFThreadWriter::writeAttrs(const NetCDFData& netCDFData) {
 }
 
 void jino::NetCDFThreadWriter::writeVars(const NetCDFData& netCDFData) {
-  Buffers::get().forEachBuffer([&](const std::string& name, BufferBase* const buffer) {
+  NetCDFFile& file = getFile();
+  Buffers::get().forEachBuffer([&netCDFData, &file](const std::string& name, BufferBase* const buffer) {
     if (buffer != nullptr) {
       std::string dimName = netCDFData.getDimensionName(buffer->size());
-      getFile().addVariable(name, consts::kDataTypeNames[buffer->getType()], dimName);
+      file.addVariable(name, consts::kDataTypeNames[buffer->getType()], dimName);
     }
   });
 }
 
 void jino::NetCDFThreadWriter::writeDatum(const NetCDFData& netCDFData) {
-  Buffers::get().forEachBuffer([&](const std::string& name, BufferBase* const buffer) {
+  NetCDFFile& file = getFile();
+  Buffers::get().forEachBuffer([&netCDFData, &file](const std::string& name, BufferBase* const buffer) {
     if (buffer != nullptr) {
       std::string dimName = netCDFData.getDimensionName(buffer->size());
       std::uint64_t index = buffer->getReadIndex();
       switch (buffer->getType()) {
         case consts::eInt8: {
           auto typedBuffer = static_cast<Buffer<std::int8_t>*>(buffer);
-          getFile().addDatum<std::int8_t>(name, index, typedBuffer->getNext());
+          file.addDatum<std::int8_t>(name, index, typedBuffer->getNext());
           break;
         }
         case consts::eInt16: {
           auto typedBuffer = static_cast<Buffer<std::int16_t>*>(buffer);
-          getFile().addDatum<std::int16_t>(name, index, typedBuffer->getNext());
+          file.addDatum<std::int16_t>(name, index, typedBuffer->getNext());
           break;
         }
         case consts::eInt32: {
           auto typedBuffer = static_cast<Buffer<std::int32_t>*>(buffer);
-          getFile().addDatum<std::int32_t>(name, index, typedBuffer->getNext());
+          file.addDatum<std::int32_t>(name, index, typedBuffer->getNext());
           break;
         }
         case consts::eInt64: {
           auto typedBuffer = static_cast<Buffer<std::int64_t>*>(buffer);
-          getFile().addDatum<std::int64_t>(name, index, typedBuffer->getNext());
+          file.addDatum<std::int64_t>(name, index, typedBuffer->getNext());
           break;
         }
         case consts::eUInt8: {
           auto typedBuffer = static_cast<Buffer<std::uint8_t>*>(buffer);
-          getFile().addDatum<std::uint8_t>(name, index, typedBuffer->getNext());
+          file.addDatum<std::uint8_t>(name, index, typedBuffer->getNext());
           break;
         }
         case consts::eUInt16: {
           auto typedBuffer = static_cast<Buffer<std::uint16_t>*>(buffer);
-          getFile().addDatum<std::uint16_t>(name, index, typedBuffer->getNext());
+          file.addDatum<std::uint16_t>(name, index, typedBuffer->getNext());
           break;
         }
         case consts::eUInt32: {
           auto typedBuffer = static_cast<Buffer<std::uint32_t>*>(buffer);
-          getFile().addDatum<std::uint32_t>(name, index, typedBuffer->getNext());
+          file.addDatum<std::uint32_t>(name, index, typedBuffer->getNext());
           break;
         }
         case consts::eUInt64: {
           auto typedBuffer = static_cast<Buffer<std::uint64_t>*>(buffer);
-          getFile().addDatum<std::uint64_t>(name, index, typedBuffer->getNext());
+          file.addDatum<std::uint64_t>(name, index, typedBuffer->getNext());
           break;
         }
         case consts::eFloat: {
           auto typedBuffer = static_cast<Buffer<float>*>(buffer);
-          getFile().addDatum<float>(name, index, typedBuffer->getNext());
+          file.addDatum<float>(name, index, typedBuffer->getNext());
           break;
         }
         case consts::eDouble: {
           auto typedBuffer = static_cast<Buffer<double>*>(buffer);
-          getFile().addDatum<double>(name, index, typedBuffer->getNext());
+          file.addDatum<double>(name, index, typedBuffer->getNext());
           break;
         }
         case consts::eString: {
           auto typedBuffer = static_cast<Buffer<std::string>*>(buffer);
-          getFile().addDatum<std::string>(name, index, typedBuffer->getNext());
+          file.addDatum<std::string>(name, index, typedBuffer->getNext());
           break;
         }
       }

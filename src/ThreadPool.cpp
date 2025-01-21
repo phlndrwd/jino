@@ -17,6 +17,7 @@
 
 #include "ThreadPool.h"
 
+#include <iostream>
 #include <utility>
 
 jino::ThreadPool::ThreadPool(std::uint64_t numThreads) : stop_(false), completedTasks_(0) {
@@ -32,14 +33,22 @@ jino::ThreadPool::ThreadPool(std::uint64_t numThreads) : stop_(false), completed
           if (stop_ && tasks_.empty()) {
             return;
           }
+          if (tasks_.empty()) {
+            continue;
+          }
           task = std::move(tasks_.front());
           tasks_.pop();
           ++completedTasks_;
         }
-        task();
+        try {
+          task();
+        } catch (const std::exception& e) {
+          // Handle or log exception
+          std::cerr << "Task exception: " << e.what() << std::endl;
+        }
         {
           std::lock_guard<std::mutex> lock(queueMutex_);
-          completedTasks_ = 0;
+          --completedTasks_;
         }
         condition_.notify_all();
       }
