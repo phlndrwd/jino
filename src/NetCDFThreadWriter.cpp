@@ -80,15 +80,12 @@ void jino::NetCDFThreadWriter::writeData(const NetCDFData& netCDFData) {
   });
 }
 
-void jino::NetCDFThreadWriter::waitForCompletion() {
-  writerPool_.waitForCompletion();
-}
-
 void jino::NetCDFThreadWriter::closeFile() {
   writerPool_.enqueue([this] {
     getFile().close();
     file_.reset();
   });
+  writerPool_.waitForCompletion();
 }
 
 const std::string& jino::NetCDFThreadWriter::getDate() const {

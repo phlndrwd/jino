@@ -86,7 +86,7 @@ int main() {
       writer.writeData(data);
     }
   }
-  writer.waitForCompletion();
+  writer.closeFile();
 
   return 0;
 }
