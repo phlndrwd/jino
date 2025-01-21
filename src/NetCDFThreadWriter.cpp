@@ -174,7 +174,8 @@ void jino::NetCDFThreadWriter::writeAttrs(const NetCDFData& netCDFData) {
 
 void jino::NetCDFThreadWriter::writeVars(const NetCDFData& netCDFData) {
   NetCDFFile& file = getFile();
-  Buffers::get().forEachBuffer([&netCDFData, &file](const std::string& name, BufferBase* const buffer) {
+  Buffers::get().forEachBuffer([&netCDFData, &file](const std::string& name,
+                                                    BufferBase* const buffer) {
     if (buffer != nullptr) {
       std::string dimName = netCDFData.getDimensionName(buffer->size());
       file.addVariable(name, consts::kDataTypeNames[buffer->getType()], dimName);
@@ -184,7 +185,8 @@ void jino::NetCDFThreadWriter::writeVars(const NetCDFData& netCDFData) {
 
 void jino::NetCDFThreadWriter::writeDatums(const NetCDFData& netCDFData) {
   NetCDFFile& file = getFile();
-  Buffers::get().forEachBuffer([&netCDFData, &file](const std::string& name, BufferBase* const buffer) {
+  Buffers::get().forEachBuffer([&netCDFData, &file](const std::string& name,
+                                                    BufferBase* const buffer) {
     if (buffer != nullptr) {
       std::string dimName = netCDFData.getDimensionName(buffer->size());
       std::uint64_t index = buffer->getReadIndex();

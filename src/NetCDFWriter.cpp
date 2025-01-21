@@ -158,7 +158,8 @@ void jino::NetCDFWriter::writeAttrs(const NetCDFData& netCDFData) {
 
 void jino::NetCDFWriter::writeData(const NetCDFData& netCDFData) {
   NetCDFFile& file = getFile();
-  Buffers::get().forEachBuffer([&netCDFData, &file](const std::string& name, BufferBase* const buffer) {
+  Buffers::get().forEachBuffer([&netCDFData, &file](const std::string& name,
+                                                    BufferBase* const buffer) {
     if (buffer != nullptr) {
       std::string dimName = netCDFData.getDimensionName(buffer->size());
       file.addVariable(name, consts::kDataTypeNames[buffer->getType()], dimName);
@@ -223,7 +224,7 @@ void jino::NetCDFWriter::writeData(const NetCDFData& netCDFData) {
   });
 }
 
-jino::NetCDFFile& jino::NetCDFWriter::getFile() const{
+jino::NetCDFFile& jino::NetCDFWriter::getFile() const {
   if (file_ == nullptr) {
     throw std::runtime_error("ERROR: NetCDFFile has not been initialised...");
   }
