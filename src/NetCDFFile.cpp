@@ -109,48 +109,128 @@ void jino::NetCDFFile::addAttribute(const std::string& name, const std::string a
   netCDF_.putAtt(name, attr);
 }
 
-template<> void jino::NetCDFFile::addData<std::uint64_t>(const std::string& name,
-                                                         const std::vector<std::uint64_t>& data) {
-  std::vector<unsigned long long> castedData(data.size());  /// NOLINT(runtime/int)
-  std::transform(data.begin(), data.end(), castedData.begin(), [](std::uint64_t value) {
-    return static_cast<unsigned long long>(value);  /// NOLINT(runtime/int)
-  });
-  auto var = netCDF_.getVar(name);
-  var.putVar(castedData.data());
-}
-
 template <typename T>
 void jino::NetCDFFile::addData(const std::string& name, const std::vector<T>& data) {
-  auto var = netCDF_.getVar(name);
+  netCDF::NcVar var = netCDF_.getVar(name);
   var.putVar(data.data());
 }
 
 template void jino::NetCDFFile::addData<std::int8_t>(const std::string&,
-              const std::vector<std::int8_t>&);
+                                                     const std::vector<std::int8_t>&);
 template void jino::NetCDFFile::addData<std::int16_t>(const std::string&,
-              const std::vector<std::int16_t>&);
+                                                      const std::vector<std::int16_t>&);
 template void jino::NetCDFFile::addData<std::int32_t>(const std::string&,
-              const std::vector<std::int32_t>&);
+                                                      const std::vector<std::int32_t>&);
 template void jino::NetCDFFile::addData<std::int64_t>(const std::string&,
-              const std::vector<std::int64_t>&);
+                                                      const std::vector<std::int64_t>&);
 template void jino::NetCDFFile::addData<std::uint8_t>(const std::string&,
-              const std::vector<std::uint8_t>&);
+                                                      const std::vector<std::uint8_t>&);
 template void jino::NetCDFFile::addData<std::uint16_t>(const std::string&,
-              const std::vector<std::uint16_t>&);
+                                                       const std::vector<std::uint16_t>&);
 template void jino::NetCDFFile::addData<std::uint32_t>(const std::string&,
-              const std::vector<std::uint32_t>&);
+                                                       const std::vector<std::uint32_t>&);
 template void jino::NetCDFFile::addData<float>(const std::string&,
-              const std::vector<float>&);
+                                               const std::vector<float>&);
 template void jino::NetCDFFile::addData<double>(const std::string&,
-              const std::vector<double>&);
+                                                const std::vector<double>&);
 template void jino::NetCDFFile::addData<std::string>(const std::string&,
-              const std::vector<std::string>&);
+                                                     const std::vector<std::string>&);
+
+template<>
+void jino::NetCDFFile::addData<std::uint64_t>(const std::string& name,
+                                              const std::vector<std::uint64_t>& data) {
+  std::vector<unsigned long long> castedData(data.size());  /// NOLINT(runtime/int)
+  std::transform(data.begin(), data.end(), castedData.begin(), [](std::uint64_t value) {
+    return static_cast<unsigned long long>(value);  /// NOLINT(runtime/int)
+  });
+  netCDF::NcVar var = netCDF_.getVar(name);
+  var.putVar(castedData.data());
+}
+
+template <typename T>
+void jino::NetCDFFile::addData(const std::string& name, const std::string& groupName,
+                               const std::vector<T>& data) {
+  netCDF::NcGroup group = netCDF_.getGroup(groupName);
+  netCDF::NcVar var = group.getVar(name);
+  var.putVar(data.data());
+}
+
+template void jino::NetCDFFile::addData<std::int8_t>(const std::string&, const std::string&,
+                                                     const std::vector<std::int8_t>&);
+template void jino::NetCDFFile::addData<std::int16_t>(const std::string&, const std::string&,
+                                                      const std::vector<std::int16_t>&);
+template void jino::NetCDFFile::addData<std::int32_t>(const std::string&, const std::string&,
+                                                      const std::vector<std::int32_t>&);
+template void jino::NetCDFFile::addData<std::int64_t>(const std::string&, const std::string&,
+                                                      const std::vector<std::int64_t>&);
+template void jino::NetCDFFile::addData<std::uint8_t>(const std::string&, const std::string&,
+                                                      const std::vector<std::uint8_t>&);
+template void jino::NetCDFFile::addData<std::uint16_t>(const std::string&, const std::string&,
+                                                       const std::vector<std::uint16_t>&);
+template void jino::NetCDFFile::addData<std::uint32_t>(const std::string&, const std::string&,
+                                                       const std::vector<std::uint32_t>&);
+template void jino::NetCDFFile::addData<float>(const std::string&, const std::string&,
+                                               const std::vector<float>&);
+template void jino::NetCDFFile::addData<double>(const std::string&, const std::string&,
+                                                const std::vector<double>&);
+template void jino::NetCDFFile::addData<std::string>(const std::string&, const std::string&,
+                                                     const std::vector<std::string>&);
+
+template<>
+void jino::NetCDFFile::addData<std::uint64_t>(const std::string& name, const std::string& groupName,
+                                              const std::vector<std::uint64_t>& data) {
+  std::vector<unsigned long long> castedData(data.size());  /// NOLINT(runtime/int)
+  std::transform(data.begin(), data.end(), castedData.begin(), [](std::uint64_t value) {
+    return static_cast<unsigned long long>(value);  /// NOLINT(runtime/int)
+  });
+  netCDF::NcGroup group = netCDF_.getGroup(groupName);
+  netCDF::NcVar var = group.getVar(name);
+  var.putVar(castedData.data());
+}
+
+template <typename T>
+void jino::NetCDFFile::addDatum(const std::string& name, const std::uint64_t index, const T datum) {
+  netCDF::NcVar var = netCDF_.getVar(name);
+  std::vector<uint64_t> indexVec = {index};
+  var.putVar(indexVec, datum);
+  netCDF_.sync();
+}
+
+template void jino::NetCDFFile::addDatum<std::int8_t>(const std::string&, const std::uint64_t,
+                                                      const std::int8_t);
+template void jino::NetCDFFile::addDatum<std::int16_t>(const std::string&, const std::uint64_t,
+                                                       const std::int16_t);
+template void jino::NetCDFFile::addDatum<std::int32_t>(const std::string&, const std::uint64_t,
+                                                       const std::int32_t);
+template void jino::NetCDFFile::addDatum<std::int64_t>(const std::string&, const std::uint64_t,
+                                                       const std::int64_t);
+template void jino::NetCDFFile::addDatum<std::uint8_t>(const std::string&, const std::uint64_t,
+                                                       const std::uint8_t);
+template void jino::NetCDFFile::addDatum<std::uint16_t>(const std::string&, const std::uint64_t,
+                                                        const std::uint16_t);
+template void jino::NetCDFFile::addDatum<std::uint32_t>(const std::string&, const std::uint64_t,
+                                                        const std::uint32_t);
+template void jino::NetCDFFile::addDatum<float>(const std::string&, const std::uint64_t,
+                                                const float);
+template void jino::NetCDFFile::addDatum<double>(const std::string&, const std::uint64_t,
+                                                 const double);
+template void jino::NetCDFFile::addDatum<std::string>(const std::string&, const std::uint64_t,
+                                                      const std::string);
+
+template <>
+void jino::NetCDFFile::addDatum(const std::string& name,  const std::uint64_t index,
+                                const std::uint64_t datum) {
+  netCDF::NcVar var = netCDF_.getVar(name);
+  std::vector<uint64_t> indexVec = {index};
+  var.putVar(indexVec, static_cast<unsigned long long>(datum));  /// NOLINT(runtime/int)
+  netCDF_.sync();
+}
 
 template <typename T>
 void jino::NetCDFFile::addDatum(const std::string& name, const std::string& groupName,
                                 const std::uint64_t index, const T datum) {
-  auto group = netCDF_.getGroup(groupName);
-  auto var = group.getVar(name);
+  netCDF::NcGroup group = netCDF_.getGroup(groupName);
+  netCDF::NcVar var = group.getVar(name);
   std::vector<uint64_t> indexVec = {index};
   var.putVar(indexVec, datum);
   netCDF_.sync();
@@ -180,8 +260,8 @@ template void jino::NetCDFFile::addDatum<std::string>(const std::string&, const 
 template <>
 void jino::NetCDFFile::addDatum(const std::string& name, const std::string& groupName,
                                 const std::uint64_t index, const std::uint64_t datum) {
-  auto group = netCDF_.getGroup(groupName);
-  auto var = group.getVar(name);
+  netCDF::NcGroup group = netCDF_.getGroup(groupName);
+  netCDF::NcVar var = group.getVar(name);
   std::vector<uint64_t> indexVec = {index};
   var.putVar(indexVec, static_cast<unsigned long long>(datum));  /// NOLINT(runtime/int)
   netCDF_.sync();

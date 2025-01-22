@@ -18,6 +18,7 @@
 #include "NetCDFWriter.h"
 
 #include <chrono>
+#include <filesystem>  /// NOLINT
 #include <format>
 #include <iostream>
 #include <memory>
@@ -157,70 +158,144 @@ void jino::NetCDFWriter::writeAttrs(const NetCDFData& netCDFData) {
 
 void jino::NetCDFWriter::writeData(const NetCDFData& netCDFData) {
   NetCDFFile& file = getFile();
-  Buffers::get().forEachBuffer([&netCDFData, &file](const std::string& name,
+  Buffers::get().forEachBuffer([this, &netCDFData, &file](const std::string& name,
                                                     BufferBase* const buffer) {
     if (buffer != nullptr) {
-      std::string dimName = netCDFData.getDimensionName(buffer->size());
-      file.addVariable(name, consts::kDataTypeNames[buffer->getType()], dimName);
-      switch (buffer->getType()) {
-        case consts::eInt8: {
-          auto typedBuffer = static_cast<Buffer<std::int8_t>*>(buffer);
-          file.addData<std::int8_t>(name, typedBuffer->getData());
-          break;
-        }
-        case consts::eInt16: {
-          auto typedBuffer = static_cast<Buffer<std::int16_t>*>(buffer);
-          file.addData<std::int16_t>(name, typedBuffer->getData());
-          break;
-        }
-        case consts::eInt32: {
-          auto typedBuffer = static_cast<Buffer<std::int32_t>*>(buffer);
-          file.addData<std::int32_t>(name, typedBuffer->getData());
-          break;
-        }
-        case consts::eInt64: {
-          auto typedBuffer = static_cast<Buffer<std::int64_t>*>(buffer);
-          file.addData<std::int64_t>(name, typedBuffer->getData());
-          break;
-        }
-        case consts::eUInt8: {
-          auto typedBuffer = static_cast<Buffer<std::uint8_t>*>(buffer);
-          file.addData<std::uint8_t>(name, typedBuffer->getData());
-          break;
-        }
-        case consts::eUInt16: {
-          auto typedBuffer = static_cast<Buffer<std::uint16_t>*>(buffer);
-          file.addData<std::uint16_t>(name, typedBuffer->getData());
-          break;
-        }
-        case consts::eUInt32: {
-          auto typedBuffer = static_cast<Buffer<std::uint32_t>*>(buffer);
-          file.addData<std::uint32_t>(name, typedBuffer->getData());
-          break;
-        }
-        case consts::eUInt64: {
-          auto typedBuffer = static_cast<Buffer<std::uint64_t>*>(buffer);
-          file.addData<std::uint64_t>(name, typedBuffer->getData());
-          break;
-        }
-        case consts::eFloat: {
-          auto typedBuffer = static_cast<Buffer<float>*>(buffer);
-          file.addData<float>(name, typedBuffer->getData());
-          break;
-        }
-        case consts::eDouble: {
-          auto typedBuffer = static_cast<Buffer<double>*>(buffer);
-          file.addData<double>(name, typedBuffer->getData());
-          break;
-        }
-        case consts::eString: {
-          auto typedBuffer = static_cast<Buffer<std::string>*>(buffer);
-          file.addData<std::string>(name, typedBuffer->getData());
-          break;
-        }
+      const std::string dimName = netCDFData.getDimensionName(buffer->size());
+      const std::string groupName = buffer->getGroup();
+      if (groupName != consts::kEmptyString) {
+        writeGroupedData(file, buffer, dimName, groupName, name);
+      } else {
+        writeUngroupedData(file, buffer, dimName, name);
       }
     }
   });
+}
+
+void jino::NetCDFWriter::writeGroupedData(NetCDFFile& file, BufferBase* const buffer,
+                                          const std::string& dimName, const std::string& groupName,
+                                          const std::string& name) {
+  file.addVariable(name, groupName, consts::kDataTypeNames[buffer->getType()], dimName);
+  switch (buffer->getType()) {
+    case consts::eInt8: {
+      auto typedBuffer = static_cast<Buffer<std::int8_t>*>(buffer);
+      file.addData<std::int8_t>(name, groupName, typedBuffer->getData());
+      break;
+    }
+    case consts::eInt16: {
+      auto typedBuffer = static_cast<Buffer<std::int16_t>*>(buffer);
+      file.addData<std::int16_t>(name, groupName, typedBuffer->getData());
+      break;
+    }
+    case consts::eInt32: {
+      auto typedBuffer = static_cast<Buffer<std::int32_t>*>(buffer);
+      file.addData<std::int32_t>(name, groupName, typedBuffer->getData());
+      break;
+    }
+    case consts::eInt64: {
+      auto typedBuffer = static_cast<Buffer<std::int64_t>*>(buffer);
+      file.addData<std::int64_t>(name, groupName, typedBuffer->getData());
+      break;
+    }
+    case consts::eUInt8: {
+      auto typedBuffer = static_cast<Buffer<std::uint8_t>*>(buffer);
+      file.addData<std::uint8_t>(name, groupName, typedBuffer->getData());
+      break;
+    }
+    case consts::eUInt16: {
+      auto typedBuffer = static_cast<Buffer<std::uint16_t>*>(buffer);
+      file.addData<std::uint16_t>(name, groupName, typedBuffer->getData());
+      break;
+    }
+    case consts::eUInt32: {
+      auto typedBuffer = static_cast<Buffer<std::uint32_t>*>(buffer);
+      file.addData<std::uint32_t>(name, groupName, typedBuffer->getData());
+      break;
+    }
+    case consts::eUInt64: {
+      auto typedBuffer = static_cast<Buffer<std::uint64_t>*>(buffer);
+      file.addData<std::uint64_t>(name, groupName, typedBuffer->getData());
+      break;
+    }
+    case consts::eFloat: {
+      auto typedBuffer = static_cast<Buffer<float>*>(buffer);
+      file.addData<float>(name, groupName, typedBuffer->getData());
+      break;
+    }
+    case consts::eDouble: {
+      auto typedBuffer = static_cast<Buffer<double>*>(buffer);
+      file.addData<double>(name, groupName, typedBuffer->getData());
+      break;
+    }
+    case consts::eString: {
+      auto typedBuffer = static_cast<Buffer<std::string>*>(buffer);
+      file.addData<std::string>(name, groupName, typedBuffer->getData());
+      break;
+    }
+  }
+}
+
+void jino::NetCDFWriter::writeUngroupedData(NetCDFFile& file, BufferBase* const buffer,
+                                            const std::string& dimName, const std::string& name) {
+
+  file.addVariable(name, consts::kDataTypeNames[buffer->getType()], dimName);
+  switch (buffer->getType()) {
+    case consts::eInt8: {
+      auto typedBuffer = static_cast<Buffer<std::int8_t>*>(buffer);
+      file.addData<std::int8_t>(name, typedBuffer->getData());
+      break;
+    }
+    case consts::eInt16: {
+      auto typedBuffer = static_cast<Buffer<std::int16_t>*>(buffer);
+      file.addData<std::int16_t>(name, typedBuffer->getData());
+      break;
+    }
+    case consts::eInt32: {
+      auto typedBuffer = static_cast<Buffer<std::int32_t>*>(buffer);
+      file.addData<std::int32_t>(name, typedBuffer->getData());
+      break;
+    }
+    case consts::eInt64: {
+      auto typedBuffer = static_cast<Buffer<std::int64_t>*>(buffer);
+      file.addData<std::int64_t>(name, typedBuffer->getData());
+      break;
+    }
+    case consts::eUInt8: {
+      auto typedBuffer = static_cast<Buffer<std::uint8_t>*>(buffer);
+      file.addData<std::uint8_t>(name, typedBuffer->getData());
+      break;
+    }
+    case consts::eUInt16: {
+      auto typedBuffer = static_cast<Buffer<std::uint16_t>*>(buffer);
+      file.addData<std::uint16_t>(name, typedBuffer->getData());
+      break;
+    }
+    case consts::eUInt32: {
+      auto typedBuffer = static_cast<Buffer<std::uint32_t>*>(buffer);
+      file.addData<std::uint32_t>(name, typedBuffer->getData());
+      break;
+    }
+    case consts::eUInt64: {
+      auto typedBuffer = static_cast<Buffer<std::uint64_t>*>(buffer);
+      file.addData<std::uint64_t>(name, typedBuffer->getData());
+      break;
+    }
+    case consts::eFloat: {
+      auto typedBuffer = static_cast<Buffer<float>*>(buffer);
+      file.addData<float>(name, typedBuffer->getData());
+      break;
+    }
+    case consts::eDouble: {
+      auto typedBuffer = static_cast<Buffer<double>*>(buffer);
+      file.addData<double>(name, typedBuffer->getData());
+      break;
+    }
+    case consts::eString: {
+      auto typedBuffer = static_cast<Buffer<std::string>*>(buffer);
+      file.addData<std::string>(name, typedBuffer->getData());
+      break;
+    }
+  }
 }
 
 jino::NetCDFFile& jino::NetCDFWriter::getFile() const {

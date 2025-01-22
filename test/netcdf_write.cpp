@@ -80,11 +80,12 @@ int main() {
 
   double y = 0;
   std::uint64_t t = 0;
-  auto yBuffer = jino::Buffer<double>("Y", dataSize, y);
+  auto yBuffer = jino::Buffer<double>("Y", "testGroup", dataSize, y);
   auto tBuffer = jino::Buffer<std::uint64_t>("t", dataSize, t);
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
     if (t % samplingRate == 0) {
+      std::cout << "t=" << t << std::endl;
       jino::Buffers::get().record();
     }
   }

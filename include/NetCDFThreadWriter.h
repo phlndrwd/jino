@@ -18,7 +18,6 @@
 #ifndef INCLUDE_NETCDFTHREADWRITER_H_
 #define INCLUDE_NETCDFTHREADWRITER_H_
 
-#include <filesystem>  /// NOLINT
 #include <memory>
 
 #include "NetCDFData.h"
@@ -45,6 +44,9 @@ class NetCDFThreadWriter {
   void writeDims(const NetCDFData&);
   void writeVars(const NetCDFData&);
   void writeDatums(const NetCDFData&);
+
+  void writeGroupedDatum(NetCDFFile&, BufferBase* const, const std::string&, const std::string&);
+  void writeUngroupedDatum(NetCDFFile&, BufferBase* const, const std::string&);
 
   NetCDFFile& getFile() const;
 

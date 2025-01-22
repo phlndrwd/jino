@@ -18,7 +18,6 @@
 #ifndef INCLUDE_NETCDFWRITER_H_
 #define INCLUDE_NETCDFWRITER_H_
 
-#include <filesystem>  /// NOLINT
 #include <memory>
 
 #include "NetCDFData.h"
@@ -43,6 +42,10 @@ class NetCDFWriter {
   void writeAttrs(const NetCDFData&);
   void writeDims(const NetCDFData&);
   void writeData(const NetCDFData&);
+
+  void writeGroupedData(NetCDFFile&, BufferBase* const, const std::string&,
+                        const std::string&, const std::string&);
+  void writeUngroupedData(NetCDFFile&, BufferBase* const, const std::string&, const std::string&);
 
   NetCDFFile& getFile() const;
 
