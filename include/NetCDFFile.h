@@ -21,14 +21,15 @@
 #include <netcdf>
 
 #include <cstdint>
+#include <filesystem>
 #include <string>
 #include <vector>
 
 namespace jino {
 class NetCDFFile {
  public:
-  explicit NetCDFFile(const std::string&, const netCDF::NcFile::FileMode);
-  explicit NetCDFFile(const std::string&);
+  explicit NetCDFFile(const std::filesystem::path&, const netCDF::NcFile::FileMode);
+  explicit NetCDFFile(const std::filesystem::path&);
 
   ~NetCDFFile();
 
@@ -53,7 +54,7 @@ class NetCDFFile {
   void close();
 
  private:
-  const std::string path_;
+  const std::filesystem::path path_;
   const netCDF::NcFile::FileMode mode_;
   netCDF::NcFile netCDF_;
 };

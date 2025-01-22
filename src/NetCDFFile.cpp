@@ -23,10 +23,11 @@
 #include <string>
 #include <vector>
 
-jino::NetCDFFile::NetCDFFile(const std::string& path, const netCDF::NcFile::FileMode mode) :
+jino::NetCDFFile::NetCDFFile(const std::filesystem::path& path,
+                             const netCDF::NcFile::FileMode mode) :
                  path_(path), mode_(mode), netCDF_(path_, mode_) {}
 
-jino::NetCDFFile::NetCDFFile(const std::string& path) :
+jino::NetCDFFile::NetCDFFile(const std::filesystem::path& path) :
                  path_(path), mode_(netCDF::NcFile::replace), netCDF_(path_, mode_) {}
 
 jino::NetCDFFile::~NetCDFFile() {

@@ -38,7 +38,6 @@ class NetCDFWriter {
   void closeFile();
 
   const std::string& getDate() const;
-  const std::filesystem::path& getPath() const;
 
  private:
   void writeAttrs(const NetCDFData&);
@@ -48,7 +47,6 @@ class NetCDFWriter {
   NetCDFFile& getFile() const;
 
   const std::string date_;
-  std::filesystem::path path_;
 
   std::unique_ptr<NetCDFFile> file_;
 };

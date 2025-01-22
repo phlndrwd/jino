@@ -39,8 +39,7 @@ std::string getFormattedDateStr() {
 }
 }
 
-jino::NetCDFWriter::NetCDFWriter() :
-        date_(getFormattedDateStr()), path_(consts::kOutputDir + date_ + ".nc") {
+jino::NetCDFWriter::NetCDFWriter() : date_(getFormattedDateStr()) {
   init();
   openFile();
 }
@@ -57,12 +56,13 @@ void jino::NetCDFWriter::init() const {
 
 void jino::NetCDFWriter::openFile() {
   std::uint32_t count = 1;
-  while (std::filesystem::exists(path_) == true) {
-    path_ = consts::kOutputDir + date_ + "(" + std::to_string(count) + ").nc";
+  std::filesystem::path path(consts::kOutputDir + date_ + ".nc");
+  while (std::filesystem::exists(path) == true) {
+    path = consts::kOutputDir + date_ + "(" + std::to_string(count) + ").nc";
     ++count;
   }
   try {
-    file_ = std::make_unique<NetCDFFile>(path_);
+    file_ = std::make_unique<NetCDFFile>(path);
   } catch (const std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
@@ -77,10 +77,6 @@ void jino::NetCDFWriter::toFile(const NetCDFData& netCDFData) {
 
 const std::string& jino::NetCDFWriter::getDate() const {
   return date_;
-}
-
-const std::filesystem::path& jino::NetCDFWriter::getPath() const {
-  return path_;
 }
 
 void jino::NetCDFWriter::writeDims(const NetCDFData& netCDFData) {
