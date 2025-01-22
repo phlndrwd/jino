@@ -30,7 +30,9 @@ class Buffers;
 template<class T>
 class Buffer : public BufferBase {
  public:
+  explicit Buffer(const std::string&, const std::string&, const std::uint64_t, const T&);
   explicit Buffer(const std::string&, const std::uint64_t, const T&);
+  explicit Buffer(const char*, const char*, const std::uint64_t, const T&);
   explicit Buffer(const char*, const std::uint64_t, const T&);
 
   ~Buffer();

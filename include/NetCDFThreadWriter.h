@@ -39,7 +39,6 @@ class NetCDFThreadWriter {
   void closeFile();
 
   const std::string& getDate() const;
-  const std::filesystem::path& getPath() const;
 
  private:
   void writeAttrs(const NetCDFData&);
@@ -50,7 +49,6 @@ class NetCDFThreadWriter {
   NetCDFFile& getFile() const;
 
   const std::string date_;
-  std::filesystem::path path_;
 
   ThreadPool writerPool_;
 

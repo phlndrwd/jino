@@ -39,8 +39,7 @@ std::string getFormattedDateStr() {
 }
 }
 
-jino::NetCDFThreadWriter::NetCDFThreadWriter() :
-        date_(getFormattedDateStr()), path_(consts::kOutputDir + date_ + ".nc"), writerPool_(1) {
+jino::NetCDFThreadWriter::NetCDFThreadWriter() : date_(getFormattedDateStr()), writerPool_(1) {
   init();
   openFile();
 }
@@ -57,12 +56,17 @@ void jino::NetCDFThreadWriter::init() const {
 
 void jino::NetCDFThreadWriter::openFile() {
   std::uint32_t count = 1;
-  while (std::filesystem::exists(path_) == true) {
-    path_ = consts::kOutputDir + date_ + "(" + std::to_string(count) + ").nc";
+  std::filesystem::path path(consts::kOutputDir + date_ + ".nc");
+  while (std::filesystem::exists(path) == true) {
+    path = consts::kOutputDir + date_ + "(" + std::to_string(count) + ").nc";
     ++count;
   }
-  writerPool_.enqueue([this] {
-    file_ = std::make_unique<NetCDFFile>(path_);
+  writerPool_.enqueue([this, path] {   // Takes copy of local path variable
+    try {
+      file_ = std::make_unique<NetCDFFile>(path);
+    } catch (const std::exception& e) {
+      std::cerr << e.what() << std::endl;
+    }
   });
 }
 
@@ -90,10 +94,6 @@ void jino::NetCDFThreadWriter::closeFile() {
 
 const std::string& jino::NetCDFThreadWriter::getDate() const {
   return date_;
-}
-
-const std::filesystem::path& jino::NetCDFThreadWriter::getPath() const {
-  return path_;
 }
 
 void jino::NetCDFThreadWriter::writeDims(const NetCDFData& netCDFData) {
@@ -177,7 +177,9 @@ void jino::NetCDFThreadWriter::writeVars(const NetCDFData& netCDFData) {
   Buffers::get().forEachBuffer([&netCDFData, &file](const std::string& name,
                                                     BufferBase* const buffer) {
     if (buffer != nullptr) {
-      std::string dimName = netCDFData.getDimensionName(buffer->size());
+      const std::string dimName = netCDFData.getDimensionName(buffer->size());
+      const std::string groupName = buffer->getGroup();
+     // if ()
       file.addVariable(name, consts::kDataTypeNames[buffer->getType()], dimName);
     }
   });
@@ -188,8 +190,8 @@ void jino::NetCDFThreadWriter::writeDatums(const NetCDFData& netCDFData) {
   Buffers::get().forEachBuffer([&netCDFData, &file](const std::string& name,
                                                     BufferBase* const buffer) {
     if (buffer != nullptr) {
-      std::string dimName = netCDFData.getDimensionName(buffer->size());
-      std::uint64_t index = buffer->getReadIndex();
+      const std::string dimName = netCDFData.getDimensionName(buffer->size());
+      const std::uint64_t index = buffer->getReadIndex();
       switch (buffer->getType()) {
         case consts::eInt8: {
           auto typedBuffer = static_cast<Buffer<std::int8_t>*>(buffer);

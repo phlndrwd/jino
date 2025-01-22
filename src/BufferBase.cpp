@@ -19,11 +19,19 @@
 
 #include <string>
 
+jino::BufferBase::BufferBase(const std::string& name, const std::string& group,
+                             const std::uint8_t type) :
+                  name_(name), group_(group), type_(type) {}
+
 jino::BufferBase::BufferBase(const std::string& name, const std::uint8_t type) :
-                  name_(name), type_(type) {}
+                  name_(name), group_(""), type_(type) {}
 
 const std::string& jino::BufferBase::getName() const {
   return name_;
+}
+
+const std::string& jino::BufferBase::getGroup() const {
+  return group_;
 }
 
 const std::uint8_t& jino::BufferBase::getType() const {

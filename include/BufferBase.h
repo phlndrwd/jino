@@ -25,6 +25,7 @@ namespace jino {
 
 class BufferBase {
  public:
+  explicit BufferBase(const std::string&, const std::string&, const std::uint8_t);
   explicit BufferBase(const std::string&, const std::uint8_t);
 
   virtual ~BufferBase() = default;
@@ -32,6 +33,7 @@ class BufferBase {
   BufferBase() = delete;
 
   const std::string& getName() const;
+  const std::string& getGroup() const;
   const std::uint8_t& getType() const;
 
   virtual void record() = 0;
@@ -42,6 +44,7 @@ class BufferBase {
 
  protected:
   const std::string name_;
+  const std::string group_;
   const std::uint8_t type_;
 };
 }  // namespace jino

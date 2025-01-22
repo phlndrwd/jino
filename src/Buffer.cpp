@@ -27,9 +27,24 @@
 #include "Types.h"
 
 template <class T>
+jino::Buffer<T>::Buffer(const std::string& name, const std::string& group,
+                        const std::uint64_t size, const T& var) :
+                 BufferBase(name, group, Types<T>::type), data_(size), var_(var),
+                 readIndex_(0), writeIndex_(0) {
+  Buffers::get().attach(this);
+}
+
+template <class T>
 jino::Buffer<T>::Buffer(const std::string& name, const std::uint64_t size, const T& var) :
                  BufferBase(name, Types<T>::type), data_(size), var_(var),
                  readIndex_(0), writeIndex_(0) {
+  Buffers::get().attach(this);
+}
+
+template <class T>
+jino::Buffer<T>::Buffer(const char* name, const char* group, const std::uint64_t size, const T& var) :
+                 BufferBase(std::string(name), std::string(group), Types<T>::type), data_(size),
+                 var_(var), readIndex_(0), writeIndex_(0) {
   Buffers::get().attach(this);
 }
 
