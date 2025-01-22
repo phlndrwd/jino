@@ -164,18 +164,18 @@ void jino::NetCDFWriter::writeData(const NetCDFData& netCDFData) {
       const std::string dimName = netCDFData.getDimensionName(buffer->size());
       const std::string groupName = buffer->getGroup();
       if (groupName != consts::kEmptyString) {
-        writeGroupedData(file, buffer, dimName, groupName, name);
+        file.addVariable(name, groupName, consts::kDataTypeNames[buffer->getType()], dimName);
+        writeGroupedData(name, groupName, file, buffer);
       } else {
-        writeUngroupedData(file, buffer, dimName, name);
+        file.addVariable(name, consts::kDataTypeNames[buffer->getType()], dimName);
+        writeUngroupedData(name, file, buffer);
       }
     }
   });
 }
 
-void jino::NetCDFWriter::writeGroupedData(NetCDFFile& file, BufferBase* const buffer,
-                                          const std::string& dimName, const std::string& groupName,
-                                          const std::string& name) {
-  file.addVariable(name, groupName, consts::kDataTypeNames[buffer->getType()], dimName);
+void jino::NetCDFWriter::writeGroupedData(const std::string& name, const std::string& groupName,
+                                          NetCDFFile& file, BufferBase* const buffer) {
   switch (buffer->getType()) {
     case consts::eInt8: {
       auto typedBuffer = static_cast<Buffer<std::int8_t>*>(buffer);
@@ -235,10 +235,8 @@ void jino::NetCDFWriter::writeGroupedData(NetCDFFile& file, BufferBase* const bu
   }
 }
 
-void jino::NetCDFWriter::writeUngroupedData(NetCDFFile& file, BufferBase* const buffer,
-                                            const std::string& dimName, const std::string& name) {
-
-  file.addVariable(name, consts::kDataTypeNames[buffer->getType()], dimName);
+void jino::NetCDFWriter::writeUngroupedData(const std::string& name, NetCDFFile& file,
+                                            BufferBase* const buffer) {
   switch (buffer->getType()) {
     case consts::eInt8: {
       auto typedBuffer = static_cast<Buffer<std::int8_t>*>(buffer);

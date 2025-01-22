@@ -43,9 +43,8 @@ class NetCDFWriter {
   void writeDims(const NetCDFData&);
   void writeData(const NetCDFData&);
 
-  void writeGroupedData(NetCDFFile&, BufferBase* const, const std::string&,
-                        const std::string&, const std::string&);
-  void writeUngroupedData(NetCDFFile&, BufferBase* const, const std::string&, const std::string&);
+  void writeGroupedData(const std::string&, const std::string&, NetCDFFile&, BufferBase* const);
+  void writeUngroupedData(const std::string&, NetCDFFile&, BufferBase* const);
 
   NetCDFFile& getFile() const;
 

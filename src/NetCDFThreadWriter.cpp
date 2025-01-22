@@ -192,20 +192,20 @@ void jino::NetCDFThreadWriter::writeVars(const NetCDFData& netCDFData) {
 void jino::NetCDFThreadWriter::writeDatums(const NetCDFData& netCDFData) {
   NetCDFFile& file = getFile();
   Buffers::get().forEachBuffer([this, &netCDFData, &file](const std::string& name,
-                                                    BufferBase* const buffer) {
+                                                          BufferBase* const buffer) {
     if (buffer != nullptr) {
       const std::string groupName = buffer->getGroup();
       if (groupName != consts::kEmptyString) {
-        writeGroupedDatum(file, buffer, groupName, name);
+        writeGroupedDatum(name, groupName, file, buffer);
       } else {
-        writeUngroupedDatum(file, buffer, name);
+        writeUngroupedDatum(name, file, buffer);
       }
     }
   });
 }
 
-void jino::NetCDFThreadWriter::writeGroupedDatum(NetCDFFile& file, BufferBase* const buffer, const std::string& groupName,
-                                         const std::string& name) {
+void jino::NetCDFThreadWriter::writeGroupedDatum(const std::string& name,
+                   const std::string& groupName, NetCDFFile& file, BufferBase* const buffer) {
   const std::uint64_t index = buffer->getReadIndex();
   switch (buffer->getType()) {
     case consts::eInt8: {
@@ -266,7 +266,8 @@ void jino::NetCDFThreadWriter::writeGroupedDatum(NetCDFFile& file, BufferBase* c
   }
 }
 
-void jino::NetCDFThreadWriter::writeUngroupedDatum(NetCDFFile& file, BufferBase* const buffer, const std::string& name) {
+void jino::NetCDFThreadWriter::writeUngroupedDatum(const std::string& name, NetCDFFile& file,
+                                                   BufferBase* const buffer) {
   const std::uint64_t index = buffer->getReadIndex();
   switch (buffer->getType()) {
     case consts::eInt8: {

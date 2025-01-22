@@ -15,13 +15,14 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
+#include <iostream>
+
 #include "Buffer.h"
 #include "Buffers.h"
 #include "Constants.h"
 #include "Data.h"
 #include "JsonReader.h"
 #include "NetCDFData.h"
-#include "NetCDFFile.h"
 #include "NetCDFWriter.h"
 
 void outOfScopeTest(const std::uint64_t dataSize) {
