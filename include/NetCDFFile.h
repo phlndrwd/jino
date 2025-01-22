@@ -41,6 +41,8 @@ class NetCDFFile {
 
   void addDimension(const std::string&, const std::uint64_t);
   void addVariable(const std::string&, const std::string&, const std::string&);
+  void addVariable(const std::string&, const std::string&, const std::string&, const std::string&);
+
 
   template <typename T>
   void addAttribute(const std::string&, const T);
@@ -49,7 +51,7 @@ class NetCDFFile {
   void addData(const std::string&, const std::vector<T>&);
 
   template <typename T>
-  void addDatum(const std::string&, const std::uint64_t, const T);
+  void addDatum(const std::string&, const std::string&, const std::uint64_t, const T);
 
   void close();
 
