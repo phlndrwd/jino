@@ -20,6 +20,8 @@
 #include <stdexcept>
 #include <string>
 
+#include "Constants.h"
+
 jino::Buffers& jino::Buffers::get() {
   static Buffers this_;
   return this_;
@@ -32,11 +34,15 @@ void jino::Buffers::record() {
 }
 
 void jino::Buffers::attach(BufferBase* const buffer) {
-  auto it = buffers_.find(buffer->getName());
-  if (it == buffers_.end()) {
-    buffers_.insert({buffer->getName(), buffer});
+  if (buffer->getName() != consts::kEmptyString) {
+    auto it = buffers_.find(buffer->getName());
+    if (it == buffers_.end()) {
+      buffers_.insert({buffer->getName(), buffer});
+    } else {
+      throw std::out_of_range("Buffer \"" + buffer->getName() + "\" alredy exists.");
+    }
   } else {
-    throw std::out_of_range("Buffer \"" + buffer->getName() + "\" alredy exists.");
+    throw std::runtime_error("Buffer cannot have an empty name.");
   }
 }
 

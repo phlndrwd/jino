@@ -49,7 +49,10 @@ void jino::NetCDFFile::addVariable(const std::string& name, const std::string& t
 
 void jino::NetCDFFile::addVariable(const std::string& name, const std::string& groupName,
                                    const std::string& typeName, const std::string& dimName) {
-  netCDF::NcGroup group = netCDF_.addGroup(groupName);
+  netCDF::NcGroup group = netCDF_.getGroup(groupName);
+  if (group.isNull() == true) {
+    group = netCDF_.addGroup(groupName);
+  }
   group.addVar(name, typeName, dimName);
 }
 

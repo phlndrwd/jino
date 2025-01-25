@@ -75,9 +75,14 @@ int main() {
   double y = 0;
   std::uint64_t t = 0;
   std::uint64_t r = 1;
-  auto yBuffer = jino::Buffer<double>("Y", "group1", dataSize, y);
-  auto tBuffer = jino::Buffer<std::uint64_t>("t", "group2", dataSize, t);
-  auto rBuffer = jino::Buffer<std::uint64_t>("r", dataSize, r);
+
+  auto yBuffer1 = jino::Buffer<double>("y1", "group1", dataSize, y);
+  auto yBuffer2 = jino::Buffer<double>("y2", "group2", dataSize, y);
+
+  auto tBuffer1 = jino::Buffer<std::uint64_t>("t1", "group1", dataSize, t);
+  auto tBuffer2 = jino::Buffer<std::uint64_t>("t2", "group2", dataSize, t);
+
+  auto rBuffer1 = jino::Buffer<std::uint64_t>("r", dataSize, r);
 
   writer.writeMetadata(data);
   for (t = 0; t <= maxTimeStep; ++t) {
