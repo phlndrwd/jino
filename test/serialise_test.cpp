@@ -81,27 +81,16 @@ int main() {
 
   double y = 0;
   std::uint64_t t = 0;
-  std::uint64_t r = 1;
-
-  auto yBuffer1 = jino::Buffer<double>("y", "group1", dataSize, y);
-  auto yBuffer2 = jino::Buffer<double>("y", "group2", dataSize, y);
-
-  auto tBuffer1 = jino::Buffer<std::uint64_t>("t", "group1", dataSize, t);
-  auto tBuffer2 = jino::Buffer<std::uint64_t>("t", "group2", dataSize, t);
-
-  auto rBuffer1 = jino::Buffer<std::uint64_t>("r", dataSize, r);
-
-  writer.writeMetadata(data);
+  auto yBuffer = jino::Buffer<double>("Y", "testGroup", dataSize, y);
+  auto tBuffer = jino::Buffer<std::uint64_t>("t", dataSize, t);
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
     if (t % samplingRate == 0) {
       std::cout << "t=" << t << std::endl;
       jino::Buffers::get().record();
-      writer.writeDatums(data);
-      r = r * 2;
     }
   }
-  writer.closeFile();
+  writer.toFile(data);
 
   return 0;
 }

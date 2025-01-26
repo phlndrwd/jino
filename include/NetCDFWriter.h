@@ -33,7 +33,12 @@ class NetCDFWriter {
   void init() const;
   void openFile();
 
+  void writeMetadata(const NetCDFData&);
+  void writeDatums(const NetCDFData&);
+  void writeData(const NetCDFData&);
+
   void toFile(const NetCDFData&);
+
   void closeFile();
 
   const std::string& getDate() const;
@@ -41,7 +46,10 @@ class NetCDFWriter {
  private:
   void writeAttrs(const NetCDFData&);
   void writeDims(const NetCDFData&);
-  void writeData(const NetCDFData&);
+  void writeVars(const NetCDFData&);
+
+  void writeGroupedDatum(const std::string&, const std::string&, NetCDFFile&, BufferBase* const);
+  void writeUngroupedDatum(const std::string&, NetCDFFile&, BufferBase* const);
 
   void writeGroupedData(const std::string&, const std::string&, NetCDFFile&, BufferBase* const);
   void writeUngroupedData(const std::string&, NetCDFFile&, BufferBase* const);

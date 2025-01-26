@@ -79,10 +79,28 @@ void jino::NetCDFThreadWriter::writeMetadata(const NetCDFData& netCDFData) {
   });
 }
 
-void jino::NetCDFThreadWriter::writeData(const NetCDFData& netCDFData) {
+
+void jino::NetCDFThreadWriter::writeDatums(const NetCDFData& netCDFData) {
   writerPool_.enqueue([this, netCDFData] {
-    writeDatums(netCDFData);
+    NetCDFFile& file = getFile();
+    Buffers::get().forEachBuffer([this, &netCDFData, &file](const BufferKey& key,
+                                                            BufferBase* const buffer) {
+      if (buffer != nullptr) {
+        const std::string& groupName = key.groupName;
+        if (groupName != consts::kEmptyString) {
+          writeGroupedDatum(key.varName, groupName, file, buffer);
+        } else {
+          writeUngroupedDatum(key.varName, file, buffer);
+        }
+      }
+    });
   });
+}
+
+void jino::NetCDFThreadWriter::writeData(const NetCDFData& netCDFData) {
+  // writerPool_.enqueue([this, netCDFData] {
+  //   writeDatums(netCDFData);
+  // });
 }
 
 void jino::NetCDFThreadWriter::closeFile() {
@@ -185,21 +203,6 @@ void jino::NetCDFThreadWriter::writeVars(const NetCDFData& netCDFData) {
       } else {
         file.addVariable(key.varName, groupName,
                          consts::kDataTypeNames[buffer->getType()], dimName);
-      }
-    }
-  });
-}
-
-void jino::NetCDFThreadWriter::writeDatums(const NetCDFData& netCDFData) {
-  NetCDFFile& file = getFile();
-  Buffers::get().forEachBuffer([this, &netCDFData, &file](const BufferKey& key,
-                                                          BufferBase* const buffer) {
-    if (buffer != nullptr) {
-      const std::string& groupName = key.groupName;
-      if (groupName != consts::kEmptyString) {
-        writeGroupedDatum(key.varName, groupName, file, buffer);
-      } else {
-        writeUngroupedDatum(key.varName, file, buffer);
       }
     }
   });
