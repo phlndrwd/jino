@@ -183,7 +183,8 @@ void jino::NetCDFThreadWriter::writeVars(const NetCDFData& netCDFData) {
       if (groupName == consts::kEmptyString) {
         file.addVariable(key.varName, consts::kDataTypeNames[buffer->getType()], dimName);
       } else {
-        file.addVariable(key.varName, groupName, consts::kDataTypeNames[buffer->getType()], dimName);
+        file.addVariable(key.varName, groupName,
+                         consts::kDataTypeNames[buffer->getType()], dimName);
       }
     }
   });
