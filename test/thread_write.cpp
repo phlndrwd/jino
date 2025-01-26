@@ -45,8 +45,8 @@ std::uint64_t calcDataSize(const std::uint64_t maxTimeSteps, const std::uint64_t
     throw std::invalid_argument("Division by zero is not allowed...");
   }
   long double result = static_cast<long double>(maxTimeSteps) /
-                       static_cast<long double>(samplingRate - 1);
-  return static_cast<std::uint64_t>(std::ceil(result));
+                       static_cast<long double>(samplingRate);
+  return static_cast<std::uint64_t>(std::ceil(result) + 1);
 }
 
 int main() {
@@ -78,37 +78,37 @@ int main() {
   std::uint64_t t = 0;
   std::uint64_t r = 1;
 
-  auto yBuffer1 = jino::Buffer<double>("y", "group1", dataSize, y);
-  auto yBuffer2 = jino::Buffer<double>("y", "group2", dataSize, y);
-  auto yBuffer3 = jino::Buffer<double>("y", "group3", dataSize, y);
-  auto yBuffer4 = jino::Buffer<double>("y", "group4", dataSize, y);
-  auto yBuffer5 = jino::Buffer<double>("y", "group5", dataSize, y);
-  auto yBuffer6 = jino::Buffer<double>("y", "group6", dataSize, y);
-  auto yBuffer7 = jino::Buffer<double>("y", "group7", dataSize, y);
-  auto yBuffer8 = jino::Buffer<double>("y", "group8", dataSize, y);
-  auto yBuffer9 = jino::Buffer<double>("y", "group9", dataSize, y);
+  auto yBuffer1 = jino::Buffer<double>("y", "group01", dataSize, y);
+  auto yBuffer2 = jino::Buffer<double>("y", "group02", dataSize, y);
+  auto yBuffer3 = jino::Buffer<double>("y", "group03", dataSize, y);
+  auto yBuffer4 = jino::Buffer<double>("y", "group04", dataSize, y);
+  auto yBuffer5 = jino::Buffer<double>("y", "group05", dataSize, y);
+  auto yBuffer6 = jino::Buffer<double>("y", "group06", dataSize, y);
+  auto yBuffer7 = jino::Buffer<double>("y", "group07", dataSize, y);
+  auto yBuffer8 = jino::Buffer<double>("y", "group08", dataSize, y);
+  auto yBuffer9 = jino::Buffer<double>("y", "group09", dataSize, y);
   auto yBuffer10 = jino::Buffer<double>("y", "group10", dataSize, y);
 
-  auto tBuffer1 = jino::Buffer<std::uint64_t>("t", "group1", dataSize, t);
-  auto tBuffer2 = jino::Buffer<std::uint64_t>("t", "group2", dataSize, t);
-  auto tBuffer3 = jino::Buffer<std::uint64_t>("t", "group3", dataSize, t);
-  auto tBuffer4 = jino::Buffer<std::uint64_t>("t", "group4", dataSize, t);
-  auto tBuffer5 = jino::Buffer<std::uint64_t>("t", "group5", dataSize, t);
-  auto tBuffer6 = jino::Buffer<std::uint64_t>("t", "group6", dataSize, t);
-  auto tBuffer7 = jino::Buffer<std::uint64_t>("t", "group7", dataSize, t);
-  auto tBuffer8 = jino::Buffer<std::uint64_t>("t", "group8", dataSize, t);
-  auto tBuffer9 = jino::Buffer<std::uint64_t>("t", "group9", dataSize, t);
+  auto tBuffer1 = jino::Buffer<std::uint64_t>("t", "group01", dataSize, t);
+  auto tBuffer2 = jino::Buffer<std::uint64_t>("t", "group02", dataSize, t);
+  auto tBuffer3 = jino::Buffer<std::uint64_t>("t", "group03", dataSize, t);
+  auto tBuffer4 = jino::Buffer<std::uint64_t>("t", "group04", dataSize, t);
+  auto tBuffer5 = jino::Buffer<std::uint64_t>("t", "group05", dataSize, t);
+  auto tBuffer6 = jino::Buffer<std::uint64_t>("t", "group06", dataSize, t);
+  auto tBuffer7 = jino::Buffer<std::uint64_t>("t", "group07", dataSize, t);
+  auto tBuffer8 = jino::Buffer<std::uint64_t>("t", "group08", dataSize, t);
+  auto tBuffer9 = jino::Buffer<std::uint64_t>("t", "group09", dataSize, t);
   auto tBuffer10 = jino::Buffer<std::uint64_t>("t", "group10", dataSize, t);
 
-  auto rBuffer1 = jino::Buffer<std::uint64_t>("r1", dataSize, r);
-  auto rBuffer2 = jino::Buffer<std::uint64_t>("r2", dataSize, r);
-  auto rBuffer3 = jino::Buffer<std::uint64_t>("r3", dataSize, r);
-  auto rBuffer4 = jino::Buffer<std::uint64_t>("r4", dataSize, r);
-  auto rBuffer5 = jino::Buffer<std::uint64_t>("r5", dataSize, r);
-  auto rBuffer6 = jino::Buffer<std::uint64_t>("r6", dataSize, r);
-  auto rBuffer7 = jino::Buffer<std::uint64_t>("r7", dataSize, r);
-  auto rBuffer8 = jino::Buffer<std::uint64_t>("r8", dataSize, r);
-  auto rBuffer9 = jino::Buffer<std::uint64_t>("r9", dataSize, r);
+  auto rBuffer1 = jino::Buffer<std::uint64_t>("r01", dataSize, r);
+  auto rBuffer2 = jino::Buffer<std::uint64_t>("r02", dataSize, r);
+  auto rBuffer3 = jino::Buffer<std::uint64_t>("r03", dataSize, r);
+  auto rBuffer4 = jino::Buffer<std::uint64_t>("r04", dataSize, r);
+  auto rBuffer5 = jino::Buffer<std::uint64_t>("r05", dataSize, r);
+  auto rBuffer6 = jino::Buffer<std::uint64_t>("r06", dataSize, r);
+  auto rBuffer7 = jino::Buffer<std::uint64_t>("r07", dataSize, r);
+  auto rBuffer8 = jino::Buffer<std::uint64_t>("r08", dataSize, r);
+  auto rBuffer9 = jino::Buffer<std::uint64_t>("r09", dataSize, r);
   auto rBuffer10 = jino::Buffer<std::uint64_t>("r10", dataSize, r);
 
   writer.writeMetadata(data);
