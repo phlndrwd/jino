@@ -80,11 +80,36 @@ int main() {
 
   auto yBuffer1 = jino::Buffer<double>("y", "group1", dataSize, y);
   auto yBuffer2 = jino::Buffer<double>("y", "group2", dataSize, y);
+  auto yBuffer3 = jino::Buffer<double>("y", "group3", dataSize, y);
+  auto yBuffer4 = jino::Buffer<double>("y", "group4", dataSize, y);
+  auto yBuffer5 = jino::Buffer<double>("y", "group5", dataSize, y);
+  auto yBuffer6 = jino::Buffer<double>("y", "group6", dataSize, y);
+  auto yBuffer7 = jino::Buffer<double>("y", "group7", dataSize, y);
+  auto yBuffer8 = jino::Buffer<double>("y", "group8", dataSize, y);
+  auto yBuffer9 = jino::Buffer<double>("y", "group9", dataSize, y);
+  auto yBuffer10 = jino::Buffer<double>("y", "group10", dataSize, y);
 
   auto tBuffer1 = jino::Buffer<std::uint64_t>("t", "group1", dataSize, t);
   auto tBuffer2 = jino::Buffer<std::uint64_t>("t", "group2", dataSize, t);
+  auto tBuffer3 = jino::Buffer<std::uint64_t>("t", "group3", dataSize, t);
+  auto tBuffer4 = jino::Buffer<std::uint64_t>("t", "group4", dataSize, t);
+  auto tBuffer5 = jino::Buffer<std::uint64_t>("t", "group5", dataSize, t);
+  auto tBuffer6 = jino::Buffer<std::uint64_t>("t", "group6", dataSize, t);
+  auto tBuffer7 = jino::Buffer<std::uint64_t>("t", "group7", dataSize, t);
+  auto tBuffer8 = jino::Buffer<std::uint64_t>("t", "group8", dataSize, t);
+  auto tBuffer9 = jino::Buffer<std::uint64_t>("t", "group9", dataSize, t);
+  auto tBuffer10 = jino::Buffer<std::uint64_t>("t", "group10", dataSize, t);
 
-  auto rBuffer1 = jino::Buffer<std::uint64_t>("r", dataSize, r);
+  auto rBuffer1 = jino::Buffer<std::uint64_t>("r1", dataSize, r);
+  auto rBuffer2 = jino::Buffer<std::uint64_t>("r2", dataSize, r);
+  auto rBuffer3 = jino::Buffer<std::uint64_t>("r3", dataSize, r);
+  auto rBuffer4 = jino::Buffer<std::uint64_t>("r4", dataSize, r);
+  auto rBuffer5 = jino::Buffer<std::uint64_t>("r5", dataSize, r);
+  auto rBuffer6 = jino::Buffer<std::uint64_t>("r6", dataSize, r);
+  auto rBuffer7 = jino::Buffer<std::uint64_t>("r7", dataSize, r);
+  auto rBuffer8 = jino::Buffer<std::uint64_t>("r8", dataSize, r);
+  auto rBuffer9 = jino::Buffer<std::uint64_t>("r9", dataSize, r);
+  auto rBuffer10 = jino::Buffer<std::uint64_t>("r10", dataSize, r);
 
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;

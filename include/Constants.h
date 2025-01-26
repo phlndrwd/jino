@@ -64,7 +64,7 @@ constexpr std::string kSamplingRate = "SamplingRate";
 constexpr std::string kYMin = "YMin";
 constexpr std::string kYMax = "YMax";
 
-constexpr std::string_view kDateFormat = "{:%Y-%m-%d_%H:%M:%S}";
+constexpr std::string_view kDateFormat = "%Y-%m-%d_%H:%M:%S";
 
 const std::array<std::string, eNumberOfDataTypes> kDataTypeNames = {
   "byte",
