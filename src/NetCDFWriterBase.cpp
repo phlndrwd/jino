@@ -19,6 +19,7 @@
 
 #include <chrono>
 #include <iomanip>
+#include <iostream>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -40,7 +41,7 @@ std::string getFormattedDateStr() {
   oss << std::put_time(std::localtime(&nowSeconds), dateFormat.c_str());
   return oss.str();
 }
-}
+}  // anonymous namespace
 
 jino::NetCDFWriterBase::NetCDFWriterBase() : date_(getFormattedDateStr()) {}
 
