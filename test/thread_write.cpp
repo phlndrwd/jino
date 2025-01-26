@@ -90,7 +90,7 @@ int main() {
     if (t % samplingRate == 0) {
       std::cout << "t=" << t << std::endl;
       jino::Buffers::get().record();
-      writer.writeData(data);
+      writer.writeDatums(data);
       r = r * 2;
     }
   }

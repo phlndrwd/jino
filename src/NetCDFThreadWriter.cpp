@@ -79,7 +79,6 @@ void jino::NetCDFThreadWriter::writeMetadata(const NetCDFData& netCDFData) {
   });
 }
 
-
 void jino::NetCDFThreadWriter::writeDatums(const NetCDFData& netCDFData) {
   writerPool_.enqueue([this, netCDFData] {
     NetCDFFile& file = getFile();

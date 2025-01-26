@@ -36,7 +36,6 @@ class NetCDFWriter {
   void writeMetadata(const NetCDFData&);
   void writeDatums(const NetCDFData&);
   void writeData(const NetCDFData&);
-
   void toFile(const NetCDFData&);
 
   void closeFile();
@@ -57,7 +56,6 @@ class NetCDFWriter {
   NetCDFFile& getFile() const;
 
   const std::string date_;
-
   std::unique_ptr<NetCDFFile> file_;
 };
 }  // namespace jino

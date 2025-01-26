@@ -35,6 +35,7 @@ class NetCDFThreadWriter {
   void writeMetadata(const NetCDFData&);
   void writeDatums(const NetCDFData&);
   void writeData(const NetCDFData&);
+  void toFile(const NetCDFData&);
 
   void closeFile();
 
@@ -47,6 +48,9 @@ class NetCDFThreadWriter {
 
   void writeGroupedDatum(const std::string&, const std::string&, NetCDFFile&, BufferBase* const);
   void writeUngroupedDatum(const std::string&, NetCDFFile&, BufferBase* const);
+
+  void writeGroupedData(const std::string&, const std::string&, NetCDFFile&, BufferBase* const);
+  void writeUngroupedData(const std::string&, NetCDFFile&, BufferBase* const);
 
   NetCDFFile& getFile() const;
 

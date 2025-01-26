@@ -84,15 +84,17 @@ int main() {
 
   auto rBuffer1 = jino::Buffer<std::uint64_t>("r", dataSize, r);
 
+  writer.writeMetadata(data);
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
     if (t % samplingRate == 0) {
       std::cout << "t=" << t << std::endl;
       jino::Buffers::get().record();
+      writer.writeDatums(data);
       r = r * 2;
     }
   }
-  writer.toFile(data);
+  writer.closeFile();
 
   return 0;
 }
