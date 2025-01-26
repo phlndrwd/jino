@@ -20,9 +20,9 @@
 
 #include <functional>
 #include <map>
-#include <string>
 
 #include "BufferBase.h"
+#include "BufferKey.h"
 
 namespace jino {
 class Buffers {
@@ -39,7 +39,7 @@ class Buffers {
   void attach(BufferBase* const);
   void detach(BufferBase* const);
 
-  void forEachBuffer(const std::function<void(const std::string&, BufferBase* const)>&) const;
+  void forEachBuffer(const std::function<void(const BufferKey&, BufferBase* const)>&) const;
 
   void print();
 
@@ -47,7 +47,7 @@ class Buffers {
   Buffers() = default;
   ~Buffers() = default;
 
-  std::map<const std::string, BufferBase* const> buffers_;
+  std::map<const BufferKey, BufferBase* const> buffers_;
 };
 
 }  // namespace jino

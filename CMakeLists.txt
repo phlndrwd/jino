@@ -84,6 +84,7 @@ list(APPEND JINO_SOURCES
 list(APPEND JINO_HEADERS
   include/Buffer.h
   include/BufferBase.h
+  include/BufferKey.h
   include/Buffers.h
   include/Constants.h
   include/Data.h

@@ -85,6 +85,12 @@ int main() {
   auto rBuffer1 = jino::Buffer<std::uint64_t>("r", dataSize, r);
 
   writer.writeMetadata(data);
+  try {
+    auto rBuffer2 = jino::Buffer<std::uint64_t>("r", dataSize, r);
+  } catch (std::exception& e) {
+    std::cerr << e.what() << std::endl;
+  }
+
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
     if (t % samplingRate == 0) {

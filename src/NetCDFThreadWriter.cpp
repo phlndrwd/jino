@@ -175,15 +175,15 @@ void jino::NetCDFThreadWriter::writeAttrs(const NetCDFData& netCDFData) {
 
 void jino::NetCDFThreadWriter::writeVars(const NetCDFData& netCDFData) {
   NetCDFFile& file = getFile();
-  Buffers::get().forEachBuffer([&netCDFData, &file](const std::string& name,
+  Buffers::get().forEachBuffer([&netCDFData, &file](const BufferKey& key,
                                                     BufferBase* const buffer) {
     if (buffer != nullptr) {
       const std::string dimName = netCDFData.getDimensionName(buffer->size());
-      const std::string groupName = buffer->getGroup();
+      const std::string groupName = key.groupName;
       if (groupName == consts::kEmptyString) {
-        file.addVariable(name, consts::kDataTypeNames[buffer->getType()], dimName);
+        file.addVariable(key.varName, consts::kDataTypeNames[buffer->getType()], dimName);
       } else {
-        file.addVariable(name, groupName, consts::kDataTypeNames[buffer->getType()], dimName);
+        file.addVariable(key.varName, groupName, consts::kDataTypeNames[buffer->getType()], dimName);
       }
     }
   });
@@ -191,14 +191,14 @@ void jino::NetCDFThreadWriter::writeVars(const NetCDFData& netCDFData) {
 
 void jino::NetCDFThreadWriter::writeDatums(const NetCDFData& netCDFData) {
   NetCDFFile& file = getFile();
-  Buffers::get().forEachBuffer([this, &netCDFData, &file](const std::string& name,
+  Buffers::get().forEachBuffer([this, &netCDFData, &file](const BufferKey& key,
                                                           BufferBase* const buffer) {
     if (buffer != nullptr) {
-      const std::string groupName = buffer->getGroup();
+      const std::string groupName = key.groupName;
       if (groupName != consts::kEmptyString) {
-        writeGroupedDatum(name, groupName, file, buffer);
+        writeGroupedDatum(key.varName, groupName, file, buffer);
       } else {
-        writeUngroupedDatum(name, file, buffer);
+        writeUngroupedDatum(key.varName, file, buffer);
       }
     }
   });

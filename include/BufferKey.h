@@ -15,21 +15,25 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#ifndef INCLUDE_NETCDFDIM_H_
-#define INCLUDE_NETCDFDIM_H_
+#ifndef INCLUDE_BUFFERKEY_H_
+#define INCLUDE_BUFFERKEY_H_
 
 #include <cstdint>
 #include <string>
+#include <tuple>
 
 namespace jino {
-struct NetCDFDim {
-  const std::string name;
-  const std::uint8_t isUnlimited;
+struct BufferKey {
+  const std::string varName;
+  const std::string groupName;
 
-  NetCDFDim(const std::string& name) : name(name), isUnlimited(false) {}
-  NetCDFDim(const std::string& name, std::uint8_t isUnlimited) :
-                                     name(name), isUnlimited(isUnlimited) {}
+  BufferKey(const std::string& varName, const std::string& groupName) :
+                                        varName(varName), groupName(groupName) {}
+
+  std::uint8_t operator < (const BufferKey& other) const {
+    return std::tie(varName, groupName) < std::tie(other.varName, other.groupName);
+  }
 };
 }  // namespace jino
 
-#endif // INCLUDE_NETCDFDIM_H_
+#endif // INCLUDE_BUFFERKEY_H_

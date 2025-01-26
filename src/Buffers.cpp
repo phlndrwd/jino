@@ -28,42 +28,69 @@ jino::Buffers& jino::Buffers::get() {
 }
 
 void jino::Buffers::record() {
-  for (const auto& [name, buffer] : buffers_) {
+  for (const auto& [key, buffer] : buffers_) {
     buffer->record();
   }
 }
-
 void jino::Buffers::attach(BufferBase* const buffer) {
   if (buffer->getName() != consts::kEmptyString) {
-    auto it = buffers_.find(buffer->getName());
+    const std::string& groupName = buffer->getGroup();
+    BufferKey key(buffer->getName(), groupName);
+    auto it = buffers_.find(key);
     if (it == buffers_.end()) {
-      buffers_.insert({buffer->getName(), buffer});
+        buffers_.emplace(key, buffer);
     } else {
-      throw std::out_of_range("Buffer \"" + buffer->getName() + "\" alredy exists.");
+      if (groupName != consts::kEmptyString) {
+        throw std::out_of_range("Buffer \"" + buffer->getName() +
+                                "\" in group \"" + buffer->getGroup() + "\" already exists.");
+      } else {
+        throw std::out_of_range("Buffer \"" + buffer->getName() + "\" already exists.");
+      }
     }
   } else {
-    throw std::runtime_error("Buffer cannot have an empty name.");
+      throw std::runtime_error("Buffer cannot have an empty name or group name.");
   }
 }
 
+//void jino::Buffers::attach(BufferBase* const buffer) {
+//  if (buffer->getName() != consts::kEmptyString) {
+//    auto it = buffers_.find(buffer->getName());
+//    if (it == buffers_.end()) {
+//      buffers_.insert({buffer->getName(), buffer});
+//    } else {
+//      throw std::out_of_range("Buffer \"" + buffer->getName() + "\" alredy exists.");
+//    }
+//  } else {
+//    throw std::runtime_error("Buffer cannot have an empty name.");
+//  }
+//}
+
 void jino::Buffers::detach(BufferBase* const buffer) {
-  auto it = buffers_.find(buffer->getName());
+  const std::string& groupName = buffer->getGroup();
+  BufferKey key(buffer->getName(), groupName);
+  auto it = buffers_.find(key);
   if (it != buffers_.end()) {
     buffers_.erase(it);
   } else {
     throw std::out_of_range("Buffer \"" + buffer->getName() + "\" not found.");
+    if (groupName != consts::kEmptyString) {
+      throw std::out_of_range("Buffer \"" + buffer->getName() +
+                              "\" in group \"" + buffer->getGroup() + "\" already exists.");
+    } else {
+      throw std::out_of_range("Buffer \"" + buffer->getName() + "\" not found.");
+    }
   }
 }
 
-void jino::Buffers::forEachBuffer(const std::function<void(const std::string&,
+void jino::Buffers::forEachBuffer(const std::function<void(const BufferKey&,
                                   BufferBase* const)>& callback) const {
-  for (const auto& [name, buffer] : buffers_) {
-    callback(name, buffer);
+  for (const auto& [key, buffer] : buffers_) {
+    callback(key, buffer);
   }
 }
 
 void jino::Buffers::print() {
-  for (auto const& [name, buffer] : buffers_) {
+  for (auto const& [key, buffer] : buffers_) {
     if (buffer != nullptr) {
       buffer->print();
     } else {
