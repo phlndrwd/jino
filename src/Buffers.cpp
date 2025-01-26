@@ -48,7 +48,7 @@ void jino::Buffers::attach(BufferBase* const buffer) {
       }
     }
   } else {
-      throw std::runtime_error("Buffer cannot have an empty name or group name.");
+      throw std::runtime_error("Buffer cannot have an empty name.");
   }
 }
 
@@ -62,7 +62,7 @@ void jino::Buffers::detach(BufferBase* const buffer) {
     throw std::out_of_range("Buffer \"" + buffer->getName() + "\" not found.");
     if (groupName != consts::kEmptyString) {
       throw std::out_of_range("Buffer \"" + buffer->getName() +
-                              "\" in group \"" + buffer->getGroup() + "\" already exists.");
+                              "\" in group \"" + buffer->getGroup() + "\" not found.");
     } else {
       throw std::out_of_range("Buffer \"" + buffer->getName() + "\" not found.");
     }

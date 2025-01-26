@@ -83,6 +83,7 @@ int main() {
   auto tBuffer2 = jino::Buffer<std::uint64_t>("t", "group2", dataSize, t);
 
   auto rBuffer1 = jino::Buffer<std::uint64_t>("r", dataSize, r);
+  auto rBuffer2 = jino::Buffer<std::uint64_t>("r", "groupX", dataSize, r);
 
   writer.writeMetadata(data);
   for (t = 0; t <= maxTimeStep; ++t) {
