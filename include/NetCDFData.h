@@ -37,7 +37,7 @@ class NetCDFData {
   void addDimension(const std::string&, const std::uint64_t, const std::uint8_t = false);
   void addDimension(const char*, const std::uint64_t, const std::uint8_t = false);
 
-  std::string getDimensionName(const std::uint64_t) const;
+  const std::string& getDimensionName(const std::uint64_t) const;
 
   const std::vector<Data*>& getData() const;
 

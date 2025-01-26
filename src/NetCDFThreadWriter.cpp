@@ -178,8 +178,8 @@ void jino::NetCDFThreadWriter::writeVars(const NetCDFData& netCDFData) {
   Buffers::get().forEachBuffer([&netCDFData, &file](const BufferKey& key,
                                                     BufferBase* const buffer) {
     if (buffer != nullptr) {
-      const std::string dimName = netCDFData.getDimensionName(buffer->size());
-      const std::string groupName = key.groupName;
+      const std::string& dimName = netCDFData.getDimensionName(buffer->size());
+      const std::string& groupName = key.groupName;
       if (groupName == consts::kEmptyString) {
         file.addVariable(key.varName, consts::kDataTypeNames[buffer->getType()], dimName);
       } else {
@@ -195,7 +195,7 @@ void jino::NetCDFThreadWriter::writeDatums(const NetCDFData& netCDFData) {
   Buffers::get().forEachBuffer([this, &netCDFData, &file](const BufferKey& key,
                                                           BufferBase* const buffer) {
     if (buffer != nullptr) {
-      const std::string groupName = key.groupName;
+      const std::string& groupName = key.groupName;
       if (groupName != consts::kEmptyString) {
         writeGroupedDatum(key.varName, groupName, file, buffer);
       } else {

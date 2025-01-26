@@ -161,8 +161,8 @@ void jino::NetCDFWriter::writeData(const NetCDFData& netCDFData) {
   Buffers::get().forEachBuffer([this, &netCDFData, &file](const BufferKey& key,
                                                           BufferBase* const buffer) {
     if (buffer != nullptr) {
-      const std::string dimName = netCDFData.getDimensionName(buffer->size());
-      const std::string groupName = buffer->getGroup();
+      const std::string& dimName = netCDFData.getDimensionName(buffer->size());
+      const std::string& groupName = key.groupName;
       if (groupName != consts::kEmptyString) {
         file.addVariable(key.varName, groupName,
                          consts::kDataTypeNames[buffer->getType()], dimName);

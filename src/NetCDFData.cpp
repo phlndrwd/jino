@@ -50,7 +50,7 @@ void jino::NetCDFData::addDimension(const char* name, const std::uint64_t size,
   addDimension(std::string(name), size, isUnlimited);
 }
 
-std::string jino::NetCDFData::getDimensionName(const std::uint64_t size) const {
+const std::string& jino::NetCDFData::getDimensionName(const std::uint64_t size) const {
   return dimensions_.at(size).name;
 }
 
