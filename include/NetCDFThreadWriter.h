@@ -18,47 +18,24 @@
 #ifndef INCLUDE_NETCDFTHREADWRITER_H_
 #define INCLUDE_NETCDFTHREADWRITER_H_
 
-#include <memory>
-
 #include "NetCDFData.h"
-#include "NetCDFFile.h"
+#include "NetCDFWriterBase.h"
 #include "ThreadPool.h"
 
 namespace jino {
-class NetCDFThreadWriter {
+class NetCDFThreadWriter : public NetCDFWriterBase {
  public:
   NetCDFThreadWriter();
 
-  void init() const;
-  void openFile();
+  void writeMetadata(const NetCDFData&) override;
+  void writeDatums(const NetCDFData&) override;
+  void writeData(const NetCDFData&) override;
+  void toFile(const NetCDFData&) override;
 
-  void writeMetadata(const NetCDFData&);
-  void writeDatums(const NetCDFData&);
-  void writeData(const NetCDFData&);
-  void toFile(const NetCDFData&);
-
-  void closeFile();
-
-  const std::string& getDate() const;
+  void closeFile() override;
 
  private:
-  void writeAttrs(const NetCDFData&);
-  void writeDims(const NetCDFData&);
-  void writeVars(const NetCDFData&);
-
-  void writeGroupedDatum(const std::string&, const std::string&, NetCDFFile&, BufferBase* const);
-  void writeUngroupedDatum(const std::string&, NetCDFFile&, BufferBase* const);
-
-  void writeGroupedData(const std::string&, const std::string&, NetCDFFile&, BufferBase* const);
-  void writeUngroupedData(const std::string&, NetCDFFile&, BufferBase* const);
-
-  NetCDFFile& getFile() const;
-
-  const std::string date_;
-
   ThreadPool writerPool_;
-
-  std::unique_ptr<NetCDFFile> file_;
 };
 }
 

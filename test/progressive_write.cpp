@@ -15,7 +15,9 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
+#include <chrono>
 #include <iostream>
+#include <thread>
 
 #include "Buffer.h"
 #include "Buffers.h"
@@ -44,7 +46,7 @@ std::uint64_t calcDataSize(const std::uint64_t maxTimeSteps, const std::uint64_t
   }
   long double result = static_cast<long double>(maxTimeSteps) /
                        static_cast<long double>(samplingRate - 1);
-  return static_cast<std::uint64_t>(std::round(result));
+  return static_cast<std::uint64_t>(std::ceil(result));
 }
 
 int main() {
@@ -87,6 +89,7 @@ int main() {
   writer.writeMetadata(data);
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
     if (t % samplingRate == 0) {
       std::cout << "t=" << t << std::endl;
       jino::Buffers::get().record();

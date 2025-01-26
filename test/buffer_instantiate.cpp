@@ -46,7 +46,7 @@ std::uint64_t calcDataSize(const std::uint64_t maxTimeSteps, const std::uint64_t
   }
   long double result = static_cast<long double>(maxTimeSteps) /
                        static_cast<long double>(samplingRate - 1);
-  return static_cast<std::uint64_t>(std::round(result));
+  return static_cast<std::uint64_t>(std::ceil(result));
 }
 
 int main() {

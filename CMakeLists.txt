@@ -78,6 +78,7 @@ list(APPEND JINO_SOURCES
   src/NetCDFFile.cpp
   src/NetCDFThreadWriter.cpp
   src/NetCDFWriter.cpp
+  src/NetCDFWriterBase.cpp
   src/ThreadPool.cpp
 )
 
@@ -96,6 +97,7 @@ list(APPEND JINO_HEADERS
   include/NetCDFFile.h
   include/NetCDFThreadWriter.h
   include/NetCDFWriter.h
+  include/NetCDFWriterBase.h
   include/ThreadPool.h
   include/Types.h
 )
@@ -105,7 +107,6 @@ set(TEST_SOURCES
   test/buffer_instantiate.cpp
   test/netcdf_write.cpp
   test/progressive_write.cpp
-  test/serialise_objects.cpp
   test/thread_write.cpp
 )
 

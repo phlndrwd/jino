@@ -15,26 +15,50 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#ifndef INCLUDE_NETCDFWRITER_H_
-#define INCLUDE_NETCDFWRITER_H_
+#ifndef INCLUDE_NETCDFWRITERBASE_H_
+#define INCLUDE_NETCDFWRITERBASE_H_
 
+#include <filesystem>
+#include <memory>
+#include <string>
+
+#include "BufferBase.h"
 #include "NetCDFData.h"
-#include "NetCDFWriterBase.h"
+#include "NetCDFFile.h"
 
 namespace jino {
 class Buffers;
 
-class NetCDFWriter : public NetCDFWriterBase {
+class NetCDFWriterBase {
  public:
-  NetCDFWriter();
+  NetCDFWriterBase();
 
-  void writeMetadata(const NetCDFData&) override;
-  void writeDatums(const NetCDFData&) override;
-  void writeData(const NetCDFData&) override;
-  void toFile(const NetCDFData&) override;
+  const std::string& getDate() const;
 
-  void closeFile() override;
+  std::filesystem::path init() const;
+
+  virtual void writeMetadata(const NetCDFData&) = 0;
+  virtual void writeDatums(const NetCDFData&) = 0;
+  virtual void writeData(const NetCDFData&) = 0;
+  virtual void toFile(const NetCDFData&) = 0;
+
+  virtual void closeFile() = 0;
+
+ protected:
+  void writeAttrs(const NetCDFData&);
+  void writeDims(const NetCDFData&);
+  void writeVars(const NetCDFData&);
+
+  void writeGroupedDatum(const std::string&, const std::string&, NetCDFFile&, BufferBase* const);
+  void writeUngroupedDatum(const std::string&, NetCDFFile&, BufferBase* const);
+
+  void writeGroupedData(const std::string&, const std::string&, NetCDFFile&, BufferBase* const);
+  void writeUngroupedData(const std::string&, NetCDFFile&, BufferBase* const);
+
+  NetCDFFile& getFile() const;
+
+  const std::string date_;
+  std::unique_ptr<NetCDFFile> file_;
 };
 }  // namespace jino
-
-#endif // INCLUDE_NETCDFWRITER_H_
+#endif // INCLUDE_NETCDFWRITERBASE_H_
