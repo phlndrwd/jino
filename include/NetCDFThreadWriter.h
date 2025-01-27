@@ -23,7 +23,7 @@
 #include "ThreadPool.h"
 
 namespace jino {
-class NetCDFThreadWriter : public NetCDFWriterBase {
+class NetCDFThreadWriter final : public NetCDFWriterBase {
  public:
   NetCDFThreadWriter();
 

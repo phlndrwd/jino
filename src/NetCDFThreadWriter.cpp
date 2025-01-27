@@ -17,9 +17,7 @@
 
 #include "NetCDFThreadWriter.h"
 
-#include <chrono>
 #include <filesystem>  /// NOLINT
-#include <format>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -28,14 +26,6 @@
 #include "Buffers.h"
 #include "Constants.h"
 #include "NetCDFFile.h"
-
-namespace {
-std::string getFormattedDateStr() {
-  auto now = std::chrono::system_clock::now();
-  auto nowSeconds = floor<std::chrono::seconds>(now);
-  return std::format(jino::consts::kDateFormat, nowSeconds);
-}
-}
 
 jino::NetCDFThreadWriter::NetCDFThreadWriter() :  NetCDFWriterBase(), writerPool_(1) {
   std::filesystem::path path = init();

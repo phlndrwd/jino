@@ -24,7 +24,7 @@
 namespace jino {
 class Buffers;
 
-class NetCDFWriter : public NetCDFWriterBase {
+class NetCDFWriter final : public NetCDFWriterBase {
  public:
   NetCDFWriter();
 
