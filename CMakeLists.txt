@@ -21,6 +21,7 @@ project(jino LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
+#set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*")
 
 file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/input)
 file(COPY ${CMAKE_SOURCE_DIR}/input DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
@@ -107,6 +108,7 @@ set(TEST_SOURCES
   test/buffer_instantiate.cpp
   test/netcdf_write.cpp
   test/progressive_write.cpp
+  test/serialise_test.cpp
   test/thread_write.cpp
 )
 
