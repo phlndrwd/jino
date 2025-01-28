@@ -104,12 +104,12 @@ list(APPEND JINO_HEADERS
 )
 
 set(TEST_SOURCES
-  test/basic_read.cpp
-  test/buffer_instantiate.cpp
-  test/netcdf_write.cpp
-  test/progressive_write.cpp
-  test/serialise_test.cpp
-  test/thread_write.cpp
+  test/01_basic_read.cpp
+  test/02_buffer_instantiate.cpp
+  test/03_netcdf_write.cpp
+  test/04_progressive_write.cpp
+  test/05_thread_write.cpp
+  test/06_serialise_test.cpp
 )
 
 ## Create library
