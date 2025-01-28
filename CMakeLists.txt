@@ -109,7 +109,8 @@ set(TEST_SOURCES
   test/03_netcdf_write.cpp
   test/04_progressive_write.cpp
   test/05_thread_write.cpp
-  test/06_serialise_test.cpp
+  test/06_serialise_write.cpp
+  test/07_deserialize_read.cpp
 )
 
 ## Create library
