@@ -33,9 +33,8 @@ class NetCDFWriterBase {
  public:
   NetCDFWriterBase();
 
-  inline const std::string& getDate() const {
-    return date_;
-  }
+  const std::string& getDate() const;
+
   std::filesystem::path init() const;
 
   virtual void writeMetadata(const NetCDFData&) = 0;
@@ -56,12 +55,7 @@ class NetCDFWriterBase {
   void writeGroupedData(const std::string&, const std::string&, NetCDFFile&, BufferBase* const);
   void writeUngroupedData(const std::string&, NetCDFFile&, BufferBase* const);
 
-  inline NetCDFFile& getFile() const {
-    if (file_ == nullptr) {
-      throw std::runtime_error("ERROR: NetCDFFile has not been initialised...");
-    }
-    return *file_;
-  }
+  NetCDFFile& getFile() const;
 
   const std::string date_;
   std::unique_ptr<NetCDFFile> file_;

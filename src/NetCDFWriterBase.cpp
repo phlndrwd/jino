@@ -45,6 +45,10 @@ std::string getFormattedDateStr() {
 
 jino::NetCDFWriterBase::NetCDFWriterBase() : date_(getFormattedDateStr()) {}
 
+const std::string& jino::NetCDFWriterBase::getDate() const {
+  return date_;
+}
+
 std::filesystem::path jino::NetCDFWriterBase::init() const {
   try {
     if (std::filesystem::exists(consts::kOutputDir) == false) {
@@ -398,4 +402,11 @@ void jino::NetCDFWriterBase::writeUngroupedData(const std::string& name, NetCDFF
       break;
     }
   }
+}
+
+jino::NetCDFFile& jino::NetCDFWriterBase::getFile() const {
+  if (file_ == nullptr) {
+    throw std::runtime_error("ERROR: NetCDFFile has not been initialised...");
+  }
+  return *file_;
 }
