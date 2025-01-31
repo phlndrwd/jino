@@ -18,13 +18,13 @@
 #ifndef INCLUDE_JSONREADER_H_
 #define INCLUDE_JSONREADER_H_
 
+#include <fstream>
 #include <string>
 
 #include "nlohmann/json.hpp"
 
+#include "Constants.h"
 #include "Data.h"
-
-using json = nlohmann::json;
 
 namespace jino {
 class JsonReader {
@@ -35,6 +35,22 @@ class JsonReader {
 
   void readParams(jino::Data&);
   void readAttrs(jino::Data&);
+
+  template <typename T>
+  T readState() {
+    const std::string inputPath = jino::consts::kInputDir + jino::consts::kStateFile;
+    try {
+      std::ifstream file(inputPath);
+      nlohmann::json j;
+      if (file.is_open()) {
+        file >> j;
+        file.close();
+      }
+      return j.get<T>();
+    } catch (std::exception e){
+      throw std::runtime_error("ERROR: Could not open file \"" + inputPath + "\"...");
+    }
+  };
 
  private:
   template <typename T>

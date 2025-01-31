@@ -20,10 +20,9 @@
 #include <string>
 #include <vector>
 
-#include "Constants.h"
-#include "JsonWriter.h"
-
 #include "nlohmann/json.hpp"
+
+#include "Output.h"
 
 using json = nlohmann::json;
 
@@ -76,8 +75,8 @@ std::int32_t main() {
   Garage garage = {{car1, car2}};
 
   std::cout << "Serialise to JSON and write to file..." << std::endl;
-  jino::JsonWriter jsonWriter;
-  jsonWriter.toFile(garage, jino::consts::kStateFile);
+  jino::Output output;
+  output.writeState(garage);
   std::cout << "Complete." << std::endl;
 
   return 0;

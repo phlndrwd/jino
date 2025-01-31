@@ -19,25 +19,42 @@
 #define OUTPUT_H
 
 #include <cstdint>
+#include <fstream>
 #include <memory>
 #include <string>
 
+#include "nlohmann/json.hpp"
+
+#include "Constants.h"
 #include "NetCDFWriterBase.h"
 
 namespace jino {
 
 class Output {
  public:
-  Output(const std::uint8_t = true);
+  Output();
+
+  void initNetCDF(const std::uint8_t = consts::eMultiThread);
 
   const std::string& getDate() const;
-  NetCDFWriterBase& getWriter() const;
+  NetCDFWriterBase& getNetCDF() const;
+
+  template <typename T>
+  void writeState(const T& system) const {
+    nlohmann::json j = system;
+    std::ofstream file(consts::kOutputDir + date_ + "_" + consts::kStateFile);
+    if (file.is_open()) {
+      file << std::setprecision(std::numeric_limits<double>::digits10 + 1);
+      file << j.dump(consts::kJsonIndentSize);  // Indented output
+      file.close();
+    }
+  }
 
  private:
-  void init() const;
+  void initOutDir() const;
 
   const std::string date_;
-  std::unique_ptr<NetCDFWriterBase> writer_;
+  std::unique_ptr<NetCDFWriterBase> netCDF_;
 };
 
 }  // namespace jino

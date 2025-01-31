@@ -47,6 +47,11 @@ enum eDataTypes : std::uint8_t {
   eNumberOfDataTypes
 };
 
+enum eWriterThreads : std::uint8_t {
+  eSingleThread,
+  eMultiThread
+};
+
 const std::size_t kMaxFileSizeInBytes = 1048576;  // 1MB
 const std::size_t kJsonIndentSize = 2;
 

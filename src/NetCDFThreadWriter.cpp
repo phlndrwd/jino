@@ -27,7 +27,8 @@
 #include "Constants.h"
 #include "NetCDFFile.h"
 
-jino::NetCDFThreadWriter::NetCDFThreadWriter(const std::string& date) :  NetCDFWriterBase(), writerPool_(1) {
+jino::NetCDFThreadWriter::NetCDFThreadWriter(const std::string& date) :
+                                             NetCDFWriterBase(), writerPool_(1) {
   std::filesystem::path path = NetCDFWriterBase::init(date);
   writerPool_.enqueue([this, path] {   // Takes copy of local path variable
     try {

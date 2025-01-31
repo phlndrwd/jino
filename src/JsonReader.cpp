@@ -66,7 +66,7 @@ void jino::JsonReader::readParams(jino::Data& params) {
   std::string path = consts::kInputDir + consts::kParamsFile;
   readText(path, text);
   try {
-    json jsonData = json::parse(text);  // Arranged alphabetically
+    nlohmann::json jsonData = nlohmann::json::parse(text);  // Arranged alphabetically
     if (jsonData.is_object() && jsonData.size() == consts::kParamNames.size()) {
       for (std::uint64_t i = 0; i < jsonData.size(); ++i) {
         const std::string& paramName = consts::kParamNames.at(i);
@@ -92,7 +92,7 @@ void jino::JsonReader::readAttrs(jino::Data& attrs) {
   std::string path = consts::kInputDir + consts::kAttrsFile;
   readText(path, text);
   try {
-    json jsonData = json::parse(text);  // Arranged alphabetically
+    nlohmann::json jsonData = nlohmann::json::parse(text);  // Arranged alphabetically
     if (jsonData.is_object()) {
       for (auto it = jsonData.begin(); it != jsonData.end(); ++it) {
         const std::string& key = it.key();

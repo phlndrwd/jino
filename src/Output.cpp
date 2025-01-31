@@ -18,10 +18,12 @@
 #include "Output.h"
 
 #include <chrono>
-#include <filesystem>
+#include <filesystem>  /// NOLINT
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <sstream>
+#include <string>
 
 #include "NetCDFThreadWriter.h"
 #include "NetCDFWriter.h"
@@ -39,16 +41,11 @@ std::string getFormattedDateStr() {
 }
 }  // anonymous namespace
 
-jino::Output::Output(const std::uint8_t isThreaded) : date_(getFormattedDateStr()) {
-  init();
-  if (isThreaded == true) {
-    writer_ = std::make_unique<NetCDFThreadWriter>(date_);
-  } else {
-    writer_ = std::make_unique<NetCDFWriter>(date_);
-  }
+jino::Output::Output() : date_(getFormattedDateStr()) {
+  initOutDir();
 }
 
-void jino::Output::init() const {
+void jino::Output::initOutDir() const {
   try {
     if (std::filesystem::exists(consts::kOutputDir) == false) {
       std::filesystem::create_directories(consts::kOutputDir);
@@ -58,11 +55,21 @@ void jino::Output::init() const {
   }
 }
 
+void jino::Output::initNetCDF(const std::uint8_t isMultiThread) {
+  if (isMultiThread == consts::eMultiThread) {
+    netCDF_ = std::make_unique<NetCDFThreadWriter>(date_);
+  } else if (isMultiThread == consts::eSingleThread) {
+    netCDF_ = std::make_unique<NetCDFWriter>(date_);
+  } else {
+    throw std::runtime_error("Unknown writer thread configuration...");
+  }
+}
+
 const std::string& jino::Output::getDate() const {
   return date_;
 }
 
-jino::NetCDFWriterBase& jino::Output::getWriter() const {
-  return *writer_;
+jino::NetCDFWriterBase& jino::Output::getNetCDF() const {
+  return *netCDF_;
 }
 

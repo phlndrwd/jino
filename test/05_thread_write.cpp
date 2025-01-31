@@ -111,18 +111,19 @@ int main() {
   auto rBuffer9 = jino::Buffer<std::uint64_t>("r09", dataSize, r);
   auto rBuffer10 = jino::Buffer<std::uint64_t>("r10", dataSize, r);
 
-  output.getWriter().writeMetadata(data);
+  output.initNetCDF();
+  output.getNetCDF().writeMetadata(data);
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
     if (t % samplingRate == 0) {
       std::cout << "t=" << t << std::endl;
       jino::Buffers::get().record();
-      output.getWriter().writeDatums(data);
+      output.getNetCDF().writeDatums(data);
       r = r * 2;
     }
   }
-  output.getWriter().closeFile();
+  output.getNetCDF().closeFile();
 
   return 0;
 }

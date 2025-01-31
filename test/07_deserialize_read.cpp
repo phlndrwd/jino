@@ -16,12 +16,13 @@
 **********************************************************************************************/
 
 #include <cstdint>
-#include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
 
 #include "nlohmann/json.hpp"
+
+#include "JsonReader.h"
 
 using json = nlohmann::json;
 
@@ -56,17 +57,13 @@ class Garage {
 };
 
 std::int32_t main() {
-  std::ifstream file("garage.json");
-  json j;
-  if (file.is_open()) {
-    file >> j;
-    file.close();
-  }
-  Garage garage = j.get<Garage>();
+  jino::JsonReader reader;
+  Garage garage = reader.readState<Garage>();
+
   for (const auto& car : garage.cars_) {
     std::cout << "Make: " << car.make_ << ", Model: " << car.model_
                           << ", Temperatures: " << std::endl;
-    for (std::size_t i = 0; i < car.engine_.pistons_.size(); ++ i) {
+    for (std::size_t i = 0; i < car.engine_.pistons_.size(); ++i) {
       std::cout << "    Piston_" << std::to_string(i + 1) << ": "
                 << car.engine_.pistons_.at(i).temperature_ << std::endl;
     }
