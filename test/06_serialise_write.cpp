@@ -16,11 +16,11 @@
 **********************************************************************************************/
 
 #include <cstdint>
-#include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
 
+#include "Constants.h"
 #include "JsonWriter.h"
 
 #include "nlohmann/json.hpp"
@@ -77,9 +77,9 @@ std::int32_t main() {
 
   std::cout << "Serialise to JSON and write to file..." << std::endl;
   json j = garage;
-
   jino::JsonWriter jsonWriter;
-  jsonWriter.toFile(j, "garage.json");
+  jsonWriter.toFile(j, jino::consts::kStateFile);
+  std::cout << "Complete." << std::endl;
 
   return 0;
 }

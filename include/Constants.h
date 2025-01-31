@@ -57,6 +57,7 @@ constexpr std::string kInputDir = "./input/";
 constexpr std::string kOutputDir = "./output/";
 constexpr std::string kParamsFile = "params.json";
 constexpr std::string kAttrsFile = "attrs.json";
+constexpr std::string kStateFile = "state.json";
 
 // Parameter names
 constexpr std::string kDateKey = "date";
