@@ -15,28 +15,31 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#ifndef INCLUDE_NETCDFTHREADWRITER_H_
-#define INCLUDE_NETCDFTHREADWRITER_H_
+#ifndef OUTPUT_H
+#define OUTPUT_H
 
-#include "NetCDFData.h"
+#include <cstdint>
+#include <memory>
+#include <string>
+
 #include "NetCDFWriterBase.h"
-#include "ThreadPool.h"
 
 namespace jino {
-class NetCDFThreadWriter final : public NetCDFWriterBase {
+
+class Output {
  public:
-  NetCDFThreadWriter(const std::string&);
+  Output(const std::uint8_t = true);
 
-  void writeMetadata(const NetCDFData&) override;
-  void writeDatums(const NetCDFData&) override;
-  void writeData(const NetCDFData&) override;
-  void toFile(const NetCDFData&) override;
-
-  void closeFile() override;
+  const std::string& getDate() const;
+  NetCDFWriterBase& getWriter() const;
 
  private:
-  ThreadPool writerPool_;
-};
-}
+  void init() const;
 
-#endif // INCLUDE_NETCDFTHREADWRITER_H_
+  const std::string date_;
+  std::unique_ptr<NetCDFWriterBase> writer_;
+};
+
+}  // namespace jino
+
+#endif // OUTPUT_H

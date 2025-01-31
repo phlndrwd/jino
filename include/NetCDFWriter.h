@@ -26,7 +26,7 @@ class Buffers;
 
 class NetCDFWriter final : public NetCDFWriterBase {
  public:
-  NetCDFWriter();
+  NetCDFWriter(const std::string&);
 
   void writeMetadata(const NetCDFData&) override;
   void writeDatums(const NetCDFData&) override;

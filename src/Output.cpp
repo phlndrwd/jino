@@ -15,28 +15,54 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#ifndef INCLUDE_NETCDFTHREADWRITER_H_
-#define INCLUDE_NETCDFTHREADWRITER_H_
+#include "Output.h"
 
-#include "NetCDFData.h"
-#include "NetCDFWriterBase.h"
-#include "ThreadPool.h"
+#include <chrono>
+#include <filesystem>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
 
-namespace jino {
-class NetCDFThreadWriter final : public NetCDFWriterBase {
- public:
-  NetCDFThreadWriter(const std::string&);
+#include "NetCDFThreadWriter.h"
+#include "NetCDFWriter.h"
+#include "Constants.h"
 
-  void writeMetadata(const NetCDFData&) override;
-  void writeDatums(const NetCDFData&) override;
-  void writeData(const NetCDFData&) override;
-  void toFile(const NetCDFData&) override;
+namespace {
+std::string getFormattedDateStr() {
+  auto now = std::chrono::system_clock::now();
+  auto nowSeconds = std::chrono::system_clock::to_time_t(now);
 
-  void closeFile() override;
+  std::ostringstream oss;
+  std::string dateFormat = std::string(jino::consts::kDateFormat);
+  oss << std::put_time(std::localtime(&nowSeconds), dateFormat.c_str());
+  return oss.str();
+}
+}  // anonymous namespace
 
- private:
-  ThreadPool writerPool_;
-};
+jino::Output::Output(const std::uint8_t isThreaded) : date_(getFormattedDateStr()) {
+  init();
+  if (isThreaded == true) {
+    writer_ = std::make_unique<NetCDFThreadWriter>(date_);
+  } else {
+    writer_ = std::make_unique<NetCDFWriter>(date_);
+  }
 }
 
-#endif // INCLUDE_NETCDFTHREADWRITER_H_
+void jino::Output::init() const {
+  try {
+    if (std::filesystem::exists(consts::kOutputDir) == false) {
+      std::filesystem::create_directories(consts::kOutputDir);
+    }
+  } catch (const std::exception& e) {
+    std::cerr << e.what() << std::endl;
+  }
+}
+
+const std::string& jino::Output::getDate() const {
+  return date_;
+}
+
+jino::NetCDFWriterBase& jino::Output::getWriter() const {
+  return *writer_;
+}
+

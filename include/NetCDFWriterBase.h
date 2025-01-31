@@ -35,7 +35,7 @@ class NetCDFWriterBase {
 
   const std::string& getDate() const;
 
-  std::filesystem::path init() const;
+  std::filesystem::path init(const std::string&) const;
 
   virtual void writeMetadata(const NetCDFData&) = 0;
   virtual void writeDatums(const NetCDFData&) = 0;
@@ -57,7 +57,6 @@ class NetCDFWriterBase {
 
   NetCDFFile& getFile() const;
 
-  const std::string date_;
   std::unique_ptr<NetCDFFile> file_;
 };
 }  // namespace jino

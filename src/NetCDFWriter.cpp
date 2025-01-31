@@ -26,9 +26,9 @@
 #include "Constants.h"
 #include "NetCDFFile.h"
 
-jino::NetCDFWriter::NetCDFWriter() : NetCDFWriterBase() {
+jino::NetCDFWriter::NetCDFWriter(const std::string& date) : NetCDFWriterBase() {
   try {
-    file_ = std::make_unique<NetCDFFile>(init());
+    file_ = std::make_unique<NetCDFFile>(NetCDFWriterBase::init(date));
   } catch (const std::exception& e) {
     std::cerr << e.what() << std::endl;
   }

@@ -81,6 +81,7 @@ list(APPEND JINO_SOURCES
   src/NetCDFThreadWriter.cpp
   src/NetCDFWriter.cpp
   src/NetCDFWriterBase.cpp
+  src/Output.cpp
   src/ThreadPool.cpp
 )
 
@@ -101,6 +102,7 @@ list(APPEND JINO_HEADERS
   include/NetCDFThreadWriter.h
   include/NetCDFWriter.h
   include/NetCDFWriterBase.h
+  include/Output.h
   include/ThreadPool.h
   include/Types.h
 )

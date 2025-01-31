@@ -25,7 +25,7 @@
 #include "Data.h"
 #include "JsonReader.h"
 #include "NetCDFData.h"
-#include "NetCDFThreadWriter.h"
+#include "Output.h"
 
 long double calcIncrement(const float min, const float max, const std::uint64_t timeSteps) {
   if (min > max) {
@@ -57,10 +57,10 @@ int main() {
   reader.readAttrs(attrs);
   reader.readParams(params);
 
-  jino::NetCDFThreadWriter writer;
+  jino::Output output;
   jino::NetCDFData data;
 
-  data.addDateToData(&attrs, writer.getDate());
+  data.addDateToData(&attrs, output.getDate());
   data.addData(&params);
 
   const std::uint64_t maxTimeStep = params.getValue<std::uint64_t>(jino::consts::kMaxTimeStep);
@@ -111,18 +111,18 @@ int main() {
   auto rBuffer9 = jino::Buffer<std::uint64_t>("r09", dataSize, r);
   auto rBuffer10 = jino::Buffer<std::uint64_t>("r10", dataSize, r);
 
-  writer.writeMetadata(data);
+  output.getWriter().writeMetadata(data);
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
     if (t % samplingRate == 0) {
       std::cout << "t=" << t << std::endl;
       jino::Buffers::get().record();
-      writer.writeDatums(data);
+      output.getWriter().writeDatums(data);
       r = r * 2;
     }
   }
-  writer.closeFile();
+  output.getWriter().closeFile();
 
   return 0;
 }

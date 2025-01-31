@@ -17,11 +17,7 @@
 
 #include "NetCDFWriterBase.h"
 
-#include <chrono>
-#include <iomanip>
-#include <iostream>
 #include <memory>
-#include <sstream>
 #include <string>
 
 #include "Buffer.h"
@@ -31,36 +27,13 @@
 #include "NetCDFData.h"
 #include "NetCDFDim.h"
 
-namespace {
-std::string getFormattedDateStr() {
-  auto now = std::chrono::system_clock::now();
-  auto nowSeconds = std::chrono::system_clock::to_time_t(now);
+jino::NetCDFWriterBase::NetCDFWriterBase() {}
 
-  std::ostringstream oss;
-  std::string dateFormat = std::string(jino::consts::kDateFormat);
-  oss << std::put_time(std::localtime(&nowSeconds), dateFormat.c_str());
-  return oss.str();
-}
-}  // anonymous namespace
-
-jino::NetCDFWriterBase::NetCDFWriterBase() : date_(getFormattedDateStr()) {}
-
-const std::string& jino::NetCDFWriterBase::getDate() const {
-  return date_;
-}
-
-std::filesystem::path jino::NetCDFWriterBase::init() const {
-  try {
-    if (std::filesystem::exists(consts::kOutputDir) == false) {
-      std::filesystem::create_directories(consts::kOutputDir);
-    }
-  } catch (const std::exception& e) {
-    std::cerr << e.what() << std::endl;
-  }
+std::filesystem::path jino::NetCDFWriterBase::init(const std::string& date) const {
   std::uint32_t count = 1;
-  std::filesystem::path path(consts::kOutputDir + date_ + ".nc");
+  std::filesystem::path path(consts::kOutputDir + date + ".nc");
   while (std::filesystem::exists(path) == true) {
-    path = consts::kOutputDir + date_ + "(" + std::to_string(count) + ").nc";
+    path = consts::kOutputDir + date + "(" + std::to_string(count) + ").nc";
     ++count;
   }
   return path;

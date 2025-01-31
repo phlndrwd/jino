@@ -25,7 +25,7 @@
 #include "Data.h"
 #include "JsonReader.h"
 #include "NetCDFData.h"
-#include "NetCDFWriter.h"
+#include "Output.h"
 
 long double calcIncrement(const float min, const float max, const std::uint64_t timeSteps) {
   if (min > max) {
@@ -57,10 +57,10 @@ int main() {
   reader.readAttrs(attrs);
   reader.readParams(params);
 
-  jino::NetCDFWriter writer;
+  jino::Output output;
   jino::NetCDFData data;
 
-  data.addDateToData(&attrs, writer.getDate());
+  data.addDateToData(&attrs, output.getDate());
   data.addData(&params);
 
   const std::uint64_t maxTimeStep = params.getValue<std::uint64_t>(jino::consts::kMaxTimeStep);
@@ -120,7 +120,7 @@ int main() {
       r = r * 2;
     }
   }
-  writer.toFile(data);
+  output.getWriter().toFile(data);
 
   return 0;
 }
