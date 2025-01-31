@@ -75,6 +75,7 @@ list(APPEND JINO_SOURCES
   src/Datum.cpp
   src/DatumBase.cpp
   src/JsonReader.cpp
+  src/JsonWriter.cpp
   src/NetCDFData.cpp
   src/NetCDFFile.cpp
   src/NetCDFThreadWriter.cpp
@@ -93,6 +94,7 @@ list(APPEND JINO_HEADERS
   include/Datum.h
   include/DatumBase.h
   include/JsonReader.h
+  include/JsonWriter.h
   include/NetCDFData.h
   include/NetCDFDim.h
   include/NetCDFFile.h

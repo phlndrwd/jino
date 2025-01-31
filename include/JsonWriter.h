@@ -15,71 +15,22 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#include <cstdint>
-#include <fstream>
-#include <iostream>
-#include <string>
-#include <vector>
-
-#include "JsonWriter.h"
+#ifndef JSONWRITER_H
+#define JSONWRITER_H
 
 #include "nlohmann/json.hpp"
 
 using json = nlohmann::json;
 
-class Piston {
+namespace jino {
+class JsonWriter {
  public:
-  double temperature_;
+  JsonWriter() = default;
 
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Piston, temperature_)
+  void toFile(const json&, const std::string&) const;
+
+ private:
 };
+}  // namespace jino
 
-class Engine {
- public:
-  std::vector<Piston> pistons_;
-
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Engine, pistons_)
-};
-
-class Car {
- public:
-  std::string make_;
-  std::string model_;
-  Engine engine_;
-
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Car, make_, model_, engine_)
-};
-
-class Garage {
- public:
-  std::vector<Car> cars_;
-
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Garage, cars_)
-};
-
-std::int32_t main() {
-  std::cout << "Creating sample data..." << std::endl;
-  Piston piston1 = {91.1};
-  Piston piston2 = {92.2};
-  Piston piston3 = {93.3};
-  Piston piston4 = {94.4};
-  Piston piston5 = {95.5};
-  Piston piston6 = {96.6};
-  Piston piston7 = {97.7};
-  Piston piston8 = {98.8};
-  Engine engine1 = {{piston1, piston2, piston4, piston4}};
-  Engine engine2 = {{piston5, piston6, piston7, piston8}};
-
-  Car car1 = {"Volkswagen", "Golf", engine1};
-  Car car2 = {"Ford", "Focus", engine2};
-
-  Garage garage = {{car1, car2}};
-
-  std::cout << "Serialise to JSON and write to file..." << std::endl;
-  json j = garage;
-
-  jino::JsonWriter jsonWriter;
-  jsonWriter.toFile(j, "garage.json");
-
-  return 0;
-}
+#endif // JSONWRITER_H

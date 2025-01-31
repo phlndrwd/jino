@@ -48,6 +48,7 @@ enum eDataTypes : std::uint8_t {
 };
 
 const std::size_t kMaxFileSizeInBytes = 1048576;  // 1MB
+const std::size_t kJsonIndentSize = 2;
 
 // Other strings
 constexpr std::string kSeparator = ", ";
