@@ -17,16 +17,4 @@
 
 #include "JsonWriter.h"
 
-#include <fstream>
-
-#include "Constants.h"
-
-void jino::JsonWriter::toFile(const json& state, const std::string& filePath) const {
-  std::ofstream file(filePath);
-  if (file.is_open()) {
-    file << std::setprecision(std::numeric_limits<double>::digits10 + 1);
-    file << state.dump(consts::kJsonIndentSize);  // Indented output
-    file.close();
-  }
-}
 

@@ -18,6 +18,10 @@
 #ifndef JSONWRITER_H
 #define JSONWRITER_H
 
+#include <fstream>
+
+#include "Constants.h"
+
 #include "nlohmann/json.hpp"
 
 using json = nlohmann::json;
@@ -27,7 +31,16 @@ class JsonWriter {
  public:
   JsonWriter() = default;
 
-  void toFile(const json&, const std::string&) const;
+  template <typename T>
+  void toFile(const T& system, const std::string& filePath) const {
+  json j = system;
+  std::ofstream file(filePath);
+  if (file.is_open()) {
+    file << std::setprecision(std::numeric_limits<double>::digits10 + 1);
+    file << j.dump(consts::kJsonIndentSize);  // Indented output
+    file.close();
+  }
+}
 
  private:
 };

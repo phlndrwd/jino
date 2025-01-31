@@ -76,9 +76,8 @@ std::int32_t main() {
   Garage garage = {{car1, car2}};
 
   std::cout << "Serialise to JSON and write to file..." << std::endl;
-  json j = garage;
   jino::JsonWriter jsonWriter;
-  jsonWriter.toFile(j, jino::consts::kStateFile);
+  jsonWriter.toFile(garage, jino::consts::kStateFile);
   std::cout << "Complete." << std::endl;
 
   return 0;
