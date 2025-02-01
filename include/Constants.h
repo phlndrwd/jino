@@ -29,6 +29,7 @@ enum eParams : std::uint8_t {
   eSamplingRate,
   eYMin,
   eYMax,
+  eWriteState,
   eNumberOfParams
 };
 
@@ -70,6 +71,7 @@ constexpr std::string kMaxTimeStep = "MaxTimeStep";
 constexpr std::string kSamplingRate = "SamplingRate";
 constexpr std::string kYMin = "YMin";
 constexpr std::string kYMax = "YMax";
+constexpr std::string kWriteState = "WriteState";
 
 constexpr std::string_view kDateFormat = "%Y-%m-%d_%H:%M:%S";
 
@@ -91,14 +93,16 @@ const std::array<std::string, eNumberOfParams> kParamNames = {
   kMaxTimeStep,
   kSamplingRate,
   kYMin,
-  kYMax
+  kYMax,
+  kWriteState
 };
 
 const std::array<std::uint8_t, eNumberOfParams> kParamTypes = {
   eUInt64,
   eUInt64,
   eFloat,
-  eFloat
+  eFloat,
+  eUInt8
 };
 }  // namespace consts
 }  // namespace jino

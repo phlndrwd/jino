@@ -33,8 +33,8 @@ jino::NetCDFThreadWriter::NetCDFThreadWriter(const std::string& date) :
   writerPool_.enqueue([this, path] {   // Takes copy of local path variable
     try {
       file_ = std::make_unique<NetCDFFile>(path);
-    } catch (const std::exception& e) {
-      std::cerr << e.what() << std::endl;
+    } catch (const std::exception& error) {
+      std::cerr << error.what() << std::endl;
     }
   });
 }

@@ -29,8 +29,8 @@
 jino::NetCDFWriter::NetCDFWriter(const std::string& date) : NetCDFWriterBase() {
   try {
     file_ = std::make_unique<NetCDFFile>(NetCDFWriterBase::init(date));
-  } catch (const std::exception& e) {
-    std::cerr << e.what() << std::endl;
+  } catch (const std::exception& error) {
+    std::cerr << error.what() << std::endl;
   }
 }
 

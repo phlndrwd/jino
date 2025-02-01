@@ -15,8 +15,8 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#ifndef OUTPUT_H
-#define OUTPUT_H
+#ifndef INCLUDE_OUTPUT_H_
+#define INCLUDE_OUTPUT_H_
 
 #include <cstdint>
 #include <fstream>
@@ -29,7 +29,6 @@
 #include "NetCDFWriterBase.h"
 
 namespace jino {
-
 class Output {
  public:
   Output();
@@ -37,16 +36,22 @@ class Output {
   void initNetCDF(const std::uint8_t = consts::eMultiThread);
 
   const std::string& getDate() const;
-  NetCDFWriterBase& getNetCDF() const;
+  NetCDFWriterBase& getNetCDF();
 
   template <typename T>
   void writeState(const T& system) const {
     nlohmann::json j = system;
-    std::ofstream file(consts::kOutputDir + date_ + "_" + consts::kStateFile);
-    if (file.is_open()) {
-      file << std::setprecision(std::numeric_limits<double>::digits10 + 1);
-      file << j.dump(consts::kJsonIndentSize);  // Indented output
-      file.close();
+    const std::string outputPath = consts::kOutputDir + date_ + "_" + consts::kStateFile;
+    try {
+      std::ofstream file(outputPath);
+      if (file.is_open()) {
+        file << std::setprecision(std::numeric_limits<double>::digits10 + 1);
+        file << j.dump(consts::kJsonIndentSize);  // Indented output
+        file.close();
+      }
+    } catch (const std::exception& error) {
+      std::cout << "ERROR: Could not open file \"" << outputPath << "\"..."<< std::endl;
+      std::cerr << error.what() << std::endl;
     }
   }
 
@@ -56,7 +61,6 @@ class Output {
   const std::string date_;
   std::unique_ptr<NetCDFWriterBase> netCDF_;
 };
-
 }  // namespace jino
 
-#endif // OUTPUT_H
+#endif // INCLUDE_OUTPUT_H_

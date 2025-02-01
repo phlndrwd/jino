@@ -111,7 +111,7 @@ int main() {
   auto rBuffer9 = jino::Buffer<std::uint64_t>("r09", dataSize, r);
   auto rBuffer10 = jino::Buffer<std::uint64_t>("r10", dataSize, r);
 
-  output.initNetCDF();
+  output.initNetCDF(jino::consts::eMultiThread);
   output.getNetCDF().writeMetadata(data);
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;

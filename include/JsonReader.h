@@ -19,6 +19,7 @@
 #define INCLUDE_JSONREADER_H_
 
 #include <fstream>
+#include <iostream>
 #include <string>
 
 #include "nlohmann/json.hpp"
@@ -47,8 +48,9 @@ class JsonReader {
         file.close();
       }
       return j.get<T>();
-    } catch (std::exception e){
-      throw std::runtime_error("ERROR: Could not open file \"" + inputPath + "\"...");
+    } catch (const std::exception& error) {
+      std::cout << "ERROR: Could not open file \"" << inputPath << "\"..."<< std::endl;
+      std::cerr << error.what() << std::endl;
     }
   };
 

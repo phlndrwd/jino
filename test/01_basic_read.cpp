@@ -26,7 +26,8 @@
 #include "DatumBase.h"
 #include "JsonReader.h"
 
-std::uint8_t isStringInArray(const std::string str, std::array<std::string, 4> array) {
+std::uint8_t isStringInArray(const std::string str, std::array<std::string,
+                             jino::consts::eNumberOfParams> array) {
   if (std::find(array.begin(), array.end(), str) != array.end()) {
     return true;
   } else {

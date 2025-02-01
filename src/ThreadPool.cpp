@@ -39,8 +39,8 @@ jino::ThreadPool::ThreadPool(std::uint64_t numThreads) : stop_(false), activeTas
         }
         try {
           task();
-        } catch (const std::exception& e) {
-          std::cerr << "ERROR: Task exception: " << e.what() << std::endl;
+        } catch (const std::exception& error) {
+          std::cerr << "ERROR: Task exception: " << error.what() << std::endl;
         }
         {
           std::lock_guard<std::mutex> lock(queueMutex_);

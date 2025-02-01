@@ -45,16 +45,6 @@ jino::Output::Output() : date_(getFormattedDateStr()) {
   initOutDir();
 }
 
-void jino::Output::initOutDir() const {
-  try {
-    if (std::filesystem::exists(consts::kOutputDir) == false) {
-      std::filesystem::create_directories(consts::kOutputDir);
-    }
-  } catch (const std::exception& e) {
-    std::cerr << e.what() << std::endl;
-  }
-}
-
 void jino::Output::initNetCDF(const std::uint8_t isMultiThread) {
   if (isMultiThread == consts::eMultiThread) {
     netCDF_ = std::make_unique<NetCDFThreadWriter>(date_);
@@ -69,7 +59,20 @@ const std::string& jino::Output::getDate() const {
   return date_;
 }
 
-jino::NetCDFWriterBase& jino::Output::getNetCDF() const {
+jino::NetCDFWriterBase& jino::Output::getNetCDF() {
+  if (netCDF_ == nullptr) {
+    initNetCDF();  // Defaults to multi-threaded writer
+  }
   return *netCDF_;
 }
 
+
+void jino::Output::initOutDir() const {
+  try {
+    if (std::filesystem::exists(consts::kOutputDir) == false) {
+      std::filesystem::create_directories(consts::kOutputDir);
+    }
+  } catch (const std::exception& error) {
+    std::cerr << error.what() << std::endl;
+  }
+}
