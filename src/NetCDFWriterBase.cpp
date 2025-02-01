@@ -31,9 +31,9 @@ jino::NetCDFWriterBase::NetCDFWriterBase() {}
 
 std::filesystem::path jino::NetCDFWriterBase::init(const std::string& date) const {
   std::uint32_t count = 1;
-  std::filesystem::path path(consts::kOutputDir + date + ".nc");
+  std::filesystem::path path(consts::kOutputDir + date + consts::kNCExtension);
   while (std::filesystem::exists(path) == true) {
-    path = consts::kOutputDir + date + "(" + std::to_string(count) + ").nc";
+    path = consts::kOutputDir + date + "(" + std::to_string(count) + ")" + consts::kNCExtension;
     ++count;
   }
   return path;

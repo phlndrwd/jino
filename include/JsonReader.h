@@ -39,9 +39,9 @@ class JsonReader {
 
   template <typename T>
   T readState() {
-    const std::string inputPath = jino::consts::kInputDir + jino::consts::kStateFile;
+    const std::filesystem::path path(consts::kInputDir + consts::kStateFile);
     try {
-      std::ifstream file(inputPath);
+      std::ifstream file(path);
       nlohmann::json j;
       if (file.is_open()) {
         file >> j;
@@ -49,9 +49,10 @@ class JsonReader {
       }
       return j.get<T>();
     } catch (const std::exception& error) {
-      std::cout << "ERROR: Could not open file \"" << inputPath << "\"..."<< std::endl;
+      std::cout << "ERROR: Could not open file \"" << path << "\"..."<< std::endl;
       std::cerr << error.what() << std::endl;
     }
+    return T{};  // Default return in case of error
   };
 
  private:

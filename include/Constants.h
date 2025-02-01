@@ -27,9 +27,9 @@ namespace consts {
 enum eParams : std::uint8_t {
   eMaxTimeSteps,
   eSamplingRate,
+  eWriteState,
   eYMin,
   eYMax,
-  eWriteState,
   eNumberOfParams
 };
 
@@ -64,14 +64,17 @@ constexpr std::string kOutputDir = "./output/";
 constexpr std::string kParamsFile = "params.json";
 constexpr std::string kAttrsFile = "attrs.json";
 constexpr std::string kStateFile = "state.json";
+constexpr std::string kJSONExtension = ".json";
+constexpr std::string kNCExtension = ".nc";
+;
 
 // Parameter names
 constexpr std::string kDateKey = "date";
 constexpr std::string kMaxTimeStep = "MaxTimeStep";
 constexpr std::string kSamplingRate = "SamplingRate";
+constexpr std::string kWriteState = "WriteState";
 constexpr std::string kYMin = "YMin";
 constexpr std::string kYMax = "YMax";
-constexpr std::string kWriteState = "WriteState";
 
 constexpr std::string_view kDateFormat = "%Y-%m-%d_%H:%M:%S";
 
@@ -92,9 +95,9 @@ const std::array<std::string, eNumberOfDataTypes> kDataTypeNames = {
 const std::array<std::string, eNumberOfParams> kParamNames = {
   kMaxTimeStep,
   kSamplingRate,
+  kWriteState,
   kYMin,
-  kYMax,
-  kWriteState
+  kYMax
 };
 
 const std::array<std::uint8_t, eNumberOfParams> kParamTypes = {

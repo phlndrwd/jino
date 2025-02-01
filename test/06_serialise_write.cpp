@@ -22,6 +22,7 @@
 
 #include "nlohmann/json.hpp"
 
+#include "JsonReader.h"
 #include "Output.h"
 
 using json = nlohmann::json;
@@ -57,6 +58,10 @@ class Garage {
 };
 
 std::int32_t main() {
+  jino::Data params;
+  jino::JsonReader jsonReader;
+  jsonReader.readParams(params);
+
   std::cout << "Creating sample data..." << std::endl;
   Piston piston1 = {91.1};
   Piston piston2 = {92.2};
@@ -76,7 +81,10 @@ std::int32_t main() {
 
   std::cout << "Serialise to JSON and write to file..." << std::endl;
   jino::Output output;
-  output.writeState(garage);
+  std::uint8_t writeState = params.getValue<std::uint8_t>(jino::consts::kWriteState);
+  if (writeState == true) {
+    output.writeState(garage);
+  }
   std::cout << "Complete." << std::endl;
 
   return 0;

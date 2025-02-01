@@ -72,7 +72,7 @@ int main() {
   const long double yInc = calcIncrement(yMin, yMax, maxTimeStep);
   const std::uint64_t dataSize = calcDataSize(maxTimeStep, samplingRate);
 
-  data.addDimension("dataSize", dataSize);
+  data.addDimension("dataSize", dataSize, true);
 
   double y = 0;
   std::uint64_t t = 0;
