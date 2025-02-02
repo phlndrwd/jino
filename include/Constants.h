@@ -103,9 +103,9 @@ const std::array<std::string, eNumberOfParams> kParamNames = {
 const std::array<std::uint8_t, eNumberOfParams> kParamTypes = {
   eUInt64,
   eUInt64,
+  eUInt8,
   eFloat,
-  eFloat,
-  eUInt8
+  eFloat
 };
 }  // namespace consts
 }  // namespace jino

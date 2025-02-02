@@ -61,24 +61,17 @@ std::int32_t main() {
   jino::Data params;
   jino::JsonReader jsonReader;
   jsonReader.readParams(params);
-
   std::cout << "Creating sample data..." << std::endl;
-  Piston piston1 = {91.1};
-  Piston piston2 = {92.2};
-  Piston piston3 = {93.3};
-  Piston piston4 = {94.4};
-  Piston piston5 = {95.5};
-  Piston piston6 = {96.6};
-  Piston piston7 = {97.7};
-  Piston piston8 = {98.8};
-  Engine engine1 = {{piston1, piston2, piston4, piston4}};
-  Engine engine2 = {{piston5, piston6, piston7, piston8}};
-
-  Car car1 = {"Volkswagen", "Golf", engine1};
-  Car car2 = {"Ford", "Focus", engine2};
-
-  Garage garage = {{car1, car2}};
-
+  Garage garage;
+  const std::uint64_t maxPistons = 1000000;
+  for (std::uint64_t i = 0; i < maxPistons; ++i) {
+    Engine engine;
+    for (std::uint64_t j = 0; j < 4; ++j) {
+      engine.pistons_.emplace_back(static_cast<double>(j + 1));
+    }
+    const std::string name = std::to_string(i);
+    garage.cars_.emplace_back("Make" + name, "Model" + name, engine);
+  }
   std::cout << "Serialise to JSON and write to file..." << std::endl;
   jino::Output output;
   std::uint8_t writeState = params.getValue<std::uint8_t>(jino::consts::kWriteState);
