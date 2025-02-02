@@ -53,6 +53,11 @@ enum eWriterThreads : std::uint8_t {
   eMultiThread
 };
 
+enum eOutputThreads : std::uint8_t {
+  eNetCDFThread,
+  eJSONThread
+};
+
 const std::size_t kMaxFileSizeInBytes = 1048576;  // 1MB
 const std::size_t kJsonIndentSize = 2;
 

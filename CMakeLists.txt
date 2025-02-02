@@ -81,7 +81,9 @@ list(APPEND JINO_SOURCES
   src/NetCDFWriter.cpp
   src/NetCDFWriterBase.cpp
   src/Output.cpp
+  src/OutputThread.cpp
   src/ThreadPool.cpp
+  src/ThreadQueues.cpp
 )
 
 list(APPEND JINO_HEADERS
@@ -101,7 +103,9 @@ list(APPEND JINO_HEADERS
   include/NetCDFWriter.h
   include/NetCDFWriterBase.h
   include/Output.h
+  include/OutputThread.h
   include/ThreadPool.h
+  include/ThreadQueues.h
   include/Types.h
 )
 
@@ -114,6 +118,7 @@ set(TEST_SOURCES
   test/06_serialise_write.cpp
   test/07_deserialize_read.cpp
   test/08_full_serial.cpp
+  test/09_full_parallel.cpp
 )
 
 ## Create library

@@ -15,7 +15,7 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#include "Output.h"
+#include "OutputThread.h"
 
 #include <chrono>
 #include <filesystem>  /// NOLINT
@@ -25,7 +25,6 @@
 #include <sstream>
 #include <string>
 
-#include "NetCDFThreadWriter.h"
 #include "NetCDFWriter.h"
 #include "Constants.h"
 
@@ -41,32 +40,44 @@ std::string getFormattedDateStr() {
 }
 }  // anonymous namespace
 
-jino::Output::Output() : date_(getFormattedDateStr()) {
+jino::OutputThread::OutputThread() : date_(getFormattedDateStr()) {
   initOutDir();
 }
 
-void jino::Output::initNetCDF(const std::uint8_t isMultiThread) {
-  if (isMultiThread == consts::eMultiThread) {
-    netCDF_ = std::make_unique<NetCDFThreadWriter>(date_);
-  } else if (isMultiThread == consts::eSingleThread) {
+void jino::OutputThread::initNetCDF() {
+  threads_.enqueue(consts::eNetCDFThread, [this]() {
     netCDF_ = std::make_unique<NetCDFWriter>(date_);
-  } else {
-    throw std::runtime_error("Unknown writer thread configuration...");
-  }
+  });
 }
 
-const std::string& jino::Output::getDate() const {
+void jino::OutputThread::writeMetadata(const NetCDFData& netCDFData) {
+  threads_.enqueue(consts::eNetCDFThread, [this, &netCDFData]() {
+    getNetCDF().writeMetadata(netCDFData);
+  });
+}
+
+void jino::OutputThread::writeDatums(const NetCDFData& netCDFData) {
+  threads_.enqueue(consts::eNetCDFThread, [this, &netCDFData]() {
+    getNetCDF().writeDatums(netCDFData);
+  });
+}
+
+void jino::OutputThread::closeNetCDF() {
+  threads_.enqueue(consts::eNetCDFThread, [this]() {
+    getNetCDF().closeFile();
+    netCDF_.reset();
+  });
+}
+
+void jino::OutputThread::waitForCompletion() {
+  threads_.waitForCompletion();
+}
+
+const std::string& jino::OutputThread::getDate() const {
   return date_;
 }
 
-jino::NetCDFWriterBase& jino::Output::getNetCDF() {
-  if (netCDF_ == nullptr) {
-    initNetCDF();  // Defaults to multi-threaded writer
-  }
-  return *netCDF_;
-}
-
-void jino::Output::initOutDir() const {
+void jino::OutputThread::initOutDir() const {
   try {
     if (std::filesystem::exists(consts::kOutputDir) == false) {
       std::filesystem::create_directories(consts::kOutputDir);
@@ -74,4 +85,11 @@ void jino::Output::initOutDir() const {
   } catch (const std::exception& error) {
     std::cerr << error.what() << std::endl;
   }
+}
+
+jino::NetCDFWriter& jino::OutputThread::getNetCDF() {
+  if (netCDF_ == nullptr) {
+    initNetCDF();
+  }
+  return *netCDF_;
 }

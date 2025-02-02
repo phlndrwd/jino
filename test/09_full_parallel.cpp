@@ -27,7 +27,7 @@
 #include "Buffer.h"
 #include "Buffers.h"
 #include "JsonReader.h"
-#include "Output.h"
+#include "OutputThread.h"
 
 using json = nlohmann::json;
 
@@ -94,7 +94,7 @@ std::int32_t main() {
   reader.readAttrs(attrs);
   reader.readParams(params);
 
-  jino::Output output;
+  jino::OutputThread output;
   jino::NetCDFData data;
 
   data.addDateToData(&attrs, output.getDate());
@@ -149,24 +149,27 @@ std::int32_t main() {
   auto rBuffer10 = jino::Buffer<std::uint64_t>("r10", dataSize, r);
 
   std::cout << "Running pseudo-model loop..." << std::endl;
-  output.initNetCDF(jino::consts::eSingleThread);
+  output.initNetCDF();
+  output.writeMetadata(data);
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
     if (t % samplingRate == 0) {
       std::cout << "t=" << t << std::endl;
       jino::Buffers::get().record();
+      output.writeDatums(data);
       r = r * 2;
     }
   }
-  output.getNetCDF().toFile(data);
-
   std::uint8_t writeState = params.getValue<std::uint8_t>(jino::consts::kWriteState);
   if (writeState == true) {
     std::cout << "Serialise objects to JSON and write to file..." << std::endl;
     output.writeState(garage);
   }
-
+  std::cout << "Closing..." << std::endl;
+  output.closeNetCDF();
+  std::cout << "Waiting..." << std::endl;
+  output.waitForCompletion();
   std::cout << "Complete." << std::endl;
 
   return 0;
