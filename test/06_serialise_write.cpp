@@ -59,8 +59,8 @@ class Garage {
 
 std::int32_t main() {
   jino::Data params;
-  jino::JsonReader jsonReader;
-  jsonReader.readParams(params);
+  jino::JsonReader Reader;
+  Reader.readParams(params);
   std::cout << "Creating sample data..." << std::endl;
   Garage garage;
   const std::uint64_t maxPistons = 1000000;

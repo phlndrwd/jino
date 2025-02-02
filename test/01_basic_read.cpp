@@ -38,8 +38,8 @@ std::uint8_t isStringInArray(const std::string str, std::array<std::string,
 int main() {
   std::cout << "1. Testing file reading..." << std::endl;
   jino::Data params;
-  jino::JsonReader jsonReader;
-  jsonReader.readParams(params);
+  jino::JsonReader Reader;
+  Reader.readParams(params);
 
   std::cout << "2. Validating read data..." << std::endl;
   assert(params.size() == jino::consts::kParamNames.size());

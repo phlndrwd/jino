@@ -57,8 +57,8 @@ class Garage {
 };
 
 std::int32_t main() {
-  jino::JsonReader reader;
-  Garage garage = reader.readState<Garage>();
+  jino::JsonReader Reader;
+  Garage garage = Reader.readState<Garage>();
 
   for (const auto& car : garage.cars_) {
     std::cout << "Make: " << car.make_ << ", Model: " << car.model_

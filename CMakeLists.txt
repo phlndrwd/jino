@@ -113,6 +113,7 @@ set(TEST_SOURCES
   test/05_thread_write.cpp
   test/06_serialise_write.cpp
   test/07_deserialize_read.cpp
+  test/08_full_serial.cpp
 )
 
 ## Create library
