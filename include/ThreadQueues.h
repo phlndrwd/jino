@@ -49,15 +49,18 @@ public:
   }
 
   void waitForCompletion(); // Wait for all tasks to complete
+  void stopThread(std::uint64_t queueId); // Stop a specific thread manually
+  void restartThread(std::uint64_t queueId); // Restart a previously stopped thread
 
 private:
   void workerThread(std::uint64_t queueId); // Worker thread function
 
   std::map<std::uint64_t, std::queue<std::function<void()>>> taskQueues_; // Map of task queues
   std::map<std::uint64_t, std::thread> activeThreads_; // Map of active worker threads
+  std::map<std::uint64_t, bool> stopFlags_; // Flags to control thread termination
   std::mutex queueMutex_; // Mutex to protect shared resources
   std::condition_variable condition_; // Condition variable for task notification
-  bool stop_ = false; // Flag to signal threads to stop
+  bool stopAll_ = false; // Flag to signal all threads to stop
 };
 } // namespace jino
 

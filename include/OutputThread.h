@@ -64,6 +64,7 @@ class OutputThread {
         std::cerr << error.what() << std::endl;
       }
     });
+    threads_.stopThread(consts::eJSONThread);
   }
 
   void waitForCompletion();

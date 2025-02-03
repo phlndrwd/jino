@@ -14,7 +14,6 @@
 * You should have received a copy of the GNU Lesser General Public License along with Jino.   *
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
-
 #include "ThreadQueues.h"
 #include <iostream>
 
@@ -25,7 +24,10 @@ ThreadQueues::ThreadQueues() {}
 ThreadQueues::~ThreadQueues() {
   {
     std::unique_lock<std::mutex> lock(queueMutex_);
-    stop_ = true; // Signal all threads to stop
+    stopAll_ = true; // Signal all threads to stop
+    for (auto& [queueId, _] : activeThreads_) {
+      stopFlags_[queueId] = true; // Ensure all threads are flagged to stop
+    }
   }
   condition_.notify_all(); // Notify all threads in case they are waiting
 
@@ -38,20 +40,17 @@ ThreadQueues::~ThreadQueues() {
 }
 
 void ThreadQueues::workerThread(std::uint64_t queueId) {
-  const auto idleTimeout = std::chrono::seconds(5); // Timeout to detect idle threads
-
   while (true) {
     std::function<void()> task;
 
     {
       std::unique_lock<std::mutex> lock(queueMutex_);
-      // Wait until there is a task or the timeout occurs
-      condition_.wait_for(lock, idleTimeout, [this, queueId] {
-        return stop_ || !taskQueues_[queueId].empty();
+      condition_.wait(lock, [this, queueId] {
+        return stopAll_ || stopFlags_[queueId] || !taskQueues_[queueId].empty();
       });
 
-      // Exit condition if the application is stopping and no tasks are pending
-      if (stop_ && taskQueues_[queueId].empty()) {
+      // Exit condition if the application is stopping or if the specific thread is flagged to stop
+      if ((stopAll_ || stopFlags_[queueId]) && taskQueues_[queueId].empty()) {
         break;
       }
 
@@ -59,11 +58,6 @@ void ThreadQueues::workerThread(std::uint64_t queueId) {
       if (!taskQueues_[queueId].empty()) {
         task = std::move(taskQueues_[queueId].front());
         taskQueues_[queueId].pop();
-      } else {
-        // No tasks left, remove the thread from active threads
-        activeThreads_.erase(queueId);
-        condition_.notify_all(); // Notify in case other threads are waiting for this to finish
-        return;
       }
     }
 
@@ -78,6 +72,12 @@ void ThreadQueues::workerThread(std::uint64_t queueId) {
       condition_.notify_all(); // Notify other threads that a task has completed
     }
   }
+
+  // Clean up after thread stops
+  std::unique_lock<std::mutex> lock(queueMutex_);
+  activeThreads_.erase(queueId);
+  stopFlags_.erase(queueId);
+  condition_.notify_all();
 }
 
 void ThreadQueues::waitForCompletion() {
@@ -91,4 +91,27 @@ void ThreadQueues::waitForCompletion() {
   });
 }
 
+void ThreadQueues::stopThread(std::uint64_t queueId) {
+  {
+    std::unique_lock<std::mutex> lock(queueMutex_);
+    stopFlags_[queueId] = true; // Signal the thread to stop
+  }
+  condition_.notify_all();
+
+  if (activeThreads_.count(queueId) && activeThreads_[queueId].joinable()) {
+    activeThreads_[queueId].join(); // Join the thread to ensure it has terminated
+    activeThreads_.erase(queueId);
+    stopFlags_.erase(queueId);
+  }
+}
+
+void ThreadQueues::restartThread(std::uint64_t queueId) {
+  std::unique_lock<std::mutex> lock(queueMutex_);
+  if (activeThreads_.find(queueId) == activeThreads_.end()) {
+    stopFlags_[queueId] = false; // Reset the stop flag
+    activeThreads_[queueId] = std::thread(&ThreadQueues::workerThread, this, queueId);
+  }
+}
+
 } // namespace jino
+

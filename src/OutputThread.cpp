@@ -67,6 +67,7 @@ void jino::OutputThread::closeNetCDF() {
     getNetCDF().closeFile();
     netCDF_.reset();
   });
+  threads_.stopThread(consts::eNetCDFThread);
 }
 
 void jino::OutputThread::waitForCompletion() {
