@@ -16,7 +16,6 @@
 **********************************************************************************************/
 
 #include "ThreadQueues.h"
-#include <iostream>
 
 jino::ThreadQueues::ThreadQueues() {}
 
@@ -29,7 +28,6 @@ jino::ThreadQueues::~ThreadQueues() {
     }
   }
   condition_.notify_all();
-
   for (auto& [queueId, thread] : activeThreads_) {
     if (thread.joinable() && !joinedThreads_[queueId]) {
       thread.join();
@@ -39,40 +37,27 @@ jino::ThreadQueues::~ThreadQueues() {
 }
 
 void jino::ThreadQueues::workerThread(std::uint64_t queueId) {
-  try {
-    while (true) {
-      std::function<void()> task;
-      {
-        std::unique_lock<std::mutex> lock(queueMutex_);
-        condition_.wait(lock, [this, queueId] {
-          return stopAll_ || stopFlags_[queueId] || !taskQueues_[queueId].empty();
-        });
-        if ((stopAll_ || stopFlags_[queueId]) && taskQueues_[queueId].empty()) {
-          break;
-        }
-        if (!taskQueues_[queueId].empty()) {
-          task = std::move(taskQueues_[queueId].front());
-          taskQueues_[queueId].pop();
-        }
+  while (true) {
+    std::function<void()> task;
+    {
+      std::unique_lock<std::mutex> lock(queueMutex_);
+      condition_.wait(lock, [this, queueId] {
+        return stopAll_ || stopFlags_[queueId] || !taskQueues_[queueId].empty();
+      });
+      if ((stopAll_ || stopFlags_[queueId]) && taskQueues_[queueId].empty()) {
+        break;
       }
-      if (task) {
-        try {
-          task(); // Execute task
-        } catch (const std::exception& e) {
-          std::cerr << "[Worker] queueId: " << queueId << " - Exception: " << e.what() << std::endl;
-        } catch (...) {
-          std::cerr << "[Worker] queueId: " << queueId << " - Unknown exception." << std::endl;
-        }
-        condition_.notify_all(); // Notify that task is complete
+      if (!taskQueues_[queueId].empty()) {
+        task = std::move(taskQueues_[queueId].front());
+        taskQueues_[queueId].pop();
       }
     }
-  } catch (const std::exception& e) {
-    std::cerr << "[Worker] queueId: " << queueId << " - Unhandled exception: " << e.what() << std::endl;
-  } catch (...) {
-    std::cerr << "[Worker] queueId: " << queueId << " - Unhandled unknown exception." << std::endl;
+    if (task) {
+      try {
+        task();
+      } catch (...) {}
+    }
   }
-
-  // Cleanup
   std::unique_lock<std::mutex> lock(queueMutex_);
   joinedThreads_[queueId] = true;
   condition_.notify_all();
@@ -87,7 +72,6 @@ void jino::ThreadQueues::stopThread(std::uint64_t queueId) {
     stopFlags_[queueId] = true;
   }
   condition_.notify_all();
-
   if (activeThreads_.count(queueId)) {
     if (activeThreads_[queueId].joinable() && !joinedThreads_[queueId]) {
       activeThreads_[queueId].join();
@@ -108,4 +92,3 @@ void jino::ThreadQueues::restartThread(std::uint64_t queueId) {
     activeThreads_[queueId] = std::thread(&ThreadQueues::workerThread, this, queueId);
   }
 }
-
