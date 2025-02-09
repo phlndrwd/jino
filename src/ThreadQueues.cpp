@@ -18,57 +18,45 @@
 #include "ThreadQueues.h"
 #include <iostream>
 
-namespace jino {
+jino::ThreadQueues::ThreadQueues() {}
 
-ThreadQueues::ThreadQueues() {}
-
-ThreadQueues::~ThreadQueues() {
+jino::ThreadQueues::~ThreadQueues() {
   {
     std::unique_lock<std::mutex> lock(queueMutex_);
-    stopAll_ = true; // Signal all threads to stop
+    stopAll_ = true;
     for (auto& [queueId, _] : activeThreads_) {
-      stopFlags_[queueId] = true; // Ensure all threads are flagged to stop
+      stopFlags_[queueId] = true;
     }
   }
-  condition_.notify_all(); // Notify all threads in case they are waiting
+  condition_.notify_all();
 
-  // Join all active threads safely
   for (auto& [queueId, thread] : activeThreads_) {
     if (thread.joinable() && !joinedThreads_[queueId]) {
       thread.join();
       joinedThreads_[queueId] = true;
-      std::cerr << "Thread " << queueId << " joined." << std::endl;
     }
   }
 }
 
-void ThreadQueues::workerThread(std::uint64_t queueId) {
+void jino::ThreadQueues::workerThread(std::uint64_t queueId) {
   try {
     while (true) {
       std::function<void()> task;
-
       {
         std::unique_lock<std::mutex> lock(queueMutex_);
         condition_.wait(lock, [this, queueId] {
           return stopAll_ || stopFlags_[queueId] || !taskQueues_[queueId].empty();
         });
-
-        std::cerr << "[Worker] queueId: " << queueId << " - Woke up." << std::endl;
-
         if ((stopAll_ || stopFlags_[queueId]) && taskQueues_[queueId].empty()) {
-          std::cerr << "[Worker] queueId: " << queueId << " - Stopping thread." << std::endl;
           break;
         }
-
         if (!taskQueues_[queueId].empty()) {
           task = std::move(taskQueues_[queueId].front());
           taskQueues_[queueId].pop();
         }
       }
-
       if (task) {
         try {
-          std::cerr << "[Worker] queueId: " << queueId << " - Running task." << std::endl;
           task(); // Execute task
         } catch (const std::exception& e) {
           std::cerr << "[Worker] queueId: " << queueId << " - Exception: " << e.what() << std::endl;
@@ -86,45 +74,25 @@ void ThreadQueues::workerThread(std::uint64_t queueId) {
 
   // Cleanup
   std::unique_lock<std::mutex> lock(queueMutex_);
-  std::cerr << "[Worker] queueId: " << queueId << " - Marking thread as stopped." << std::endl;
-  joinedThreads_[queueId] = true; // Only mark it as joined
+  joinedThreads_[queueId] = true;
   condition_.notify_all();
-  std::cerr << "[Worker] queueId: " << queueId << " - Exited cleanly." << std::endl;
 }
 
-void ThreadQueues::waitForCompletion() {
-  std::unique_lock<std::mutex> lock(queueMutex_);
-  condition_.wait(lock, [this] {
-    for (const auto& [_, queue] : taskQueues_) {
-      if (!queue.empty()) return false;
-    }
-    return activeThreads_.empty();
-  });
-}
-
-void ThreadQueues::stopThread(std::uint64_t queueId) {
+void jino::ThreadQueues::stopThread(std::uint64_t queueId) {
   {
     std::unique_lock<std::mutex> lock(queueMutex_);
     if (stopFlags_[queueId]) {
-      std::cerr << "[Stop] queueId: " << queueId << " - Already stopping." << std::endl;
       return;
     }
     stopFlags_[queueId] = true;
-    std::cerr << "[Stop] queueId: " << queueId << " - Stop signal sent." << std::endl;
   }
-  condition_.notify_all();  // Wake up the thread
+  condition_.notify_all();
 
   if (activeThreads_.count(queueId)) {
-    std::cerr << "[Stop] queueId: " << queueId << " - Waiting for thread to join." << std::endl;
-
-    // Prevent double-joining!
     if (activeThreads_[queueId].joinable() && !joinedThreads_[queueId]) {
       activeThreads_[queueId].join();
       joinedThreads_[queueId] = true;
-      std::cerr << "[Stop] queueId: " << queueId << " - Thread joined." << std::endl;
     }
-
-    // Erase only if it's really done
     if (joinedThreads_[queueId]) {
       activeThreads_.erase(queueId);
       stopFlags_.erase(queueId);
@@ -132,15 +100,12 @@ void ThreadQueues::stopThread(std::uint64_t queueId) {
   }
 }
 
-void ThreadQueues::restartThread(std::uint64_t queueId) {
+void jino::ThreadQueues::restartThread(std::uint64_t queueId) {
   std::unique_lock<std::mutex> lock(queueMutex_);
   if (activeThreads_.find(queueId) == activeThreads_.end()) {
-    stopFlags_[queueId] = false; // Reset the stop flag
+    stopFlags_[queueId] = false;
     joinedThreads_[queueId] = false;
     activeThreads_[queueId] = std::thread(&ThreadQueues::workerThread, this, queueId);
-    std::cerr << "Thread " << queueId << " restarted." << std::endl;
   }
 }
-
-} // namespace jino
 

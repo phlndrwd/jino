@@ -21,7 +21,6 @@
 #include <condition_variable>
 #include <cstdint>
 #include <functional>
-#include <iostream>
 #include <map>
 #include <mutex>
 #include <queue>
@@ -30,40 +29,35 @@
 namespace jino {
 class ThreadQueues {
 public:
-  ThreadQueues(); // Constructor
-  ~ThreadQueues(); // Destructor
+  ThreadQueues();
+  ~ThreadQueues();
 
-  // Enqueue a new task to the specified queue
   template<class F>
   void enqueue(std::uint64_t queueId, F&& f) {
     {
-      std::unique_lock<std::mutex> lock(queueMutex_); // Lock the queue to ensure thread safety
-      taskQueues_[queueId].emplace(std::forward<F>(f)); // Add the task to the queue
-
-      // If no thread is active for this queue, create one dynamically
+      std::unique_lock<std::mutex> lock(queueMutex_);
+      taskQueues_[queueId].emplace(std::forward<F>(f));
       if (activeThreads_.find(queueId) == activeThreads_.end()) {
         activeThreads_[queueId] = std::thread(&ThreadQueues::workerThread, this, queueId);
-        joinedThreads_[queueId] = false; // Track thread join status
-        std::cerr << "Thread " << queueId << " started." << std::endl;
+        joinedThreads_[queueId] = false;
       }
     }
-    condition_.notify_all(); // Notify worker threads that a new task is available
+    condition_.notify_all();
   }
 
-  void waitForCompletion(); // Wait for all tasks to complete
-  void stopThread(std::uint64_t queueId); // Stop a specific thread manually
-  void restartThread(std::uint64_t queueId); // Restart a previously stopped thread
+  void stopThread(std::uint64_t queueId);
+  void restartThread(std::uint64_t queueId);
 
 private:
-  void workerThread(std::uint64_t queueId); // Worker thread function
+  void workerThread(std::uint64_t queueId);
 
-  std::map<std::uint64_t, std::queue<std::function<void()>>> taskQueues_; // Map of task queues
-  std::map<std::uint64_t, std::thread> activeThreads_; // Map of active worker threads
-  std::map<std::uint64_t, bool> stopFlags_; // Flags to control thread termination
-  std::map<std::uint64_t, bool> joinedThreads_; // Track if a thread has been joined
-  std::mutex queueMutex_; // Mutex to protect shared resources
-  std::condition_variable condition_; // Condition variable for task notification
-  bool stopAll_ = false; // Flag to signal all threads to stop
+  std::map<std::uint64_t, std::queue<std::function<void()>>> taskQueues_;
+  std::map<std::uint64_t, std::thread> activeThreads_;
+  std::map<std::uint64_t, bool> stopFlags_;
+  std::map<std::uint64_t, bool> joinedThreads_;
+  std::mutex queueMutex_;
+  std::condition_variable condition_;
+  bool stopAll_ = false;
 };
 } // namespace jino
 
