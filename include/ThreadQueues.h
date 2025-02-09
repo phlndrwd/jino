@@ -45,6 +45,7 @@ public:
     condition_.notify_all();
   }
 
+  void stopThreads();
   void stopThread(std::uint64_t queueId);
   void restartThread(std::uint64_t queueId);
 

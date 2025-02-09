@@ -161,16 +161,15 @@ std::int32_t main() {
       r = r * 2;
     }
   }
-  std::cout << "Closing NetCDF..." << std::endl;
-  output.closeNetCDF();
   std::uint8_t writeState = params.getValue<std::uint8_t>(jino::consts::kWriteState);
   if (writeState == true) {
     std::cout << "Serialise objects to JSON and write to file..." << std::endl;
     output.writeState(garage);
   }
-
+  std::cout << "Closing NetCDF..." << std::endl;
+  output.closeNetCDF();
   std::cout << "Waiting for completion..." << std::endl;
-  output.waitForCompletion();
+  output.stop();
   std::cout << "Complete." << std::endl;
 
   return 0;

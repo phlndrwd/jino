@@ -63,6 +63,19 @@ void jino::ThreadQueues::workerThread(std::uint64_t queueId) {
   condition_.notify_all();
 }
 
+void jino::ThreadQueues::stopThreads() {
+  std::vector<std::uint64_t> activeThreadIds;
+  {
+    std::unique_lock<std::mutex> lock(queueMutex_);
+    for (const auto& [queueId, _] : activeThreads_) {
+      activeThreadIds.push_back(queueId);
+    }
+  }
+  for (auto queueId : activeThreadIds) {
+    stopThread(queueId);
+  }
+}
+
 void jino::ThreadQueues::stopThread(std::uint64_t queueId) {
   {
     std::unique_lock<std::mutex> lock(queueMutex_);

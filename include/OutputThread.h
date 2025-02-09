@@ -44,30 +44,27 @@ class OutputThread {
 
   template <typename T>
   void writeState(const T& system) {
-    //threads_.enqueue(consts::eJSONThread, [this, &system]() {
-      nlohmann::json j = system;
-      std::filesystem::path path(consts::kOutputDir + date_ + consts::kJSONExtension);
-      try {
-        std::uint32_t count = 1;
-        while (std::filesystem::exists(path) == true) {
-          path = consts::kOutputDir + date_ + "(" + std::to_string(count) + ")" + consts::kJSONExtension;
-          ++count;
-        }
-        std::ofstream file(path);
-        if (file.is_open()) {
-          file << std::setprecision(std::numeric_limits<double>::digits10 + 1);
-          file << j.dump(consts::kJsonIndentSize);  // Indented output
-          file.close();
-        }
-      } catch (const std::exception& error) {
-        std::cout << "ERROR: Could not open file \"" << path << "\"..."<< std::endl;
-        std::cerr << error.what() << std::endl;
+    nlohmann::json j = system;
+    std::filesystem::path path(consts::kOutputDir + date_ + consts::kJSONExtension);
+    try {
+      std::uint32_t count = 1;
+      while (std::filesystem::exists(path) == true) {
+        path = consts::kOutputDir + date_ + "(" + std::to_string(count) + ")" + consts::kJSONExtension;
+        ++count;
       }
-    //});
-    //threads_.stopThread(consts::eJSONThread);
+      std::ofstream file(path);
+      if (file.is_open()) {
+        file << std::setprecision(std::numeric_limits<double>::digits10 + 1);
+        file << j.dump(consts::kJsonIndentSize);  // Indented output
+        file.close();
+      }
+    } catch (const std::exception& error) {
+      std::cout << "ERROR: Could not open file \"" << path << "\"..."<< std::endl;
+      std::cerr << error.what() << std::endl;
+    }
   }
 
-  void waitForCompletion();
+  void stop();
 
  private:
   void initOutDir() const;
