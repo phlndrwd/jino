@@ -67,11 +67,15 @@ void jino::OutputThread::closeNetCDF() {
     getNetCDF().closeFile();
     netCDF_.reset();
   });
-  threads_.stopThread(consts::eNetCDFThread);
+  //threads_.stopThread(consts::eNetCDFThread);
 }
 
 void jino::OutputThread::waitForCompletion() {
-  threads_.waitForCompletion();
+  //threads_.waitForCompletion();
+
+  threads_.stopThread(consts::eNetCDFThread);
+
+  //threads_.stopThread(consts::eJSONThread);
 }
 
 const std::string& jino::OutputThread::getDate() const {

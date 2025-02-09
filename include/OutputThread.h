@@ -44,7 +44,7 @@ class OutputThread {
 
   template <typename T>
   void writeState(const T& system) {
-    threads_.enqueue(consts::eJSONThread, [this, &system]() {
+    //threads_.enqueue(consts::eJSONThread, [this, &system]() {
       nlohmann::json j = system;
       std::filesystem::path path(consts::kOutputDir + date_ + consts::kJSONExtension);
       try {
@@ -63,8 +63,8 @@ class OutputThread {
         std::cout << "ERROR: Could not open file \"" << path << "\"..."<< std::endl;
         std::cerr << error.what() << std::endl;
       }
-    });
-    threads_.stopThread(consts::eJSONThread);
+    //});
+    //threads_.stopThread(consts::eJSONThread);
   }
 
   void waitForCompletion();

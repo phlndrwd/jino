@@ -21,11 +21,11 @@
 #include <condition_variable>
 #include <cstdint>
 #include <functional>
+#include <iostream>
 #include <map>
 #include <mutex>
 #include <queue>
 #include <thread>
-#include <vector>
 
 namespace jino {
 class ThreadQueues {
@@ -43,6 +43,8 @@ public:
       // If no thread is active for this queue, create one dynamically
       if (activeThreads_.find(queueId) == activeThreads_.end()) {
         activeThreads_[queueId] = std::thread(&ThreadQueues::workerThread, this, queueId);
+        joinedThreads_[queueId] = false; // Track thread join status
+        std::cerr << "Thread " << queueId << " started." << std::endl;
       }
     }
     condition_.notify_all(); // Notify worker threads that a new task is available
@@ -58,6 +60,7 @@ private:
   std::map<std::uint64_t, std::queue<std::function<void()>>> taskQueues_; // Map of task queues
   std::map<std::uint64_t, std::thread> activeThreads_; // Map of active worker threads
   std::map<std::uint64_t, bool> stopFlags_; // Flags to control thread termination
+  std::map<std::uint64_t, bool> joinedThreads_; // Track if a thread has been joined
   std::mutex queueMutex_; // Mutex to protect shared resources
   std::condition_variable condition_; // Condition variable for task notification
   bool stopAll_ = false; // Flag to signal all threads to stop

@@ -14,6 +14,7 @@
 * You should have received a copy of the GNU Lesser General Public License along with Jino.   *
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
+
 #include "ThreadQueues.h"
 #include <iostream>
 
@@ -31,58 +32,68 @@ ThreadQueues::~ThreadQueues() {
   }
   condition_.notify_all(); // Notify all threads in case they are waiting
 
-  // Join all active threads
-  for (auto& [_, thread] : activeThreads_) {
-    if (thread.joinable()) {
+  // Join all active threads safely
+  for (auto& [queueId, thread] : activeThreads_) {
+    if (thread.joinable() && !joinedThreads_[queueId]) {
       thread.join();
+      joinedThreads_[queueId] = true;
+      std::cerr << "Thread " << queueId << " joined." << std::endl;
     }
   }
 }
 
 void ThreadQueues::workerThread(std::uint64_t queueId) {
-  while (true) {
-    std::function<void()> task;
+  try {
+    while (true) {
+      std::function<void()> task;
 
-    {
-      std::unique_lock<std::mutex> lock(queueMutex_);
-      condition_.wait(lock, [this, queueId] {
-        return stopAll_ || stopFlags_[queueId] || !taskQueues_[queueId].empty();
-      });
+      {
+        std::unique_lock<std::mutex> lock(queueMutex_);
+        condition_.wait(lock, [this, queueId] {
+          return stopAll_ || stopFlags_[queueId] || !taskQueues_[queueId].empty();
+        });
 
-      // Exit condition if the application is stopping or if the specific thread is flagged to stop
-      if ((stopAll_ || stopFlags_[queueId]) && taskQueues_[queueId].empty()) {
-        break;
+        std::cerr << "[Worker] queueId: " << queueId << " - Woke up." << std::endl;
+
+        if ((stopAll_ || stopFlags_[queueId]) && taskQueues_[queueId].empty()) {
+          std::cerr << "[Worker] queueId: " << queueId << " - Stopping thread." << std::endl;
+          break;
+        }
+
+        if (!taskQueues_[queueId].empty()) {
+          task = std::move(taskQueues_[queueId].front());
+          taskQueues_[queueId].pop();
+        }
       }
 
-      // Retrieve the next task if available
-      if (!taskQueues_[queueId].empty()) {
-        task = std::move(taskQueues_[queueId].front());
-        taskQueues_[queueId].pop();
+      if (task) {
+        try {
+          std::cerr << "[Worker] queueId: " << queueId << " - Running task." << std::endl;
+          task(); // Execute task
+        } catch (const std::exception& e) {
+          std::cerr << "[Worker] queueId: " << queueId << " - Exception: " << e.what() << std::endl;
+        } catch (...) {
+          std::cerr << "[Worker] queueId: " << queueId << " - Unknown exception." << std::endl;
+        }
+        condition_.notify_all(); // Notify that task is complete
       }
     }
-
-    if (task) {
-      try {
-        task(); // Execute the task
-      } catch (const std::exception& e) {
-        std::cerr << "Exception in thread " << queueId << ": " << e.what() << std::endl;
-      } catch (...) {
-        std::cerr << "Unknown exception in thread " << queueId << std::endl;
-      }
-      condition_.notify_all(); // Notify other threads that a task has completed
-    }
+  } catch (const std::exception& e) {
+    std::cerr << "[Worker] queueId: " << queueId << " - Unhandled exception: " << e.what() << std::endl;
+  } catch (...) {
+    std::cerr << "[Worker] queueId: " << queueId << " - Unhandled unknown exception." << std::endl;
   }
 
-  // Clean up after thread stops
+  // Cleanup
   std::unique_lock<std::mutex> lock(queueMutex_);
-  activeThreads_.erase(queueId);
-  stopFlags_.erase(queueId);
+  std::cerr << "[Worker] queueId: " << queueId << " - Marking thread as stopped." << std::endl;
+  joinedThreads_[queueId] = true; // Only mark it as joined
   condition_.notify_all();
+  std::cerr << "[Worker] queueId: " << queueId << " - Exited cleanly." << std::endl;
 }
 
 void ThreadQueues::waitForCompletion() {
   std::unique_lock<std::mutex> lock(queueMutex_);
-  // Wait until all queues are empty and no active threads are running
   condition_.wait(lock, [this] {
     for (const auto& [_, queue] : taskQueues_) {
       if (!queue.empty()) return false;
@@ -94,14 +105,30 @@ void ThreadQueues::waitForCompletion() {
 void ThreadQueues::stopThread(std::uint64_t queueId) {
   {
     std::unique_lock<std::mutex> lock(queueMutex_);
-    stopFlags_[queueId] = true; // Signal the thread to stop
+    if (stopFlags_[queueId]) {
+      std::cerr << "[Stop] queueId: " << queueId << " - Already stopping." << std::endl;
+      return;
+    }
+    stopFlags_[queueId] = true;
+    std::cerr << "[Stop] queueId: " << queueId << " - Stop signal sent." << std::endl;
   }
-  condition_.notify_all();
+  condition_.notify_all();  // Wake up the thread
 
-  if (activeThreads_.count(queueId) && activeThreads_[queueId].joinable()) {
-    activeThreads_[queueId].join(); // Join the thread to ensure it has terminated
-    activeThreads_.erase(queueId);
-    stopFlags_.erase(queueId);
+  if (activeThreads_.count(queueId)) {
+    std::cerr << "[Stop] queueId: " << queueId << " - Waiting for thread to join." << std::endl;
+
+    // Prevent double-joining!
+    if (activeThreads_[queueId].joinable() && !joinedThreads_[queueId]) {
+      activeThreads_[queueId].join();
+      joinedThreads_[queueId] = true;
+      std::cerr << "[Stop] queueId: " << queueId << " - Thread joined." << std::endl;
+    }
+
+    // Erase only if it's really done
+    if (joinedThreads_[queueId]) {
+      activeThreads_.erase(queueId);
+      stopFlags_.erase(queueId);
+    }
   }
 }
 
@@ -109,7 +136,9 @@ void ThreadQueues::restartThread(std::uint64_t queueId) {
   std::unique_lock<std::mutex> lock(queueMutex_);
   if (activeThreads_.find(queueId) == activeThreads_.end()) {
     stopFlags_[queueId] = false; // Reset the stop flag
+    joinedThreads_[queueId] = false;
     activeThreads_[queueId] = std::thread(&ThreadQueues::workerThread, this, queueId);
+    std::cerr << "Thread " << queueId << " restarted." << std::endl;
   }
 }
 

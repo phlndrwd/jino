@@ -155,20 +155,21 @@ std::int32_t main() {
     y = yMin + t * yInc;
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
     if (t % samplingRate == 0) {
-      std::cout << "t=" << t << std::endl;
+      //std::cout << "t=" << t << std::endl;
       jino::Buffers::get().record();
       output.writeDatums(data);
       r = r * 2;
     }
   }
+  std::cout << "Closing NetCDF..." << std::endl;
+  output.closeNetCDF();
   std::uint8_t writeState = params.getValue<std::uint8_t>(jino::consts::kWriteState);
   if (writeState == true) {
     std::cout << "Serialise objects to JSON and write to file..." << std::endl;
     output.writeState(garage);
   }
-  std::cout << "Closing..." << std::endl;
-  output.closeNetCDF();
-  std::cout << "Waiting..." << std::endl;
+
+  std::cout << "Waiting for completion..." << std::endl;
   output.waitForCompletion();
   std::cout << "Complete." << std::endl;
 
