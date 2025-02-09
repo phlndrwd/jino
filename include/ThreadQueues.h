@@ -57,7 +57,7 @@ private:
   std::map<std::uint64_t, bool> joinedThreads_;
   std::mutex queueMutex_;
   std::condition_variable condition_;
-  bool stopAll_ = false;
+  std::uint8_t stopAll_ = false;
 };
 } // namespace jino
 
