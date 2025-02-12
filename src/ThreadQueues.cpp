@@ -17,6 +17,9 @@
 
 #include "ThreadQueues.h"
 
+#include <utility>
+#include <vector>
+
 jino::ThreadQueues::ThreadQueues() {}
 
 jino::ThreadQueues::~ThreadQueues() {

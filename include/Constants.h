@@ -71,7 +71,6 @@ constexpr std::string kAttrsFile = "attrs.json";
 constexpr std::string kStateFile = "state.json";
 constexpr std::string kJSONExtension = ".json";
 constexpr std::string kNCExtension = ".nc";
-;
 
 // Parameter names
 constexpr std::string kDateKey = "date";
