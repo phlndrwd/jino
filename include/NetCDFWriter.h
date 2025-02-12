@@ -18,22 +18,44 @@
 #ifndef INCLUDE_NETCDFWRITER_H_
 #define INCLUDE_NETCDFWRITER_H_
 
+#include <filesystem>
+#include <memory>
+#include <string>
+
+#include "BufferBase.h"
 #include "NetCDFData.h"
-#include "NetCDFWriterBase.h"
+#include "NetCDFFile.h"
 
 namespace jino {
 class Buffers;
 
-class NetCDFWriter final : public NetCDFWriterBase {
+class NetCDFWriter {
  public:
   NetCDFWriter(const std::string&);
 
-  void writeMetadata(const NetCDFData&) override;
-  void writeDatums(const NetCDFData&) override;
-  void writeData(const NetCDFData&) override;
-  void toFile(const NetCDFData&) override;
+  std::filesystem::path init(const std::string&) const;
 
-  void closeFile() override;
+  void writeMetadata(const NetCDFData&);
+  void writeDatums(const NetCDFData&);
+  void writeData(const NetCDFData&);
+  void toFile(const NetCDFData&);
+
+  void closeFile();
+
+ private:
+  void writeAttrs(const NetCDFData&);
+  void writeDims(const NetCDFData&);
+  void writeVars(const NetCDFData&);
+
+  void writeGroupedDatum(const std::string&, const std::string&, NetCDFFile&, BufferBase* const);
+  void writeUngroupedDatum(const std::string&, NetCDFFile&, BufferBase* const);
+
+  void writeGroupedData(const std::string&, const std::string&, NetCDFFile&, BufferBase* const);
+  void writeUngroupedData(const std::string&, NetCDFFile&, BufferBase* const);
+
+  NetCDFFile& getFile() const;
+
+  std::unique_ptr<NetCDFFile> file_;
 };
 }  // namespace jino
 

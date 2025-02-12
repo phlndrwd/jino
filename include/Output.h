@@ -15,31 +15,35 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#ifndef INCLUDE_OUTPUT_H_
-#define INCLUDE_OUTPUT_H_
+#ifndef INCLUDE_OUTPUTTHREAD_H_
+#define INCLUDE_OUTPUTTHREAD_H_
 
 #include <cstdint>
 #include <fstream>
-#include <memory>
 #include <string>
 
 #include "nlohmann/json.hpp"
 
 #include "Constants.h"
-#include "NetCDFWriterBase.h"
+#include "NetCDFWriter.h"
+#include "ThreadQueues.h"
 
 namespace jino {
 class Output {
  public:
   Output();
 
-  void initNetCDF(const std::uint8_t = consts::eMultiThread);
-
   const std::string& getDate() const;
-  NetCDFWriterBase& getNetCDF();
+
+  void initNetCDF();
+  void writeMetadata(const NetCDFData&);
+  void writeDatums(const NetCDFData&);
+  void toFile(const NetCDFData&);
+
+  void closeNetCDF();
 
   template <typename T>
-  void writeState(const T& system) const {
+  void writeState(const T& system) {
     nlohmann::json j = system;
     std::filesystem::path path(consts::kOutputDir + date_ + consts::kJSONExtension);
     try {
@@ -60,12 +64,16 @@ class Output {
     }
   }
 
+  void waitForCompletion();
+
  private:
   void initOutDir() const;
 
   const std::string date_;
-  std::unique_ptr<NetCDFWriterBase> netCDF_;
+
+  ThreadQueues threads_;
+  NetCDFWriter writer_;
 };
 }  // namespace jino
 
-#endif // INCLUDE_OUTPUT_H_
+#endif // INCLUDE_OUTPUTTHREAD_H_

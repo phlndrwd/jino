@@ -21,12 +21,9 @@
 #include <filesystem>  /// NOLINT
 #include <iomanip>
 #include <iostream>
-#include <memory>
 #include <sstream>
 #include <string>
 
-#include "NetCDFThreadWriter.h"
-#include "NetCDFWriter.h"
 #include "Constants.h"
 
 namespace {
@@ -41,29 +38,40 @@ std::string getFormattedDateStr() {
 }
 }  // anonymous namespace
 
-jino::Output::Output() : date_(getFormattedDateStr()) {
+jino::Output::Output() : date_(getFormattedDateStr()), writer_(date_) {
   initOutDir();
 }
 
-void jino::Output::initNetCDF(const std::uint8_t isMultiThread) {
-  if (isMultiThread == consts::eMultiThread) {
-    netCDF_ = std::make_unique<NetCDFThreadWriter>(date_);
-  } else if (isMultiThread == consts::eSingleThread) {
-    netCDF_ = std::make_unique<NetCDFWriter>(date_);
-  } else {
-    throw std::runtime_error("Unknown writer thread configuration...");
-  }
+void jino::Output::writeMetadata(const NetCDFData& netCDFData) {
+  threads_.enqueue(consts::eNetCDFThread, [this, &netCDFData]() {
+    writer_.writeMetadata(netCDFData);
+  });
+}
+
+void jino::Output::writeDatums(const NetCDFData& netCDFData) {
+  threads_.enqueue(consts::eNetCDFThread, [this, &netCDFData]() {
+    writer_.writeDatums(netCDFData);
+  });
+}
+
+void jino::Output::toFile(const NetCDFData& netCDFData) {
+  threads_.enqueue(consts::eNetCDFThread, [this, &netCDFData]() {
+    writer_.toFile(netCDFData);
+  });
+}
+
+void jino::Output::closeNetCDF() {
+  threads_.enqueue(consts::eNetCDFThread, [this]() {
+    writer_.closeFile();
+  });
+}
+
+void jino::Output::waitForCompletion() {
+  threads_.stopThreads();
 }
 
 const std::string& jino::Output::getDate() const {
   return date_;
-}
-
-jino::NetCDFWriterBase& jino::Output::getNetCDF() {
-  if (netCDF_ == nullptr) {
-    initNetCDF();  // Defaults to multi-threaded writer
-  }
-  return *netCDF_;
 }
 
 void jino::Output::initOutDir() const {

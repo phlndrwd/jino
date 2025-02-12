@@ -77,12 +77,8 @@ list(APPEND JINO_SOURCES
   src/JsonReader.cpp
   src/NetCDFData.cpp
   src/NetCDFFile.cpp
-  src/NetCDFThreadWriter.cpp
   src/NetCDFWriter.cpp
-  src/NetCDFWriterBase.cpp
   src/Output.cpp
-  src/OutputThread.cpp
-  src/ThreadPool.cpp
   src/ThreadQueues.cpp
 )
 
@@ -99,12 +95,8 @@ list(APPEND JINO_HEADERS
   include/NetCDFData.h
   include/NetCDFDim.h
   include/NetCDFFile.h
-  include/NetCDFThreadWriter.h
   include/NetCDFWriter.h
-  include/NetCDFWriterBase.h
   include/Output.h
-  include/OutputThread.h
-  include/ThreadPool.h
   include/ThreadQueues.h
   include/Types.h
 )
@@ -113,12 +105,10 @@ set(TEST_SOURCES
   test/01_basic_read.cpp
   test/02_buffer_instantiate.cpp
   test/03_netcdf_write.cpp
-  test/04_progressive_write.cpp
-  test/05_thread_write.cpp
-  test/06_serialise_write.cpp
-  test/07_deserialize_read.cpp
-  test/08_full_serial.cpp
-  test/09_full_parallel.cpp
+  test/04_thread_write.cpp
+  test/05_deserialize_read.cpp
+  test/06_serialize_write.cpp
+  test/07_full_parallel.cpp
 )
 
 ## Create library

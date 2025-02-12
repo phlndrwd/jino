@@ -54,8 +54,8 @@ private:
 
   std::map<std::uint64_t, std::queue<std::function<void()>>> taskQueues_;
   std::map<std::uint64_t, std::thread> activeThreads_;
-  std::map<std::uint64_t, bool> stopFlags_;
-  std::map<std::uint64_t, bool> joinedThreads_;
+  std::map<std::uint64_t, std::uint8_t> stopFlags_;
+  std::map<std::uint64_t, std::uint8_t> joinedThreads_;
   std::mutex queueMutex_;
   std::condition_variable condition_;
   std::uint8_t stopAll_ = false;

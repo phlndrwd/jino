@@ -16,16 +16,50 @@
 **********************************************************************************************/
 
 #include <chrono>
+#include <cstdint>
 #include <iostream>
+#include <string>
 #include <thread>
+#include <vector>
+
+#include "nlohmann/json.hpp"
 
 #include "Buffer.h"
 #include "Buffers.h"
-#include "Constants.h"
-#include "Data.h"
 #include "JsonReader.h"
-#include "NetCDFData.h"
 #include "Output.h"
+
+using json = nlohmann::json;
+
+class Piston {
+ public:
+  double temperature_;
+
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Piston, temperature_)
+};
+
+class Engine {
+ public:
+  std::vector<Piston> pistons_;
+
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Engine, pistons_)
+};
+
+class Car {
+ public:
+  std::string make_;
+  std::string model_;
+  Engine engine_;
+
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Car, make_, model_, engine_)
+};
+
+class Garage {
+ public:
+  std::vector<Car> cars_;
+
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Garage, cars_)
+};
 
 long double calcIncrement(const float min, const float max, const std::uint64_t timeSteps) {
   if (min > max) {
@@ -49,11 +83,14 @@ std::uint64_t calcDataSize(const std::uint64_t maxTimeSteps, const std::uint64_t
   return static_cast<std::uint64_t>(std::ceil(result) + 1);
 }
 
-int main() {
+std::int32_t main() {
+  std::cout << "Deserialising data from file..." << std::endl;
+  jino::JsonReader reader;
+  Garage garage = reader.readState<Garage>();
+
+  std::cout << "Creating pseudo-model data..." << std::endl;
   jino::Data attrs;
   jino::Data params;
-  jino::JsonReader reader;
-
   reader.readAttrs(attrs);
   reader.readParams(params);
 
@@ -72,7 +109,7 @@ int main() {
   const long double yInc = calcIncrement(yMin, yMax, maxTimeStep);
   const std::uint64_t dataSize = calcDataSize(maxTimeStep, samplingRate);
 
-  data.addDimension("dataSize", dataSize, true);
+  data.addDimension("dataSize", dataSize);
 
   double y = 0;
   std::uint64_t t = 0;
@@ -111,19 +148,27 @@ int main() {
   auto rBuffer9 = jino::Buffer<std::uint64_t>("r09", dataSize, r);
   auto rBuffer10 = jino::Buffer<std::uint64_t>("r10", dataSize, r);
 
-  output.initNetCDF(jino::consts::eMultiThread);
-  output.getNetCDF().writeMetadata(data);
+  std::cout << "Running pseudo-model loop..." << std::endl;
+  output.writeMetadata(data);
   for (t = 0; t <= maxTimeStep; ++t) {
     y = yMin + t * yInc;
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
     if (t % samplingRate == 0) {
-      std::cout << "t=" << t << std::endl;
       jino::Buffers::get().record();
-      output.getNetCDF().writeDatums(data);
+      output.writeDatums(data);
       r = r * 2;
     }
   }
-  output.getNetCDF().closeFile();
+  std::uint8_t writeState = params.getValue<std::uint8_t>(jino::consts::kWriteState);
+  if (writeState == true) {
+    std::cout << "Serialise objects to JSON and write to file..." << std::endl;
+    output.writeState(garage);
+  }
+  std::cout << "Closing NetCDF..." << std::endl;
+  output.closeNetCDF();
+  std::cout << "Waiting for completion..." << std::endl;
+  output.waitForCompletion();
+  std::cout << "Complete." << std::endl;
 
   return 0;
 }
