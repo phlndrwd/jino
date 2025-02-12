@@ -27,22 +27,20 @@
 #include "Datum.h"
 #include "NetCDFFile.h"
 
-jino::NetCDFWriter::NetCDFWriter(const std::string& date) {
+jino::NetCDFWriter::NetCDFWriter(const std::string& date) : date_(date) {}
+
+void jino::NetCDFWriter::init() {
+  std::uint32_t count = 1;
+  std::filesystem::path path(consts::kOutputDir + date_ + consts::kNCExtension);
+  while (std::filesystem::exists(path) == true) {
+    path = consts::kOutputDir + date_ + "(" + std::to_string(count) + ")" + consts::kNCExtension;
+    ++count;
+  }
   try {
-    file_ = std::make_unique<NetCDFFile>(NetCDFWriter::init(date));
+    file_ = std::make_unique<NetCDFFile>(path);
   } catch (const std::exception& error) {
     std::cerr << error.what() << std::endl;
   }
-}
-
-std::filesystem::path jino::NetCDFWriter::init(const std::string& date) const {
-  std::uint32_t count = 1;
-  std::filesystem::path path(consts::kOutputDir + date + consts::kNCExtension);
-  while (std::filesystem::exists(path) == true) {
-    path = consts::kOutputDir + date + "(" + std::to_string(count) + ")" + consts::kNCExtension;
-    ++count;
-  }
-  return path;
 }
 
 void jino::NetCDFWriter::writeMetadata(const NetCDFData& netCDFData) {
@@ -435,9 +433,9 @@ void jino::NetCDFWriter::writeUngroupedData(const std::string& name, NetCDFFile&
   }
 }
 
-jino::NetCDFFile& jino::NetCDFWriter::getFile() const {
+jino::NetCDFFile& jino::NetCDFWriter::getFile() {
   if (file_ == nullptr) {
-    throw std::runtime_error("ERROR: NetCDFFile has not been initialised...");
+    init();
   }
   return *file_;
 }

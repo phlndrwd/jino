@@ -35,7 +35,6 @@ class Output {
 
   const std::string& getDate() const;
 
-  void initNetCDF();
   void writeMetadata(const NetCDFData&);
   void writeDatums(const NetCDFData&);
   void toFile(const NetCDFData&);

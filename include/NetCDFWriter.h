@@ -33,7 +33,7 @@ class NetCDFWriter {
  public:
   NetCDFWriter(const std::string&);
 
-  std::filesystem::path init(const std::string&) const;
+  void init();
 
   void writeMetadata(const NetCDFData&);
   void writeDatums(const NetCDFData&);
@@ -53,8 +53,9 @@ class NetCDFWriter {
   void writeGroupedData(const std::string&, const std::string&, NetCDFFile&, BufferBase* const);
   void writeUngroupedData(const std::string&, NetCDFFile&, BufferBase* const);
 
-  NetCDFFile& getFile() const;
+  NetCDFFile& getFile();
 
+  const std::string& date_;
   std::unique_ptr<NetCDFFile> file_;
 };
 }  // namespace jino

@@ -121,6 +121,7 @@ int main() {
     }
   }
   output.toFile(data);
+  output.waitForCompletion();
 
   return 0;
 }
