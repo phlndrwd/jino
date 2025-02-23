@@ -20,7 +20,6 @@ cmake_minimum_required(VERSION 3.5)
 project(jino LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 #set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*")
 
 file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/input)
@@ -116,6 +115,8 @@ find_package(Threads REQUIRED)
 add_library(jino STATIC ${JINO_SOURCES})
 target_include_directories(jino PUBLIC ${NetCDF_INCLUDE_DIRS} ${NetCDF_CXX_INCLUDE_DIR})
 target_link_libraries(jino PUBLIC Threads::Threads ${NetCDF_CXX_LIBRARIES})
+target_compile_features(jino PUBLIC cxx_std_20)
+target_compile_options(jino PUBLIC -Wall -Wextra -Wpedantic)
 
 ## Create tests
 enable_testing()
@@ -130,4 +131,3 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
   target_link_libraries(${EXECUTABLE_NAME} PRIVATE jino)
   add_test(NAME ${EXECUTABLE_NAME} COMMAND ${EXECUTABLE_NAME})
 endforeach()
-add_compile_options(-Wall -Wextra -Wpedantic)
