@@ -52,9 +52,9 @@ std::uint64_t calcDataSize(const std::uint64_t maxTimeSteps, const std::uint64_t
 int main() {
   jino::Data params;
   jino::Data attrs;
-  jino::JsonReader Reader;
-  Reader.readParams(params);
-  Reader.readAttrs(attrs);
+  jino::JsonReader reader;
+  reader.readParams(params);
+  reader.readAttrs(attrs);
 
   jino::NetCDFData data;
 
