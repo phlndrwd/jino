@@ -44,7 +44,7 @@ int main() {
   std::cout << "2. Validating read data..." << std::endl;
   assert(params.size() == jino::consts::kParamNames.size());
 
-  params.forEachDatum([&](const std::string& name, jino::DatumBase* const datum) {
+  params.forEachDatum([&](const std::string&, jino::DatumBase* const) {
     assert(params.contains(name) == true);
     assert(isStringInArray(name, jino::consts::kParamNames));
   });

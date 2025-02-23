@@ -53,7 +53,7 @@ class JsonReader {
       std::cerr << error.what() << std::endl;
     }
     return T{};  // Default return in case of error
-  };
+  }
 
  private:
   template <typename T>
