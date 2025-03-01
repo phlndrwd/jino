@@ -78,11 +78,11 @@ int main() {
   data.addDateToData(&attrs, output.getDate());
   data.addData(&params);
 
-  const std::uint64_t maxTimeStep = params.getValue<std::uint16_t>(kMaxTimeStepName);
-  const std::uint64_t samplingRate = params.getValue<std::uint8_t>(kSamplingRateName);
+  const std::uint64_t maxTimeStep = params.getValue<std::uint64_t>(kMaxTimeStepName);
+  const std::uint64_t samplingRate = params.getValue<std::uint64_t>(kSamplingRateName);
 
-  const double yMin = params.getValue<float>(kYMinName);
-  const double yMax = params.getValue<float>(kYMaxName);
+  const double yMin = params.getValue<double>(kYMinName);
+  const double yMax = params.getValue<double>(kYMaxName);
 
   const double yInc = calcIncrement(yMin, yMax, maxTimeStep);
   const std::uint64_t dataSize = calcDataSize(maxTimeStep, samplingRate);

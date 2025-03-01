@@ -21,8 +21,6 @@
 #include <stdexcept>
 #include <string>
 
-#include "Datum.h"
-
 jino::DatumBase& jino::Data::operator[](const std::string& key) {
   auto it = values_.find(key);
   if (it != values_.end()) {
@@ -62,33 +60,6 @@ template void jino::Data::setValue<std::uint64_t>(const std::string&, const std:
 template void jino::Data::setValue<float>(const std::string&, const float);
 template void jino::Data::setValue<double>(const std::string&, const double);
 template void jino::Data::setValue<std::string>(const std::string&, const std::string);
-
-template <typename T>
-T jino::Data::getValue(const std::string& key) const {
-  auto it = values_.find(key);
-  if (it != values_.end()) {
-    Datum<T>* datum = dynamic_cast<Datum<T>*>(it->second.get());
-    if (datum) {
-      return datum->getValue();
-    } else {
-      throw std::runtime_error("Type mismatch or invalid cast.");
-    }
-  } else {
-    throw std::out_of_range("Datum \"" + key + "\" not found.");
-  }
-}
-
-template std::int8_t jino::Data::getValue<std::int8_t>(const std::string&) const;
-template std::int16_t jino::Data::getValue<std::int16_t>(const std::string&) const;
-template std::int32_t jino::Data::getValue<std::int32_t>(const std::string&) const;
-template std::int64_t jino::Data::getValue<std::int64_t>(const std::string&) const;
-template std::uint8_t jino::Data::getValue<std::uint8_t>(const std::string&) const;
-template std::uint16_t jino::Data::getValue<std::uint16_t>(const std::string&) const;
-template std::uint32_t jino::Data::getValue<std::uint32_t>(const std::string&) const;
-template std::uint64_t jino::Data::getValue<std::uint64_t>(const std::string&) const;
-template float jino::Data::getValue<float>(const std::string&) const;
-template double jino::Data::getValue<double>(const std::string&) const;
-template std::string jino::Data::getValue<std::string>(const std::string&) const;
 
 void jino::Data::forEachDatum(const std::function<void(const std::string&,
                               DatumBase* const)>& callback) const {

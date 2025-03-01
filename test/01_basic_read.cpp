@@ -63,11 +63,11 @@ int main() {
   });
 
   std::cout << "3. Testing data retrieval..." << std::endl;
-  static_cast<void>(params.getValue<std::uint16_t>(kMaxTimeStepName));
-  const std::uint64_t samplingRate = params.getValue<std::uint8_t>(kSamplingRateName);
+  static_cast<void>(params.getValue<std::uint64_t>(kMaxTimeStepName));
+  const std::uint64_t samplingRate = params.getValue<std::uint64_t>(kSamplingRateName);
 
-  static_cast<void>(params.getValue<float>(kYMinName));
-  static_cast<void>(params.getValue<float>(kYMaxName));
+  static_cast<void>(params.getValue<double>(kYMinName));
+  static_cast<void>(params.getValue<double>(kYMaxName));
 
   std::cout << "4. Testing element erasure..." << std::endl;
   params.erase(kSamplingRateName);
