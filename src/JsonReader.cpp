@@ -19,7 +19,9 @@
 
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <string>
+#include <vector>
 
 #include "Constants.h"
 
@@ -30,13 +32,6 @@ std::streamsize getFileSize(const std::string& path) {
     throw std::ios_base::failure("Could not open file.");
   }
   return file.tellg();
-}
-
-std::uint8_t strCompare(const std::string& str1, const std::string& str2) {
-  return str1.size() == str2.size() && std::equal(str1.begin(), str1.end(), str2.begin(),
-                                                  [](unsigned char c1, unsigned char c2) {
-    return std::tolower(c1) == std::tolower(c2);
-  });
 }
 }  // Anonymous namespace
 
@@ -61,18 +56,17 @@ void jino::JsonReader::readText(const std::string& path, std::string& text) {
   }
 }
 
-void jino::JsonReader::readParams(jino::Data& params) {
+void jino::JsonReader::readParams(jino::Data& params, const std::vector<std::string>& paramNames) {
   std::string text;
   std::string path = consts::kInputDir + consts::kParamsFile;
   readText(path, text);
   try {
     nlohmann::json jsonData = nlohmann::json::parse(text);  // Arranged alphabetically
-    if (jsonData.is_object() && jsonData.size() == consts::kParamNames.size()) {
+    if (jsonData.is_object() && jsonData.size() == paramNames.size()) {
       for (std::uint64_t i = 0; i < jsonData.size(); ++i) {
-        const std::string& paramName = consts::kParamNames.at(i);
-        const std::uint8_t paramType = consts::kParamTypes.at(i);
+        const std::string& paramName = paramNames.at(i);
         if (jsonData.contains(paramName)) {
-          setValue(params, paramName, paramType, jsonData[paramName]);
+          setValue(params, paramName, jsonData[paramName]);
         } else {
           throw std::out_of_range("Required parameter \"" + paramName + "\" not found in file.");
         }
@@ -121,54 +115,54 @@ void jino::JsonReader::readAttrs(jino::Data& attrs) {
   }
 }
 
+JsonValueType jino::JsonReader::getVariant(const nlohmann::json& jsonValue) {
+    if (jsonValue.is_boolean()) {
+      return jsonValue.get<std::uint8_t>();
+    }  else if (jsonValue.is_number_unsigned()) {
+      auto val = jsonValue.get<std::uint64_t>();
+      if (val <= std::numeric_limits<std::uint8_t>::max())
+        return static_cast<std::uint8_t>(val);
+      if (val <= std::numeric_limits<std::uint16_t>::max())
+        return static_cast<std::uint16_t>(val);
+      if (val <= std::numeric_limits<std::uint32_t>::max())
+        return static_cast<std::uint32_t>(val);
+      return val;
+    } else if (jsonValue.is_number_float()) {
+      double val = jsonValue.get<double>();
+      if (val >= std::numeric_limits<float>::lowest() &&
+          val <= std::numeric_limits<float>::max()) {
+        return static_cast<float>(val);
+      } else {
+        return val;
+      }
+    } else if (jsonValue.is_number_integer()) {
+      auto val = jsonValue.get<std::int64_t>();
+      if (val >= std::numeric_limits<std::int8_t>::min() &&
+          val <= std::numeric_limits<std::int8_t>::max()) {
+        return static_cast<std::int8_t>(val);
+      } else if (val >= std::numeric_limits<std::int16_t>::min() &&
+                 val <= std::numeric_limits<std::int16_t>::max()) {
+        return static_cast<std::int16_t>(val);
+      } else if (val >= std::numeric_limits<std::int32_t>::min() &&
+                 val <= std::numeric_limits<std::int32_t>::max()) {
+        return static_cast<std::int32_t>(val);
+      } else {
+        return val;
+      }
+    } else if (jsonValue.is_string()) {
+      return jsonValue.get<std::string>();
+    } else {
+      throw std::runtime_error("Unsupported JSON value type");
+    }
+}
+
 void jino::JsonReader::setValue(Data& params, const std::string& paramName,
-                                const std::uint8_t paramType, const nlohmann::json& jsonValue) {
-  switch (paramType) {
-    case consts::eInt8: {
-      setValue(params, paramName, static_cast<std::int8_t>(jsonValue));
-      break;
-    }
-    case consts::eInt16: {
-      setValue(params, paramName, static_cast<std::int16_t>(jsonValue));
-      break;
-    }
-    case consts::eInt32: {
-      setValue(params, paramName, static_cast<std::int32_t>(jsonValue));
-      break;
-    }
-    case consts::eInt64: {
-      setValue(params, paramName, static_cast<std::int64_t>(jsonValue));
-      break;
-    }
-    case consts::eUInt8: {
-      setValue(params, paramName, static_cast<std::uint8_t>(jsonValue));
-      break;
-    }
-    case consts::eUInt16: {
-      setValue(params, paramName, static_cast<std::uint16_t>(jsonValue));
-      break;
-    }
-    case consts::eUInt32: {
-      setValue(params, paramName, static_cast<std::uint32_t>(jsonValue));
-      break;
-    }
-    case consts::eUInt64: {
-      setValue(params, paramName, static_cast<std::uint64_t>(jsonValue));
-      break;
-    }
-    case consts::eFloat: {
-      setValue(params, paramName, static_cast<float>(jsonValue));
-      break;
-    }
-    case consts::eDouble: {
-      setValue(params, paramName, static_cast<double>(jsonValue));
-      break;
-    }
-    case consts::eString: {
-      setValue(params, paramName, static_cast<std::string>(jsonValue));
-      break;
-    }
-  }
+                                const nlohmann::json& jsonValue) {
+    JsonValueType value = getVariant(jsonValue);
+
+    std::visit([&](auto&& arg) {
+        setValue(params, paramName, arg);
+    }, value);
 }
 
 template <typename T>

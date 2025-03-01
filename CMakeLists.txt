@@ -97,6 +97,7 @@ list(APPEND JINO_HEADERS
   include/NetCDFWriter.h
   include/Output.h
   include/ThreadQueues.h
+  include/TypeMap.h
   include/Types.h
 )
 

@@ -21,11 +21,17 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "nlohmann/json.hpp"
 
 #include "Constants.h"
 #include "Data.h"
+#include "TypeMap.h"
+
+using JsonValueType = std::variant<std::int8_t, std::int16_t, std::int32_t, std::int64_t,
+                                   std::uint8_t, std::uint16_t, std::uint32_t, std::uint64_t,
+                                   float, double, std::string>;
 
 namespace jino {
 class JsonReader {
@@ -34,7 +40,7 @@ class JsonReader {
 
   void readText(const std::string&, std::string&);
 
-  void readParams(jino::Data&);
+  void readParams(jino::Data&, const std::vector<std::string>&);
   void readAttrs(jino::Data&);
 
   template <typename T>
@@ -56,9 +62,12 @@ class JsonReader {
   }
 
  private:
+  JsonValueType getVariant(const nlohmann::json&);
+
+  void setValue(Data&, const std::string&, const nlohmann::json&);
+
   template <typename T>
   void setValue(jino::Data&, const std::string&, const T&);
-  void setValue(jino::Data&, const std::string&, const std::uint8_t, const nlohmann::json&);
 };
 }  // namespace jino
 

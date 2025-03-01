@@ -27,6 +27,20 @@
 
 using json = nlohmann::json;
 
+constexpr std::string kMaxTimeStepName = "MaxTimeStep";
+constexpr std::string kSamplingRateName = "SamplingRate";
+constexpr std::string kWriteStateName = "WriteState";
+constexpr std::string kYMinName = "YMin";
+constexpr std::string kYMaxName = "YMax";
+
+const std::vector<std::string> paramNames = {
+  kMaxTimeStepName,
+  kSamplingRateName,
+  kWriteStateName,
+  kYMinName,
+  kYMaxName
+};
+
 class Piston {
  public:
   double temperature_;
@@ -60,7 +74,8 @@ class Garage {
 std::int32_t main() {
   jino::Data params;
   jino::JsonReader reader;
-  reader.readParams(params);
+  reader.readParams(params, paramNames);
+
   std::cout << "Creating sample data..." << std::endl;
   Garage garage;
   const std::uint64_t maxPistons = 1000000;
@@ -74,7 +89,7 @@ std::int32_t main() {
   }
   std::cout << "Serialise to JSON and write to file..." << std::endl;
   jino::Output output;
-  std::uint8_t writeState = params.getValue<std::uint8_t>(jino::consts::kWriteState);
+  std::uint8_t writeState = params.getValue<std::uint8_t>(kWriteStateName);
   if (writeState == true) {
     output.writeState(garage);
   }

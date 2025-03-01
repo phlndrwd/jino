@@ -15,12 +15,28 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
+#include <string>
+#include <vector>
+
 #include "Buffer.h"
 #include "Buffers.h"
-#include "Constants.h"
 #include "Data.h"
 #include "JsonReader.h"
 #include "NetCDFData.h"
+
+constexpr std::string kMaxTimeStepName = "MaxTimeStep";
+constexpr std::string kSamplingRateName = "SamplingRate";
+constexpr std::string kWriteStateName = "WriteState";
+constexpr std::string kYMinName = "YMin";
+constexpr std::string kYMaxName = "YMax";
+
+const std::vector<std::string> paramNames = {
+  kMaxTimeStepName,
+  kSamplingRateName,
+  kWriteStateName,
+  kYMinName,
+  kYMaxName
+};
 
 void outOfScopeTest(const std::uint64_t dataSize) {
   std::uint64_t x = 0;
@@ -53,18 +69,19 @@ int main() {
   jino::Data params;
   jino::Data attrs;
   jino::JsonReader reader;
-  reader.readParams(params);
+
+  reader.readParams(params, paramNames);
   reader.readAttrs(attrs);
 
   jino::NetCDFData data;
 
-  const std::uint64_t maxTimeStep = params.getValue<std::uint64_t>(jino::consts::kMaxTimeStep);
-  const std::uint64_t samplingRate = params.getValue<std::uint64_t>(jino::consts::kSamplingRate);
+  const std::uint64_t maxTimeStep = params.getValue<std::uint16_t>(kMaxTimeStepName);
+  const std::uint64_t samplingRate = params.getValue<std::uint8_t>(kSamplingRateName);
 
-  const long double yMin = params.getValue<float>(jino::consts::kYMin);
-  const long double yMax = params.getValue<float>(jino::consts::kYMax);
+  const double yMin = params.getValue<float>(kYMinName);
+  const double yMax = params.getValue<float>(kYMaxName);
 
-  const long double yInc = calcIncrement(yMin, yMax, maxTimeStep);
+  const double yInc = calcIncrement(yMin, yMax, maxTimeStep);
   const std::uint64_t dataSize = calcDataSize(maxTimeStep, samplingRate);
 
   outOfScopeTest(dataSize);

@@ -31,6 +31,20 @@
 
 using json = nlohmann::json;
 
+constexpr std::string kMaxTimeStepName = "MaxTimeStep";
+constexpr std::string kSamplingRateName = "SamplingRate";
+constexpr std::string kWriteStateName = "WriteState";
+constexpr std::string kYMinName = "YMin";
+constexpr std::string kYMaxName = "YMax";
+
+const std::vector<std::string> paramNames = {
+  kMaxTimeStepName,
+  kSamplingRateName,
+  kWriteStateName,
+  kYMinName,
+  kYMaxName
+};
+
 class Piston {
  public:
   double temperature_;
@@ -92,7 +106,7 @@ std::int32_t main() {
   jino::Data attrs;
   jino::Data params;
   reader.readAttrs(attrs);
-  reader.readParams(params);
+  reader.readParams(params, paramNames);
 
   jino::Output output;
   jino::NetCDFData data;
@@ -100,13 +114,13 @@ std::int32_t main() {
   data.addDateToData(&attrs, output.getDate());
   data.addData(&params);
 
-  const std::uint64_t maxTimeStep = params.getValue<std::uint64_t>(jino::consts::kMaxTimeStep);
-  const std::uint64_t samplingRate = params.getValue<std::uint64_t>(jino::consts::kSamplingRate);
+  const std::uint64_t maxTimeStep = params.getValue<std::uint16_t>(kMaxTimeStepName);
+  const std::uint64_t samplingRate = params.getValue<std::uint8_t>(kSamplingRateName);
 
-  const long double yMin = params.getValue<float>(jino::consts::kYMin);
-  const long double yMax = params.getValue<float>(jino::consts::kYMax);
+  const double yMin = params.getValue<float>(kYMinName);
+  const double yMax = params.getValue<float>(kYMaxName);
 
-  const long double yInc = calcIncrement(yMin, yMax, maxTimeStep);
+  const double yInc = calcIncrement(yMin, yMax, maxTimeStep);
   const std::uint64_t dataSize = calcDataSize(maxTimeStep, samplingRate);
 
   data.addDimension("dataSize", dataSize);
@@ -159,7 +173,7 @@ std::int32_t main() {
       r = r * 2;
     }
   }
-  std::uint8_t writeState = params.getValue<std::uint8_t>(jino::consts::kWriteState);
+  std::uint8_t writeState = params.getValue<std::uint8_t>(paramNames.at(2));
   if (writeState == true) {
     std::cout << "Serialise objects to JSON and write to file..." << std::endl;
     output.writeState(garage);

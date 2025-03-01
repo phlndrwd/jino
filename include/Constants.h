@@ -74,11 +74,6 @@ constexpr std::string kNCExtension = ".nc";
 
 // Parameter names
 constexpr std::string kDateKey = "date";
-constexpr std::string kMaxTimeStep = "MaxTimeStep";
-constexpr std::string kSamplingRate = "SamplingRate";
-constexpr std::string kWriteState = "WriteState";
-constexpr std::string kYMin = "YMin";
-constexpr std::string kYMax = "YMax";
 
 constexpr std::string_view kDateFormat = "%Y-%m-%d_%H:%M:%S";
 
@@ -94,22 +89,6 @@ const std::array<std::string, eNumberOfDataTypes> kDataTypeNames = {
   "float",
   "double",
   "string"
-};
-
-const std::array<std::string, eNumberOfParams> kParamNames = {
-  kMaxTimeStep,
-  kSamplingRate,
-  kWriteState,
-  kYMin,
-  kYMax
-};
-
-const std::array<std::uint8_t, eNumberOfParams> kParamTypes = {
-  eUInt64,
-  eUInt64,
-  eUInt8,
-  eFloat,
-  eFloat
 };
 }  // namespace consts
 }  // namespace jino

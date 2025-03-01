@@ -18,14 +18,29 @@
 #include <chrono>
 #include <iostream>
 #include <thread>
+#include <string>
+#include <vector>
 
 #include "Buffer.h"
 #include "Buffers.h"
-#include "Constants.h"
 #include "Data.h"
 #include "JsonReader.h"
 #include "NetCDFData.h"
 #include "Output.h"
+
+constexpr std::string kMaxTimeStepName = "MaxTimeStep";
+constexpr std::string kSamplingRateName = "SamplingRate";
+constexpr std::string kWriteStateName = "WriteState";
+constexpr std::string kYMinName = "YMin";
+constexpr std::string kYMaxName = "YMax";
+
+const std::vector<std::string> paramNames = {
+  kMaxTimeStepName,
+  kSamplingRateName,
+  kWriteStateName,
+  kYMinName,
+  kYMaxName
+};
 
 long double calcIncrement(const float min, const float max, const std::uint64_t timeSteps) {
   if (min > max) {
@@ -55,7 +70,7 @@ int main() {
   jino::JsonReader reader;
 
   reader.readAttrs(attrs);
-  reader.readParams(params);
+  reader.readParams(params, paramNames);
 
   jino::Output output;
   jino::NetCDFData data;
@@ -63,13 +78,13 @@ int main() {
   data.addDateToData(&attrs, output.getDate());
   data.addData(&params);
 
-  const std::uint64_t maxTimeStep = params.getValue<std::uint64_t>(jino::consts::kMaxTimeStep);
-  const std::uint64_t samplingRate = params.getValue<std::uint64_t>(jino::consts::kSamplingRate);
+  const std::uint64_t maxTimeStep = params.getValue<std::uint16_t>(kMaxTimeStepName);
+  const std::uint64_t samplingRate = params.getValue<std::uint8_t>(kSamplingRateName);
 
-  const long double yMin = params.getValue<float>(jino::consts::kYMin);
-  const long double yMax = params.getValue<float>(jino::consts::kYMax);
+  const double yMin = params.getValue<float>(kYMinName);
+  const double yMax = params.getValue<float>(kYMaxName);
 
-  const long double yInc = calcIncrement(yMin, yMax, maxTimeStep);
+  const double yInc = calcIncrement(yMin, yMax, maxTimeStep);
   const std::uint64_t dataSize = calcDataSize(maxTimeStep, samplingRate);
 
   data.addDimension("dataSize", dataSize, true);

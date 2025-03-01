@@ -15,19 +15,31 @@
 * If not, see <https://www.gnu.org/licenses/>.                                                *
 **********************************************************************************************/
 
-#include <array>
 #include <cassert>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "Buffer.h"
-#include "Constants.h"
 #include "Data.h"
 #include "DatumBase.h"
 #include "JsonReader.h"
 
-std::uint8_t isStringInArray(const std::string str, std::array<std::string,
-                             jino::consts::eNumberOfParams> array) {
+constexpr std::string kMaxTimeStepName = "MaxTimeStep";
+constexpr std::string kSamplingRateName = "SamplingRate";
+constexpr std::string kWriteStateName = "WriteState";
+constexpr std::string kYMinName = "YMin";
+constexpr std::string kYMaxName = "YMax";
+
+const std::vector<std::string> paramNames = {
+  kMaxTimeStepName,
+  kSamplingRateName,
+  kWriteStateName,
+  kYMinName,
+  kYMaxName
+};
+
+std::uint8_t isStringInArray(const std::string str, std::vector<std::string> array) {
   if (std::find(array.begin(), array.end(), str) != array.end()) {
     return true;
   } else {
@@ -39,27 +51,28 @@ int main() {
   std::cout << "1. Testing file reading..." << std::endl;
   jino::Data params;
   jino::JsonReader reader;
-  reader.readParams(params);
+
+  reader.readParams(params, paramNames);
 
   std::cout << "2. Validating read data..." << std::endl;
-  assert(params.size() == jino::consts::kParamNames.size());
+  assert(params.size() == paramNames.size());
 
-  params.forEachDatum([&](const std::string&, jino::DatumBase* const) {
+  params.forEachDatum([&](const std::string& name, jino::DatumBase* const) {
     assert(params.contains(name) == true);
-    assert(isStringInArray(name, jino::consts::kParamNames));
+    assert(isStringInArray(name, paramNames));
   });
 
   std::cout << "3. Testing data retrieval..." << std::endl;
-  static_cast<void>(params.getValue<std::uint64_t>(jino::consts::kMaxTimeStep));
-  const std::uint64_t samplingRate = params.getValue<std::uint64_t>(jino::consts::kSamplingRate);
+  static_cast<void>(params.getValue<std::uint16_t>(kMaxTimeStepName));
+  const std::uint64_t samplingRate = params.getValue<std::uint8_t>(kSamplingRateName);
 
-  static_cast<void>(params.getValue<float>(jino::consts::kYMin));
-  static_cast<void>(params.getValue<float>(jino::consts::kYMax));
+  static_cast<void>(params.getValue<float>(kYMinName));
+  static_cast<void>(params.getValue<float>(kYMaxName));
 
   std::cout << "4. Testing element erasure..." << std::endl;
-  params.erase(jino::consts::kSamplingRate);
-  assert(params.contains(jino::consts::kSamplingRate) == false);
-  assert(params.size() == jino::consts::kParamNames.size() - 1);
+  params.erase(kSamplingRateName);
+  assert(params.contains(kSamplingRateName) == false);
+  assert(params.size() == paramNames.size() - 1);
 
   std::cout << "5. Testing buffer creation..." << std::endl;
   std::uint64_t i = 0;
