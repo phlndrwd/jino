@@ -43,14 +43,14 @@ void outOfScopeTest(const std::uint64_t dataSize) {
   auto testBuffer = jino::Buffer<std::uint64_t>("testBuffer", dataSize, x);
 }
 
-long double calcIncrement(const float min, const float max, const std::uint64_t timeSteps) {
+double calcIncrement(const float min, const float max, const std::uint64_t timeSteps) {
   if (min > max) {
     throw std::invalid_argument("min cannot be greater than max");
   }
   if (timeSteps == 0) {
     throw std::invalid_argument("Time steps must be greater than zero...");
   }
-  return static_cast<long double>(max - min) / static_cast<long double>(timeSteps - 1);
+  return static_cast<double>(max - min) / static_cast<double>(timeSteps - 1);
 }
 
 std::uint64_t calcDataSize(const std::uint64_t maxTimeSteps, const std::uint64_t samplingRate) {
@@ -60,9 +60,9 @@ std::uint64_t calcDataSize(const std::uint64_t maxTimeSteps, const std::uint64_t
   if (samplingRate == 0) {
     throw std::invalid_argument("Division by zero is not allowed...");
   }
-  long double result = static_cast<long double>(maxTimeSteps) /
-                       static_cast<long double>(samplingRate - 1);
-  return static_cast<std::uint64_t>(std::ceil(result));
+  double result = static_cast<double>(maxTimeSteps) /
+                  static_cast<double>(samplingRate);
+  return static_cast<std::uint64_t>(std::ceil(result) + 1);
 }
 
 int main() {
