@@ -18,7 +18,6 @@
 #ifndef INCLUDE_NETCDFWRITER_H_
 #define INCLUDE_NETCDFWRITER_H_
 
-#include <filesystem>
 #include <memory>
 #include <string>
 

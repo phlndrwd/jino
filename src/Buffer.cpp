@@ -85,7 +85,7 @@ template<class T> void jino::Buffer<T>::record() {
 template<class T>
 void jino::Buffer<T>::print() {
   for (std::uint64_t i = 0; i < data_.size(); ++i) {
-    std::cout << i << ": " << name_ << consts::kSeparator << data_.at(i) << std::endl;
+    std::cout << name_ << consts::kSeparator << data_.at(i) << std::endl;
   }
 }
 

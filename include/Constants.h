@@ -39,11 +39,6 @@ enum eDataTypes : std::uint8_t {
   eNumberOfDataTypes
 };
 
-enum eWriterThreads : std::uint8_t {
-  eSingleThread,
-  eMultiThread
-};
-
 enum eOutputThreads : std::uint8_t {
   eNetCDFThread,
   eJSONThread
