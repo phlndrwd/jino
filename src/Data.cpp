@@ -96,3 +96,130 @@ void jino::Data::clear() {
   }
   values_.clear();
 }
+
+template <typename T, typename StoredT>
+T jino::Data::safeConvert(StoredT value) {
+  if constexpr (std::is_arithmetic_v<T> && std::is_arithmetic_v<StoredT>) {
+    return static_cast<T>(value);
+  } else if constexpr (std::is_same_v<T, std::string>) {
+    return std::to_string(value);
+  } else if constexpr (std::is_arithmetic_v<T> && std::is_same_v<StoredT, std::string>) {
+    try {
+      if constexpr (std::is_integral_v<T>) {
+        return std::stoll(value);
+      } else {
+        return std::stod(value);
+      }
+    } catch (...) {
+      throw std::runtime_error("Failed to convert string to number.");
+    }
+  } else {
+    throw std::runtime_error("Invalid type conversion.");
+  }
+}
+
+// Explicit instantiations for numeric conversions
+template std::int8_t jino::Data::safeConvert<std::int8_t, std::uint8_t>(std::uint8_t);
+template std::int8_t jino::Data::safeConvert<std::int8_t, std::int8_t>(std::int8_t);
+template std::int16_t jino::Data::safeConvert<std::int16_t, std::uint16_t>(std::uint16_t);
+template std::int16_t jino::Data::safeConvert<std::int16_t, std::int16_t>(std::int16_t);
+template std::int32_t jino::Data::safeConvert<std::int32_t, std::uint32_t>(std::uint32_t);
+template std::int32_t jino::Data::safeConvert<std::int32_t, std::int32_t>(std::int32_t);
+template std::int64_t jino::Data::safeConvert<std::int64_t, std::uint64_t>(std::uint64_t);
+template std::int64_t jino::Data::safeConvert<std::int64_t, std::int64_t>(std::int64_t);
+template float jino::Data::safeConvert<float, float>(float);
+template double jino::Data::safeConvert<double, double>(double);
+
+// Explicit instantiations for string conversions
+template std::string jino::Data::safeConvert<std::string, std::int8_t>(std::int8_t);
+template std::string jino::Data::safeConvert<std::string, std::int16_t>(std::int16_t);
+template std::string jino::Data::safeConvert<std::string, std::int32_t>(std::int32_t);
+template std::string jino::Data::safeConvert<std::string, std::int64_t>(std::int64_t);
+template std::string jino::Data::safeConvert<std::string, float>(float);
+template std::string jino::Data::safeConvert<std::string, double>(double);
+
+// Explicit instantiations for numeric parsing from string
+template std::int8_t jino::Data::safeConvert<std::int8_t, std::string>(std::string);
+template std::int16_t jino::Data::safeConvert<std::int16_t, std::string>(std::string);
+template std::int32_t jino::Data::safeConvert<std::int32_t, std::string>(std::string);
+template std::int64_t jino::Data::safeConvert<std::int64_t, std::string>(std::string);
+template float jino::Data::safeConvert<float, std::string>(std::string);
+template double jino::Data::safeConvert<double, std::string>(std::string);
+
+template <>
+std::string jino::Data::tryConvertHelper<std::string, std::string>(DatumBase* baseDatum) const {
+  Datum<std::string>* datum = dynamic_cast<Datum<std::string>*>(baseDatum);
+  if (datum) {
+    return datum->getValue();
+  }
+  return "";
+}
+
+template <typename T, typename StoredT>
+T jino::Data::tryConvertHelper(DatumBase* baseDatum) const {
+  if (Datum<StoredT>* datum = dynamic_cast<Datum<StoredT>*>(baseDatum)) {
+    return safeConvert<T>(datum->getValue());
+  }
+  return T{};
+}
+
+template std::int8_t jino::Data::tryConvertHelper<std::int8_t, std::uint8_t>(DatumBase*) const;
+template std::int8_t jino::Data::tryConvertHelper<std::int8_t, std::int8_t>(DatumBase*) const;
+template std::int16_t jino::Data::tryConvertHelper<std::int16_t, std::uint16_t>(DatumBase*) const;
+template std::int16_t jino::Data::tryConvertHelper<std::int16_t, std::int16_t>(DatumBase*) const;
+template std::int32_t jino::Data::tryConvertHelper<std::int32_t, std::uint32_t>(DatumBase*) const;
+template std::int32_t jino::Data::tryConvertHelper<std::int32_t, std::int32_t>(DatumBase*) const;
+template std::int64_t jino::Data::tryConvertHelper<std::int64_t, std::uint64_t>(DatumBase*) const;
+template std::int64_t jino::Data::tryConvertHelper<std::int64_t, std::int64_t>(DatumBase*) const;
+template float jino::Data::tryConvertHelper<float, float>(DatumBase*) const;
+template double jino::Data::tryConvertHelper<double, double>(DatumBase*) const;
+
+template <typename T>
+T jino::Data::tryConvert(DatumBase* baseDatum) const {
+  if (T result = tryConvertHelper<T, std::uint8_t>(baseDatum); result != T{}) {
+    return result;
+  }
+  if (T result = tryConvertHelper<T, std::uint16_t>(baseDatum); result != T{}) {
+    return result;
+  }
+  if (T result = tryConvertHelper<T, std::uint32_t>(baseDatum); result != T{}) {
+    return result;
+  }
+  if (T result = tryConvertHelper<T, std::uint64_t>(baseDatum); result != T{}) {
+    return result;
+  }
+  if (T result = tryConvertHelper<T, std::int8_t>(baseDatum); result != T{})  {
+    return result;
+  }
+  if (T result = tryConvertHelper<T, std::int16_t>(baseDatum); result != T{}) {
+    return result;
+  }
+  if (T result = tryConvertHelper<T, std::int32_t>(baseDatum); result != T{}) {
+    return result;
+  }
+  if (T result = tryConvertHelper<T, std::int64_t>(baseDatum); result != T{}) {
+    return result;
+  }
+  if (T result = tryConvertHelper<T, float>(baseDatum); result != T{}) {
+    return result;
+  }
+  if (T result = tryConvertHelper<T, double>(baseDatum); result != T{}) {
+    return result;
+  }
+  if (T result = tryConvertHelper<T, std::string>(baseDatum); result != T{}) {
+    return result;
+  }
+  throw std::runtime_error("Failed to convert datum");
+}
+
+template std::int8_t jino::Data::tryConvert<std::int8_t>(DatumBase*) const;
+template std::int16_t jino::Data::tryConvert<std::int16_t>(DatumBase*) const;
+template std::int32_t jino::Data::tryConvert<std::int32_t>(DatumBase*) const;
+template std::int64_t jino::Data::tryConvert<std::int64_t>(DatumBase*) const;
+template std::uint8_t jino::Data::tryConvert<std::uint8_t>(DatumBase*) const;
+template std::uint16_t jino::Data::tryConvert<std::uint16_t>(DatumBase*) const;
+template std::uint32_t jino::Data::tryConvert<std::uint32_t>(DatumBase*) const;
+template std::uint64_t jino::Data::tryConvert<std::uint64_t>(DatumBase*) const;
+template float jino::Data::tryConvert<float>(DatumBase*) const;
+template double jino::Data::tryConvert<double>(DatumBase*) const;
+template std::string jino::Data::tryConvert<std::string>(DatumBase*) const;

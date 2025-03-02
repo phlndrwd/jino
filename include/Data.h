@@ -21,7 +21,6 @@
 #include <functional>
 #include <map>
 #include <memory>
-#include <optional>
 #include <string>
 #include <type_traits>
 
@@ -41,18 +40,15 @@ class Data {
 
     template <typename T>
     T getValue(const std::string& key) const {
-        auto it = values_.find(key);
-        if (it != values_.end()) {
-            // Try direct type match
-            if (Datum<T>* datum = dynamic_cast<Datum<T>*>(it->second.get())) {
-                return datum->getValue();
-            }
-
-            // Try implicit numeric conversion
-            return tryConvert<T>(it->second.get());
-        } else {
-            throw std::out_of_range("Datum \"" + key + "\" not found.");
+      auto it = values_.find(key);
+      if (it != values_.end()) {
+        if (Datum<T>* datum = dynamic_cast<Datum<T>*>(it->second.get())) {
+          return datum->getValue();
         }
+        return tryConvert<T>(it->second.get());
+      } else {
+          throw std::out_of_range("Datum \"" + key + "\" not found.");
+      }
     }
 
   void forEachDatum(const std::function<void(const std::string&, DatumBase* const)>&) const;
@@ -66,35 +62,13 @@ class Data {
 
  private:
   template <typename T, typename StoredT>
-  static T safeConvert(StoredT value) {
-    if constexpr (std::is_arithmetic_v<T> && std::is_arithmetic_v<StoredT>) {
-      return static_cast<T>(value);
-    } else {
-      throw std::runtime_error("Invalid type conversion.");
-    }
-  }
+  static T safeConvert(StoredT value);
+
+  template <typename T, typename StoredT>
+  T tryConvertHelper(DatumBase* baseDatum) const;
 
   template <typename T>
-  T tryConvert(DatumBase* baseDatum) const {
-    #define TRY_CONVERT(TYPE) \
-    if (Datum<TYPE>* datum = dynamic_cast<Datum<TYPE>*>(baseDatum)) { \
-        return safeConvert<T>(datum->getValue()); \
-    }
-
-    TRY_CONVERT(std::uint8_t)
-    TRY_CONVERT(std::int8_t)
-    TRY_CONVERT(std::uint16_t)
-    TRY_CONVERT(std::int16_t)
-    TRY_CONVERT(std::uint32_t)
-    TRY_CONVERT(std::int32_t)
-    TRY_CONVERT(std::uint64_t)
-    TRY_CONVERT(std::int64_t)
-    TRY_CONVERT(float)
-    TRY_CONVERT(double)
-    TRY_CONVERT(std::string)
-
-    throw std::runtime_error("Type mismatch or invalid cast.");
-  }
+  T tryConvert(DatumBase* baseDatum) const;
 
   std::map<const std::string, std::unique_ptr<DatumBase>> values_;
 };
