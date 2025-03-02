@@ -64,6 +64,7 @@ int main() {
 
   std::cout << "3. Testing data retrieval..." << std::endl;
   static_cast<void>(params.getValue<std::uint64_t>(kMaxTimeStepName));
+
   const std::uint64_t samplingRate = params.getValue<std::uint64_t>(kSamplingRateName);
 
   static_cast<void>(params.getValue<double>(kYMinName));

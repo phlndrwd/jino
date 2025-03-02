@@ -22,9 +22,7 @@
 #include <map>
 #include <memory>
 #include <string>
-#include <type_traits>
 
-#include "Datum.h"
 #include "DatumBase.h"
 
 namespace jino {
@@ -38,18 +36,8 @@ class Data {
   template <typename T>
   void setValue(const std::string&, const T);
 
-    template <typename T>
-    T getValue(const std::string& key) const {
-      auto it = values_.find(key);
-      if (it != values_.end()) {
-        if (Datum<T>* datum = dynamic_cast<Datum<T>*>(it->second.get())) {
-          return datum->getValue();
-        }
-        return tryConvert<T>(it->second.get());
-      } else {
-          throw std::out_of_range("Datum \"" + key + "\" not found.");
-      }
-    }
+  template <typename T>
+  T getValue(const std::string& key) const;
 
   void forEachDatum(const std::function<void(const std::string&, DatumBase* const)>&) const;
 
@@ -64,11 +52,11 @@ class Data {
   template <typename T, typename StoredT>
   static T safeConvert(StoredT value);
 
-  template <typename T, typename StoredT>
-  T tryConvertHelper(DatumBase* baseDatum) const;
-
   template <typename T>
   T tryConvert(DatumBase* baseDatum) const;
+
+  template <typename T, typename StoredT>
+  T tryConvertHelper(DatumBase* baseDatum) const;
 
   std::map<const std::string, std::unique_ptr<DatumBase>> values_;
 };

@@ -24,15 +24,6 @@
 
 namespace jino {
 namespace consts {
-enum eParams : std::uint8_t {
-  eMaxTimeSteps,
-  eSamplingRate,
-  eWriteState,
-  eYMin,
-  eYMax,
-  eNumberOfParams
-};
-
 enum eDataTypes : std::uint8_t {
   eInt8,
   eInt16,
