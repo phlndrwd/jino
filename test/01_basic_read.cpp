@@ -52,7 +52,8 @@ int main() {
   jino::Data params;
   jino::JsonReader reader;
 
-  reader.readParams(params, paramNames);
+  std::string path = jino::consts::kInputDir + jino::consts::kParamsFile;
+  reader.readParams(params, path, paramNames);
 
   std::cout << "2. Validating read data..." << std::endl;
   assert(params.size() == paramNames.size());

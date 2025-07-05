@@ -70,8 +70,11 @@ int main() {
   jino::Data attrs;
   jino::JsonReader reader;
 
-  reader.readParams(params, paramNames);
-  reader.readAttrs(attrs);
+  std::string attrsPath = jino::consts::kInputDir + jino::consts::kAttrsFile;
+  std::string paramsPath = jino::consts::kInputDir + jino::consts::kParamsFile;
+
+  reader.readParams(params, paramsPath, paramNames);
+  reader.readAttrs(attrs, attrsPath);
 
   jino::NetCDFData data;
 

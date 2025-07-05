@@ -40,8 +40,8 @@ class JsonReader {
 
   void readText(const std::string&, std::string&);
 
-  void readParams(jino::Data&, const std::vector<std::string>&);
-  void readAttrs(jino::Data&);
+  void readParams(jino::Data&, const std::string&, const std::vector<std::string>&);
+  void readAttrs(jino::Data&, const std::string&);
 
   template <typename T>
   T readState() {

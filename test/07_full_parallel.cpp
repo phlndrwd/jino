@@ -105,8 +105,12 @@ std::int32_t main() {
   std::cout << "Creating pseudo-model data..." << std::endl;
   jino::Data attrs;
   jino::Data params;
-  reader.readAttrs(attrs);
-  reader.readParams(params, paramNames);
+
+  std::string attrsPath = jino::consts::kInputDir + jino::consts::kAttrsFile;
+  std::string paramsPath = jino::consts::kInputDir + jino::consts::kParamsFile;
+
+  reader.readParams(params, paramsPath, paramNames);
+  reader.readAttrs(attrs, attrsPath);
 
   jino::Output output;
   jino::NetCDFData data;

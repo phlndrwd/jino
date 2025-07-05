@@ -74,7 +74,9 @@ class Garage {
 std::int32_t main() {
   jino::Data params;
   jino::JsonReader reader;
-  reader.readParams(params, paramNames);
+
+  std::string path = jino::consts::kInputDir + jino::consts::kParamsFile;
+  reader.readParams(params, path, paramNames);
 
   std::cout << "Creating sample data..." << std::endl;
   Garage garage;
