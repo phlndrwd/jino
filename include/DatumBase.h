@@ -18,19 +18,21 @@
 #ifndef INCLUDE_DATUMBASE_H_
 #define INCLUDE_DATUMBASE_H_
 
+#include <any>
 #include <cstdint>
 #include <string>
 
 namespace jino {
 class DatumBase {
  public:
-  explicit DatumBase(const std::uint8_t);
+  explicit DatumBase(const std::uint8_t type): type_(type) {}
 
   virtual ~DatumBase() = default;
 
   virtual const std::string getValueStr() const = 0;
+  virtual std::any getRawValue() const = 0;
 
-  const std::uint8_t& getType() const;
+  const std::uint8_t& getType() const { return type_; }
 
  protected:
   const std::uint8_t type_;

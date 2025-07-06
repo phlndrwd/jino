@@ -72,7 +72,6 @@ list(APPEND JINO_SOURCES
   src/Buffers.cpp
   src/Data.cpp
   src/Datum.cpp
-  src/DatumBase.cpp
   src/JsonReader.cpp
   src/NetCDFData.cpp
   src/NetCDFFile.cpp

@@ -56,3 +56,20 @@ template<>
 const std::string jino::Datum<std::string>::getValueStr() const {
   return value_;
 }
+
+template<class T>
+std::any jino::Datum<T>::getRawValue() const {
+  return value_;
+}
+
+template std::any jino::Datum<std::int8_t>::getRawValue() const;
+template std::any jino::Datum<std::int16_t>::getRawValue() const;
+template std::any jino::Datum<std::int32_t>::getRawValue() const;
+template std::any jino::Datum<std::int64_t>::getRawValue() const;
+template std::any jino::Datum<std::uint8_t>::getRawValue() const;
+template std::any jino::Datum<std::uint16_t>::getRawValue() const;
+template std::any jino::Datum<std::uint32_t>::getRawValue() const;
+template std::any jino::Datum<std::uint64_t>::getRawValue() const;
+template std::any jino::Datum<float>::getRawValue() const;
+template std::any jino::Datum<double>::getRawValue() const;
+template std::any jino::Datum<std::string>::getRawValue() const;

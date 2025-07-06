@@ -49,15 +49,6 @@ class Data {
   void clear();
 
  private:
-  template <typename T, typename StoredT>
-  static T safeConvert(StoredT value);
-
-  template <typename T>
-  T tryConvert(DatumBase* baseDatum) const;
-
-  template <typename T, typename StoredT>
-  T tryConvertHelper(DatumBase* baseDatum) const;
-
   std::map<const std::string, std::unique_ptr<DatumBase>> values_;
 };
 }  // namespace jino

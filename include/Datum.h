@@ -31,6 +31,10 @@ class Datum : public DatumBase {
 
   Datum() = delete;
 
+  const std::string getValueStr() const override;
+
+  std::any getRawValue() const override;
+
   const T getValue() const {
     return value_;
   }
@@ -38,8 +42,6 @@ class Datum : public DatumBase {
   T getValue() {
     return value_;
   }
-
-  const std::string getValueStr() const;
 
   void setValue(const T value) {
     value_ = value;
