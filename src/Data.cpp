@@ -78,16 +78,26 @@ T jino::Data::getValue(const std::string& key) const {
       std::any raw = baseDatum->getRawValue();
       if (raw.has_value()) {
         if constexpr (std::is_arithmetic_v<T>) {
-          if (raw.type() == typeid(std::int8_t)) return static_cast<T>(std::any_cast<std::int8_t>(raw));
-          if (raw.type() == typeid(std::uint8_t)) return static_cast<T>(std::any_cast<std::uint8_t>(raw));
-          if (raw.type() == typeid(std::int16_t)) return static_cast<T>(std::any_cast<std::int16_t>(raw));
-          if (raw.type() == typeid(std::uint16_t)) return static_cast<T>(std::any_cast<std::uint16_t>(raw));
-          if (raw.type() == typeid(std::int32_t)) return static_cast<T>(std::any_cast<std::int32_t>(raw));
-          if (raw.type() == typeid(std::uint32_t)) return static_cast<T>(std::any_cast<std::uint32_t>(raw));
-          if (raw.type() == typeid(std::int64_t)) return static_cast<T>(std::any_cast<std::int64_t>(raw));
-          if (raw.type() == typeid(std::uint64_t)) return static_cast<T>(std::any_cast<std::uint64_t>(raw));
-          if (raw.type() == typeid(float)) return static_cast<T>(std::any_cast<float>(raw));
-          if (raw.type() == typeid(double)) return static_cast<T>(std::any_cast<double>(raw));
+          if (raw.type() == typeid(std::int8_t))
+            return static_cast<T>(std::any_cast<std::int8_t>(raw));
+          if (raw.type() == typeid(std::uint8_t))
+            return static_cast<T>(std::any_cast<std::uint8_t>(raw));
+          if (raw.type() == typeid(std::int16_t))
+            return static_cast<T>(std::any_cast<std::int16_t>(raw));
+          if (raw.type() == typeid(std::uint16_t))
+            return static_cast<T>(std::any_cast<std::uint16_t>(raw));
+          if (raw.type() == typeid(std::int32_t))
+            return static_cast<T>(std::any_cast<std::int32_t>(raw));
+          if (raw.type() == typeid(std::uint32_t))
+            return static_cast<T>(std::any_cast<std::uint32_t>(raw));
+          if (raw.type() == typeid(std::int64_t))
+            return static_cast<T>(std::any_cast<std::int64_t>(raw));
+          if (raw.type() == typeid(std::uint64_t))
+            return static_cast<T>(std::any_cast<std::uint64_t>(raw));
+          if (raw.type() == typeid(float))
+            return static_cast<T>(std::any_cast<float>(raw));
+          if (raw.type() == typeid(double))
+            return static_cast<T>(std::any_cast<double>(raw));
         } else if constexpr (std::is_same_v<T, std::string>) {
           if (raw.type() == typeid(std::string))  return std::any_cast<std::string>(raw);
         }
