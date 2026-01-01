@@ -58,7 +58,7 @@ else()
   message(FATAL_ERROR "Path not found: ${INCLUDE_PATH}")
 endif()
 
-set(NetCDF_CXX_LIB_FILE "/usr/lib/x86_64-linux-gnu/libnetcdf_c++4.so")
+set(NetCDF_CXX_LIB_FILE "/usr/lib/libnetcdf_c++4.so")
 if(EXISTS ${NetCDF_CXX_LIB_FILE})
   set(NetCDF_CXX_LIBRARIES ${NetCDF_CXX_LIB_FILE})
 else()
