@@ -19,6 +19,9 @@ cmake_minimum_required(VERSION 3.5)
 
 project(jino LANGUAGES CXX)
 
+# Options
+option(JINO_BUILD_TESTS "Build jino tests" OFF)
+
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*")
 
@@ -28,41 +31,13 @@ file(COPY ${CMAKE_SOURCE_DIR}/input DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 ## Download required files
 include(FetchContent)
 
-set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/external/")
-FetchContent_Declare(
-  nlohmann
-  GIT_REPOSITORY "https://github.com/nlohmann/json.git"
-  GIT_TAG "v3.11.3"
-)
-FetchContent_MakeAvailable(nlohmann)
-
-FetchContent_Declare(cpplint
-  GIT_REPOSITORY "https://github.com/cpplint/cpplint.git"
-  GIT_TAG "2.0.0"
-)
-FetchContent_MakeAvailable(cpplint)
-
-include_directories(${CMAKE_SOURCE_DIR}/external/nlohmann-src/include/)
-include_directories(${CMAKE_SOURCE_DIR}/include/)
-include_directories(${CMAKE_SOURCE_DIR}/src)
-
-## Setup and configure NetCDF-C++ library
-set(INCLUDE_PATH "/usr/include")
-if(IS_DIRECTORY ${INCLUDE_PATH})
-  if(EXISTS ${INCLUDE_PATH}/netcdf)
-    set(NetCDF_CXX_INCLUDE_DIR ${INCLUDE_PATH})
-  else()
-    message(FATAL_ERROR "NetCDFFile not found: ${INCLUDE_PATH}/netcdf")
-  endif()
-else()
-  message(FATAL_ERROR "Path not found: ${INCLUDE_PATH}")
-endif()
-
-set(NetCDF_CXX_LIB_FILE "/usr/lib/libnetcdf_c++4.so")
-if(EXISTS ${NetCDF_CXX_LIB_FILE})
-  set(NetCDF_CXX_LIBRARIES ${NetCDF_CXX_LIB_FILE})
-else()
-  message(FATAL_ERROR "NetCDFFile not found: ${NetCDF_CXX_LIB_FILE}")
+if(NOT TARGET nlohmann_json::nlohmann_json)
+  FetchContent_Declare(
+    nlohmann
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.11.3
+  )
+  FetchContent_MakeAvailable(nlohmann)
 endif()
 
 ## Add local source and header files
@@ -110,24 +85,85 @@ set(TEST_SOURCES
   test/07_full_parallel.cpp
 )
 
+## Workaround for missing NetCDF::NetCDF_CXX target
+find_path(NetCDF_CXX_INCLUDE_DIR
+  NAMES netcdf
+  PATHS /usr/include
+)
+
+find_library(NetCDF_CXX_LIBRARY
+  NAMES netcdf_c++4
+  PATHS /usr/lib /usr/lib/x86_64-linux-gnu
+)
+
+if(NOT NetCDF_CXX_INCLUDE_DIR OR NOT NetCDF_CXX_LIBRARY)
+  message(FATAL_ERROR "NetCDF C++ library not found")
+endif()
+
+add_library(NetCDF::NetCDF_CXX UNKNOWN IMPORTED)
+
+set_target_properties(NetCDF::NetCDF_CXX PROPERTIES
+  IMPORTED_LOCATION "${NetCDF_CXX_LIBRARY}"
+  INTERFACE_INCLUDE_DIRECTORIES "${NetCDF_CXX_INCLUDE_DIR}"
+)
+
+find_library(NetCDF_C_LIBRARY
+  NAMES netcdf
+  PATHS /usr/lib /usr/lib/x86_64-linux-gnu
+)
+
+if(NOT NetCDF_C_LIBRARY)
+  message(FATAL_ERROR "NetCDF C library not found")
+endif()
+
+add_library(NetCDF::NetCDF_C UNKNOWN IMPORTED)
+
+set_target_properties(NetCDF::NetCDF_C PROPERTIES
+  IMPORTED_LOCATION "${NetCDF_C_LIBRARY}"
+)
+
+target_link_libraries(NetCDF::NetCDF_CXX
+  INTERFACE
+    NetCDF::NetCDF_C
+)
+
 ## Create library
 find_package(Threads REQUIRED)
 add_library(jino STATIC ${JINO_SOURCES})
-target_include_directories(jino PUBLIC ${NetCDF_INCLUDE_DIRS} ${NetCDF_CXX_INCLUDE_DIR})
-target_link_libraries(jino PUBLIC Threads::Threads ${NetCDF_CXX_LIBRARIES})
+target_include_directories(jino PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_link_libraries(jino PUBLIC
+  nlohmann_json::nlohmann_json
+  Threads::Threads
+  NetCDF::NetCDF_CXX
+)
 target_compile_features(jino PUBLIC cxx_std_20)
 target_compile_options(jino PUBLIC -Wall -Wextra -Wpedantic)
 
 ## Create tests
-enable_testing()
-add_test(NAME coding_norms
-         COMMAND "${FETCHCONTENT_BASE_DIR}/cpplint-src/cpplint.py" --quiet --recursive
-                 ${PROJECT_SOURCE_DIR}/src
-                 ${PROJECT_SOURCE_DIR}/test)
+if(JINO_BUILD_TESTS)
+  option(JINO_ENABLE_CPPLINT "Enable cpplint checks" OFF)
 
-foreach(TEST_SOURCE ${TEST_SOURCES})
-  get_filename_component(EXECUTABLE_NAME ${TEST_SOURCE} NAME_WE)
-  add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE})
-  target_link_libraries(${EXECUTABLE_NAME} PRIVATE jino)
-  add_test(NAME ${EXECUTABLE_NAME} COMMAND ${EXECUTABLE_NAME})
-endforeach()
+  if(JINO_ENABLE_CPPLINT)
+    FetchContent_Declare(cpplint
+      GIT_REPOSITORY https://github.com/cpplint/cpplint.git
+      GIT_TAG 2.0.2
+    )
+    FetchContent_MakeAvailable(cpplint)
+  endif()
+
+  enable_testing()
+  add_test(NAME coding_norms
+           COMMAND "${FETCHCONTENT_BASE_DIR}/cpplint-src/cpplint.py" --quiet --recursive
+                   ${PROJECT_SOURCE_DIR}/src
+                   ${PROJECT_SOURCE_DIR}/test)
+
+  foreach(TEST_SOURCE ${TEST_SOURCES})
+    get_filename_component(EXECUTABLE_NAME ${TEST_SOURCE} NAME_WE)
+    add_executable(${EXECUTABLE_NAME} ${TEST_SOURCE})
+    target_link_libraries(${EXECUTABLE_NAME} PRIVATE jino)
+    add_test(NAME ${EXECUTABLE_NAME} COMMAND ${EXECUTABLE_NAME})
+  endforeach()
+endif()
