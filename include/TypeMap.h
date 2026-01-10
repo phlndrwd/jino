@@ -11,7 +11,7 @@ namespace jino {
 
 using JsonValueType = std::variant<std::int8_t, std::int16_t, std::int32_t, std::int64_t,
                                    std::uint8_t, std::uint16_t, std::uint32_t, std::uint64_t,
-                                   float, double, std::string>;
+                                   std::float32_t, std::float64_t, std::string>;
 
 // Mapping between eDataTypes and actual types
 template <std::int8_t T> struct TypeMap;

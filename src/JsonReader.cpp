@@ -128,9 +128,9 @@ JsonValueType jino::JsonReader::getVariant(const nlohmann::json& jsonValue) {
         return static_cast<std::uint32_t>(val);
       return val;
     } else if (jsonValue.is_number_float()) {
-      std::float64_t val = jsonValue.get<std::float64_t>();
-      if (val >= std::numeric_limits<std::float32_t>::lowest() &&
-          val <= std::numeric_limits<std::float32_t>::max()) {
+      std::float64_t val = static_cast<std::float64_t>(jsonValue.get<double>());
+      if (val >= std::numeric_limits<float>::lowest() &&
+          val <= std::numeric_limits<float>::max()) {
         return static_cast<std::float32_t>(val);
       } else {
         return val;
