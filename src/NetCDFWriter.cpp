@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <memory>
+#include <stdfloat>
 #include <string>
 
 #include "Buffer.h"
@@ -151,13 +152,13 @@ void jino::NetCDFWriter::writeAttrs(const NetCDFData& netCDFData) {
           file.addAttribute(key, typedDatum->getValue());
           break;
         }
-        case consts::eFloat: {
-          auto typedDatum = static_cast<Datum<float>*>(datum);
+        case consts::eFloat32: {
+          auto typedDatum = static_cast<Datum<std::float32_t>*>(datum);
           file.addAttribute(key, typedDatum->getValue());
           break;
         }
-        case consts::eDouble: {
-          auto typedDatum = static_cast<Datum<double>*>(datum);
+        case consts::eFloat64: {
+          auto typedDatum = static_cast<Datum<std::float64_t>*>(datum);
           file.addAttribute(key, typedDatum->getValue());
           break;
         }
@@ -232,14 +233,14 @@ void jino::NetCDFWriter::writeGroupedDatum(const std::string& name,
       file.addDatum<std::uint64_t>(name, groupName, index, typedBuffer->getNext());
       break;
     }
-    case consts::eFloat: {
-      auto typedBuffer = static_cast<Buffer<float>*>(buffer);
-      file.addDatum<float>(name, groupName, index, typedBuffer->getNext());
+    case consts::eFloat32: {
+      auto typedBuffer = static_cast<Buffer<std::float32_t>*>(buffer);
+      file.addDatum<std::float32_t>(name, groupName, index, typedBuffer->getNext());
       break;
     }
-    case consts::eDouble: {
-      auto typedBuffer = static_cast<Buffer<double>*>(buffer);
-      file.addDatum<double>(name, groupName, index, typedBuffer->getNext());
+    case consts::eFloat64: {
+      auto typedBuffer = static_cast<Buffer<std::float64_t>*>(buffer);
+      file.addDatum<std::float64_t>(name, groupName, index, typedBuffer->getNext());
       break;
     }
     case consts::eString: {
@@ -294,14 +295,14 @@ void jino::NetCDFWriter::writeUngroupedDatum(const std::string& name, NetCDFFile
       file.addDatum<std::uint64_t>(name, index, typedBuffer->getNext());
       break;
     }
-    case consts::eFloat: {
-      auto typedBuffer = static_cast<Buffer<float>*>(buffer);
-      file.addDatum<float>(name, index, typedBuffer->getNext());
+    case consts::eFloat32: {
+      auto typedBuffer = static_cast<Buffer<std::float32_t>*>(buffer);
+      file.addDatum<std::float32_t>(name, index, typedBuffer->getNext());
       break;
     }
-    case consts::eDouble: {
-      auto typedBuffer = static_cast<Buffer<double>*>(buffer);
-      file.addDatum<double>(name, index, typedBuffer->getNext());
+    case consts::eFloat64: {
+      auto typedBuffer = static_cast<Buffer<std::float64_t>*>(buffer);
+      file.addDatum<std::float64_t>(name, index, typedBuffer->getNext());
       break;
     }
     case consts::eString: {
@@ -354,14 +355,14 @@ void jino::NetCDFWriter::writeGroupedData(const std::string& name, const std::st
       file.addData<std::uint64_t>(name, groupName, typedBuffer->getData());
       break;
     }
-    case consts::eFloat: {
-      auto typedBuffer = static_cast<Buffer<float>*>(buffer);
-      file.addData<float>(name, groupName, typedBuffer->getData());
+    case consts::eFloat32: {
+      auto typedBuffer = static_cast<Buffer<std::float32_t>*>(buffer);
+      file.addData<std::float32_t>(name, groupName, typedBuffer->getData());
       break;
     }
-    case consts::eDouble: {
-      auto typedBuffer = static_cast<Buffer<double>*>(buffer);
-      file.addData<double>(name, groupName, typedBuffer->getData());
+    case consts::eFloat64: {
+      auto typedBuffer = static_cast<Buffer<std::float64_t>*>(buffer);
+      file.addData<std::float64_t>(name, groupName, typedBuffer->getData());
       break;
     }
     case consts::eString: {
@@ -415,14 +416,14 @@ void jino::NetCDFWriter::writeUngroupedData(const std::string& name, NetCDFFile&
       file.addData<std::uint64_t>(name, typedBuffer->getData());
       break;
     }
-    case consts::eFloat: {
-      auto typedBuffer = static_cast<Buffer<float>*>(buffer);
-      file.addData<float>(name, typedBuffer->getData());
+    case consts::eFloat32: {
+      auto typedBuffer = static_cast<Buffer<std::float32_t>*>(buffer);
+      file.addData<std::float32_t>(name, typedBuffer->getData());
       break;
     }
-    case consts::eDouble: {
-      auto typedBuffer = static_cast<Buffer<double>*>(buffer);
-      file.addData<double>(name, typedBuffer->getData());
+    case consts::eFloat64: {
+      auto typedBuffer = static_cast<Buffer<std::float64_t>*>(buffer);
+      file.addData<std::float64_t>(name, typedBuffer->getData());
       break;
     }
     case consts::eString: {

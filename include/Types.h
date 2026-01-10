@@ -20,6 +20,7 @@
 
 #include <cstdint>
 #include <string>
+#include <stdfloat>
 
 #include "Constants.h"
 
@@ -68,13 +69,13 @@ struct Types<std::uint64_t> {
 };
 
 template <>
-struct Types<float> {
-  static constexpr std::uint8_t type = consts::eFloat;
+struct Types<std::float32_t> {
+  static constexpr std::uint8_t type = consts::eFloat32;
 };
 
 template <>
-struct Types<double> {
-  static constexpr std::uint8_t type = consts::eDouble;
+struct Types<std::float64_t> {
+  static constexpr std::uint8_t type = consts::eFloat64;
 };
 
 template <>

@@ -20,6 +20,7 @@
 #include <netcdf>
 
 #include <algorithm>
+#include <stdfloat>
 #include <string>
 #include <vector>
 
@@ -98,12 +99,12 @@ void jino::NetCDFFile::addAttribute(const std::string& name, const std::uint64_t
 }
 
 template <>
-void jino::NetCDFFile::addAttribute(const std::string& name, const float attr) {
+void jino::NetCDFFile::addAttribute(const std::string& name, const std::float32_t attr) {
   netCDF_.putAtt(name,  netCDF::NcType::nc_FLOAT, attr);
 }
 
 template <>
-void jino::NetCDFFile::addAttribute(const std::string& name, const double attr) {
+void jino::NetCDFFile::addAttribute(const std::string& name, const std::float64_t attr) {
   netCDF_.putAtt(name,  netCDF::NcType::nc_DOUBLE, attr);
 }
 
@@ -132,10 +133,10 @@ template void jino::NetCDFFile::addData<std::uint16_t>(const std::string&,
                                                        const std::vector<std::uint16_t>&);
 template void jino::NetCDFFile::addData<std::uint32_t>(const std::string&,
                                                        const std::vector<std::uint32_t>&);
-template void jino::NetCDFFile::addData<float>(const std::string&,
-                                               const std::vector<float>&);
-template void jino::NetCDFFile::addData<double>(const std::string&,
-                                                const std::vector<double>&);
+template void jino::NetCDFFile::addData<std::float32_t>(const std::string&,
+                                               const std::vector<std::float32_t>&);
+template void jino::NetCDFFile::addData<std::float64_t>(const std::string&,
+                                                const std::vector<std::float64_t>&);
 template void jino::NetCDFFile::addData<std::string>(const std::string&,
                                                      const std::vector<std::string>&);
 
@@ -172,10 +173,10 @@ template void jino::NetCDFFile::addData<std::uint16_t>(const std::string&, const
                                                        const std::vector<std::uint16_t>&);
 template void jino::NetCDFFile::addData<std::uint32_t>(const std::string&, const std::string&,
                                                        const std::vector<std::uint32_t>&);
-template void jino::NetCDFFile::addData<float>(const std::string&, const std::string&,
-                                               const std::vector<float>&);
-template void jino::NetCDFFile::addData<double>(const std::string&, const std::string&,
-                                                const std::vector<double>&);
+template void jino::NetCDFFile::addData<std::float32_t>(const std::string&, const std::string&,
+                                               const std::vector<std::float32_t>&);
+template void jino::NetCDFFile::addData<std::float64_t>(const std::string&, const std::string&,
+                                                const std::vector<std::float64_t>&);
 template void jino::NetCDFFile::addData<std::string>(const std::string&, const std::string&,
                                                      const std::vector<std::string>&);
 
@@ -213,10 +214,10 @@ template void jino::NetCDFFile::addDatum<std::uint16_t>(const std::string&, cons
                                                         const std::uint16_t);
 template void jino::NetCDFFile::addDatum<std::uint32_t>(const std::string&, const std::uint64_t,
                                                         const std::uint32_t);
-template void jino::NetCDFFile::addDatum<float>(const std::string&, const std::uint64_t,
-                                                const float);
-template void jino::NetCDFFile::addDatum<double>(const std::string&, const std::uint64_t,
-                                                 const double);
+template void jino::NetCDFFile::addDatum<std::float32_t>(const std::string&, const std::uint64_t,
+                                                const std::float32_t);
+template void jino::NetCDFFile::addDatum<std::float64_t>(const std::string&, const std::uint64_t,
+                                                 const std::float64_t);
 template void jino::NetCDFFile::addDatum<std::string>(const std::string&, const std::uint64_t,
                                                       const std::string);
 
@@ -253,10 +254,10 @@ template void jino::NetCDFFile::addDatum<std::uint16_t>(const std::string&, cons
                                                         const std::uint64_t, const std::uint16_t);
 template void jino::NetCDFFile::addDatum<std::uint32_t>(const std::string&, const std::string&,
                                                         const std::uint64_t, const std::uint32_t);
-template void jino::NetCDFFile::addDatum<float>(const std::string&, const std::string&,
-                                                const std::uint64_t, const float);
-template void jino::NetCDFFile::addDatum<double>(const std::string&, const std::string&,
-                                                 const std::uint64_t, const double);
+template void jino::NetCDFFile::addDatum<std::float32_t>(const std::string&, const std::string&,
+                                                const std::uint64_t, const std::float32_t);
+template void jino::NetCDFFile::addDatum<std::float64_t>(const std::string&, const std::string&,
+                                                 const std::uint64_t, const std::float64_t);
 template void jino::NetCDFFile::addDatum<std::string>(const std::string&, const std::string&,
                                                       const std::uint64_t, const std::string);
 

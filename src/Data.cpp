@@ -19,6 +19,7 @@
 
 #include <memory>
 #include <stdexcept>
+#include <stdfloat>
 #include <string>
 
 #include "Datum.h"
@@ -59,8 +60,8 @@ template void jino::Data::setValue<std::uint8_t>(const std::string&, const std::
 template void jino::Data::setValue<std::uint16_t>(const std::string&, const std::uint16_t);
 template void jino::Data::setValue<std::uint32_t>(const std::string&, const std::uint32_t);
 template void jino::Data::setValue<std::uint64_t>(const std::string&, const std::uint64_t);
-template void jino::Data::setValue<float>(const std::string&, const float);
-template void jino::Data::setValue<double>(const std::string&, const double);
+template void jino::Data::setValue<std::float32_t>(const std::string&, const std::float32_t);
+template void jino::Data::setValue<std::float64_t>(const std::string&, const std::float64_t);
 template void jino::Data::setValue<std::string>(const std::string&, const std::string);
 
 template <typename T>
@@ -94,10 +95,10 @@ T jino::Data::getValue(const std::string& key) const {
             return static_cast<T>(std::any_cast<std::int64_t>(raw));
           if (raw.type() == typeid(std::uint64_t))
             return static_cast<T>(std::any_cast<std::uint64_t>(raw));
-          if (raw.type() == typeid(float))
-            return static_cast<T>(std::any_cast<float>(raw));
-          if (raw.type() == typeid(double))
-            return static_cast<T>(std::any_cast<double>(raw));
+          if (raw.type() == typeid(std::float32_t))
+            return static_cast<T>(std::any_cast<std::float32_t>(raw));
+          if (raw.type() == typeid(std::float64_t))
+            return static_cast<T>(std::any_cast<std::float64_t>(raw));
         } else if constexpr (std::is_same_v<T, std::string>) {
           if (raw.type() == typeid(std::string))  return std::any_cast<std::string>(raw);
         }
@@ -118,8 +119,8 @@ template std::uint8_t jino::Data::getValue<std::uint8_t>(const std::string&) con
 template std::uint16_t jino::Data::getValue<std::uint16_t>(const std::string&) const;
 template std::uint32_t jino::Data::getValue<std::uint32_t>(const std::string&) const;
 template std::uint64_t jino::Data::getValue<std::uint64_t>(const std::string&) const;
-template float jino::Data::getValue<float>(const std::string&) const;
-template double jino::Data::getValue<double>(const std::string&) const;
+template std::float32_t jino::Data::getValue<std::float32_t>(const std::string&) const;
+template std::float64_t jino::Data::getValue<std::float64_t>(const std::string&) const;
 template std::string jino::Data::getValue<std::string>(const std::string&) const;
 
 void jino::Data::forEachDatum(const std::function<void(const std::string&,

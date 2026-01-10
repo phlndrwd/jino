@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <stdfloat>
 #include <string>
 #include <vector>
 
@@ -64,8 +65,8 @@ template class jino::Buffer<std::uint8_t>;
 template class jino::Buffer<std::uint16_t>;
 template class jino::Buffer<std::uint32_t>;
 template class jino::Buffer<std::uint64_t>;
-template class jino::Buffer<float>;
-template class jino::Buffer<double>;
+template class jino::Buffer<std::float32_t>;
+template class jino::Buffer<std::float64_t>;
 template class jino::Buffer<std::string>;
 
 template <class T>

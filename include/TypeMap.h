@@ -2,6 +2,7 @@
 #define INCLUDE_TYPEMAP_H_
 
 #include <cstdint>
+#include <stdfloat>
 #include <variant>
 
 #include "Constants.h"
@@ -22,8 +23,8 @@ template <> struct TypeMap<jino::consts::eUInt8>  { using type = std::uint8_t; }
 template <> struct TypeMap<jino::consts::eUInt16> { using type = std::uint16_t; };
 template <> struct TypeMap<jino::consts::eUInt32> { using type = std::uint32_t; };
 template <> struct TypeMap<jino::consts::eUInt64> { using type = std::uint64_t; };
-template <> struct TypeMap<jino::consts::eFloat>  { using type = float; };
-template <> struct TypeMap<jino::consts::eDouble> { using type = double; };
+template <> struct TypeMap<jino::consts::eFloat32>  { using type = std::float32_t; };
+template <> struct TypeMap<jino::consts::eFloat64> { using type = std::float64_t; };
 template <> struct TypeMap<jino::consts::eString> { using type = std::string; };
 
 }

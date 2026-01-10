@@ -32,8 +32,8 @@ template class jino::Datum<std::uint8_t>;
 template class jino::Datum<std::uint16_t>;
 template class jino::Datum<std::uint32_t>;
 template class jino::Datum<std::uint64_t>;
-template class jino::Datum<float>;
-template class jino::Datum<double>;
+template class jino::Datum<std::float32_t>;
+template class jino::Datum<std::float64_t>;
 template class jino::Datum<std::string>;
 
 template<class T>
@@ -49,8 +49,8 @@ template const std::string jino::Datum<std::uint8_t>::getValueStr() const;
 template const std::string jino::Datum<std::uint16_t>::getValueStr() const;
 template const std::string jino::Datum<std::uint32_t>::getValueStr() const;
 template const std::string jino::Datum<std::uint64_t>::getValueStr() const;
-template const std::string jino::Datum<float>::getValueStr() const;
-template const std::string jino::Datum<double>::getValueStr() const;
+template const std::string jino::Datum<std::float32_t>::getValueStr() const;
+template const std::string jino::Datum<std::float64_t>::getValueStr() const;
 
 template<>
 const std::string jino::Datum<std::string>::getValueStr() const {
@@ -70,6 +70,6 @@ template std::any jino::Datum<std::uint8_t>::getRawValue() const;
 template std::any jino::Datum<std::uint16_t>::getRawValue() const;
 template std::any jino::Datum<std::uint32_t>::getRawValue() const;
 template std::any jino::Datum<std::uint64_t>::getRawValue() const;
-template std::any jino::Datum<float>::getRawValue() const;
-template std::any jino::Datum<double>::getRawValue() const;
+template std::any jino::Datum<std::float32_t>::getRawValue() const;
+template std::any jino::Datum<std::float64_t>::getRawValue() const;
 template std::any jino::Datum<std::string>::getRawValue() const;

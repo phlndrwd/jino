@@ -22,9 +22,6 @@ project(jino LANGUAGES CXX)
 # Options
 option(JINO_BUILD_TESTS "Build jino tests" OFF)
 
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-#set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*")
-
 file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/input)
 file(COPY ${CMAKE_SOURCE_DIR}/input DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -139,7 +136,7 @@ target_link_libraries(jino PUBLIC
   Threads::Threads
   NetCDF::NetCDF_CXX
 )
-target_compile_features(jino PUBLIC cxx_std_20)
+target_compile_features(jino PUBLIC cxx_std_23)
 target_compile_options(jino PUBLIC -Wall -Wextra -Wpedantic)
 
 ## Create tests

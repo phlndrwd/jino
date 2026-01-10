@@ -19,6 +19,7 @@
 #define INCLUDE_DATUM_H_
 
 #include <string>
+#include <stdfloat>
 
 #include "DatumBase.h"
 

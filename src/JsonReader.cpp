@@ -20,6 +20,7 @@
 #include <fstream>
 #include <iostream>
 #include <limits>
+#include <stdfloat>
 #include <string>
 #include <vector>
 
@@ -96,7 +97,7 @@ void jino::JsonReader::readAttrs(jino::Data& attrs, const std::string& path) {
           if (value.is_number_integer()) {
             setValue(attrs, key, value.get<std::int32_t>());
           } else if (value.is_number_float()) {
-            setValue(attrs, key, value.get<float>());
+            setValue(attrs, key, value.get<std::float32_t>());
           }
         } else if (value.is_boolean()) {
           setValue(attrs, key, value.get<std::uint8_t>());
@@ -127,10 +128,10 @@ JsonValueType jino::JsonReader::getVariant(const nlohmann::json& jsonValue) {
         return static_cast<std::uint32_t>(val);
       return val;
     } else if (jsonValue.is_number_float()) {
-      double val = jsonValue.get<double>();
-      if (val >= std::numeric_limits<float>::lowest() &&
-          val <= std::numeric_limits<float>::max()) {
-        return static_cast<float>(val);
+      std::float64_t val = jsonValue.get<std::float64_t>();
+      if (val >= std::numeric_limits<std::float32_t>::lowest() &&
+          val <= std::numeric_limits<std::float32_t>::max()) {
+        return static_cast<std::float32_t>(val);
       } else {
         return val;
       }

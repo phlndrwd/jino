@@ -33,8 +33,8 @@ enum eDataTypes : std::uint8_t {
   eUInt16,
   eUInt32,
   eUInt64,
-  eFloat,
-  eDouble,
+  eFloat32,
+  eFloat64,
   eString,
   eNumberOfDataTypes
 };
